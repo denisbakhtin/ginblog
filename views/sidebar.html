@@ -21,7 +21,7 @@
     <ul class="nav nav-pills nav-stacked">
       {{range archives}}
       <li>
-        <a href="/archives/{{printf "%d/%02d" .Timestamp.Year .Timestamp.Month}}"><i class="glyphicon glyphicon-chevron-right indent"></i>{{printf "%s %d" (monthHuman .Timestamp.Month) .Timestamp.Year}}</a>
+        <a href="/archives/{{printf "%d/%02d" .Timestamp.Year .Timestamp.Month}}"><i class="glyphicon glyphicon-chevron-right indent"></i>{{printf "%s %d" (.Timestamp.Month.String) .Timestamp.Year}}</a>
       </li>
       {{end}}
     </ul>

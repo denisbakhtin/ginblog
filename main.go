@@ -125,7 +125,6 @@ func setTemplate(router *gin.Engine) {
 	tmpl := template.New("").Funcs(template.FuncMap{
 		"isActive":    helpers.IsActive,
 		"dateTime":    helpers.DateTime,
-		"monthHuman":  helpers.MonthHuman,
 		"recentPosts": helpers.RecentPosts,
 		"tags":        helpers.Tags,
 		"archives":    helpers.Archives,
