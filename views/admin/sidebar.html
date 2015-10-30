@@ -1,12 +1,9 @@
 {{define "admin/sidebar"}}
 <aside id="sidebar-dashboard">
   <div class="slimscroll">
-    <div class="sidebar-panel">
-      <h5 class="sidebar-panel-title">Profile</h5>
-    </div>
-    <div class="user-info">
+    <div class="well well-sm user-info">
+      <h5>User Profile</h5>
       <i class="glyphicon glyphicon-user"></i>
-      <span class="email">{{.ActiveUser.Email}}</span>
       <div class="btn-group">
         <button type="button" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-cog"></i>
         </button>
@@ -20,16 +17,19 @@
           </li>
         </ul>
       </div>
+      <span class="email">{{.ActiveUser.Email}}</span>
     </div>
-    <div class="sidebar-panel">
-      <h5 class="sidebar-panel-title">Navigation</h5>
-    </div>
-    <ul class="nav">
-      <li class="{{isActive .Active "users"}}">
-        <a href="/admin/users"><i class="glyphicon glyphicon-user indent"></i>Users</a>
+
+    <h5>Navigation</h5>
+    <ul class="nav nav-pills nav-stacked">
+      <li class="{{isActive .Active "posts"}}">
+        <a href="/admin/posts"><i class="glyphicon glyphicon-pencil indent"></i>Posts</a>
       </li>
       <li class="{{isActive .Active "pages"}}">
         <a href="/admin/pages"><i class="glyphicon glyphicon-duplicate indent"></i>Pages</a>
+      </li>
+      <li class="{{isActive .Active "users"}}">
+        <a href="/admin/users"><i class="glyphicon glyphicon-user indent"></i>Users</a>
       </li>
     </ul>
   </div>

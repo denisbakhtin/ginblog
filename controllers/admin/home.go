@@ -3,7 +3,7 @@ package admin
 import (
 	"net/http"
 
-	"github.com/denisbakhtin/ginbasic/helpers"
+	"github.com/denisbakhtin/ginblog/helpers"
 	"github.com/gin-gonic/gin"
 )
 

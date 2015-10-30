@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/Sirupsen/logrus"
-	"github.com/denisbakhtin/ginbasic/system"
+	"github.com/denisbakhtin/ginblog/system"
 	"github.com/gin-gonic/gin"
 )
 

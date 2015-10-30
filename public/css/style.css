@@ -55,29 +55,42 @@ textarea.parsley-error {
   width: 210px;
   float: left;
   height: auto;
-  left: 0;
+  left: 5px;
   bottom: 0;
   top: 0;
-  padding-top: 50px;
+  padding: 50px 0 70px;
   z-index: 2;
 }
-#sidebar-dashboard:after {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: 210px;
-  background-color: #eee;
-  z-index: -1;
-}
 
-#main-column {
-  margin-left: 210px;
+#sidebar-dashboard + #main-column {
+  margin-left: 215px;
   overflow: hidden;
 }
 
-.table .id, .table .actions, .table .published {
+#sidebar-dashboard h5 {
+  padding: 10px 15px;
+  font-weight: bold;
+}
+
+#sidebar {
+  width: 210px;
+  float: right;
+}
+
+#sidebar + #main-column {
+  margin-right: 225px;
+  overflow: hidden;
+}
+
+#sidebar h5 {
+  font-weight: bold;
+}
+
+.table>tbody>tr>td {
+  vertical-align: middle;
+}
+
+.table .id, .table .actions, .table .published, .table .timestamp, .table .author {
   text-align: center;
   width: 1%;
   white-space: nowrap;
@@ -110,56 +123,35 @@ textarea.parsley-error {
   color: #333;
 }
 
-.sidebar-panel {
-  margin: 0;
-  width: 100%;
-  height: auto;
-  position: relative;
-}
-.sidebar-panel .sidebar-panel-title {
-  font-size: 13px;
-  padding: 8px 15px 8px 17px;
-  margin: 0;
-  background-color: #ccc;
-  color: #333;
-  border-top: 1px solid #bbb;
-  border-bottom: 1px solid #bbb;
-  text-shadow: 1px 1px #fff;
-}
 .user-info {
-  padding: 10px 15px;
+  margin-top: 20px;
 }
+
+.user-info h5 {
+  padding: 0!important;
+}
+
 .user-info .glyphicon-user {
   float: left;
-  font-size: 45px;
-  color: #333;
+  font-size: 20px;
+  color: #337ab7;
   margin-right: 10px;
 }
 .user-info .email {
+  margin-top: 10px;
   font-size: 13px;
   color: #333;
   overflow: hidden;
   white-space: nowrap;
-  width: 125px;
+  width: 175px;
   display: inline-block;
 }
 
 #sidebar-dashboard .nav li {
 }
 #sidebar-dashboard .nav li a{
-  padding: 10px 20px 9px;
-  color: #333;
-  display: inline-block;
-  width: 100%;
-  position: relative;
-  line-height: 20px;
-  letter-spacing: 0.3px;
   transition: background;
   transition-duration: 0.4s;
-}
-#sidebar-dashboard .nav li:hover a, #sidebar-dashboard .nav li.active a{
-  background-color: #ddd;
-  color: #555;
 }
 .glyphicon.indent {
   margin-right: 0.5em;

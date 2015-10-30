@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/Sirupsen/logrus"
-	"github.com/denisbakhtin/ginbasic/helpers"
-	"github.com/denisbakhtin/ginbasic/models"
+	"github.com/denisbakhtin/ginblog/helpers"
+	"github.com/denisbakhtin/ginblog/models"
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"

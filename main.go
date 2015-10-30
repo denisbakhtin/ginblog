@@ -3,7 +3,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"html/template"
 	"net/http"
 	"os"
@@ -11,11 +10,11 @@ import (
 
 	"github.com/GeertJohan/go.rice"
 	"github.com/Sirupsen/logrus"
-	"github.com/denisbakhtin/ginbasic/controllers"
-	"github.com/denisbakhtin/ginbasic/controllers/admin"
-	"github.com/denisbakhtin/ginbasic/helpers"
-	"github.com/denisbakhtin/ginbasic/models"
-	"github.com/denisbakhtin/ginbasic/system"
+	"github.com/denisbakhtin/ginblog/controllers"
+	"github.com/denisbakhtin/ginblog/controllers/admin"
+	"github.com/denisbakhtin/ginblog/helpers"
+	"github.com/denisbakhtin/ginblog/models"
+	"github.com/denisbakhtin/ginblog/system"
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/utrack/gin-csrf"
@@ -54,35 +53,37 @@ func main() {
 	router.GET("/logout", controllers.LogoutGet)
 
 	router.GET("/pages/:id", controllers.PageGet)
+	router.GET("/posts/:id", controllers.PostGet)
+	router.GET("/archives/:year/:month", controllers.ArchiveGet)
 
 	authorized := router.Group("/admin")
 	authorized.Use(AuthRequired())
-	authorized.GET("/", admin.AdminGet)
+	{
+		authorized.GET("/", admin.AdminGet)
 
-	authorized.POST("/upload", admin.UploadPost) //image upload
+		authorized.POST("/upload", admin.UploadPost) //image upload
 
-	authorized.GET("/users", admin.UserIndex)
-	authorized.GET("/new_user", admin.UserNew)
-	authorized.POST("/new_user", admin.UserCreate)
-	authorized.GET("/users/:id/edit", admin.UserEdit)
-	authorized.POST("/users/:id/edit", admin.UserUpdate)
-	authorized.POST("/users/:id/delete", admin.UserDelete)
+		authorized.GET("/users", admin.UserIndex)
+		authorized.GET("/new_user", admin.UserNew)
+		authorized.POST("/new_user", admin.UserCreate)
+		authorized.GET("/users/:id/edit", admin.UserEdit)
+		authorized.POST("/users/:id/edit", admin.UserUpdate)
+		authorized.POST("/users/:id/delete", admin.UserDelete)
 
-	authorized.GET("/pages", admin.PageIndex)
-	authorized.GET("/new_page", admin.PageNew)
-	authorized.POST("/new_page", admin.PageCreate)
-	authorized.GET("/pages/:id/edit", admin.PageEdit)
-	authorized.POST("/pages/:id/edit", admin.PageUpdate)
-	authorized.POST("/pages/:id/delete", admin.PageDelete)
-	/*
-	   router.GET("/someGet", getting)
-	   router.POST("/somePost", posting)
-	   router.PUT("/somePut", putting)
-	   router.DELETE("/someDelete", deleting)
-	   router.PATCH("/somePatch", patching)
-	   router.HEAD("/someHead", head)
-	   router.OPTIONS("/someOptions", options)
-	*/
+		authorized.GET("/pages", admin.PageIndex)
+		authorized.GET("/new_page", admin.PageNew)
+		authorized.POST("/new_page", admin.PageCreate)
+		authorized.GET("/pages/:id/edit", admin.PageEdit)
+		authorized.POST("/pages/:id/edit", admin.PageUpdate)
+		authorized.POST("/pages/:id/delete", admin.PageDelete)
+
+		authorized.GET("/posts", admin.PostIndex)
+		authorized.GET("/new_post", admin.PostNew)
+		authorized.POST("/new_post", admin.PostCreate)
+		authorized.GET("/posts/:id/edit", admin.PostEdit)
+		authorized.POST("/posts/:id/edit", admin.PostUpdate)
+		authorized.POST("/posts/:id/delete", admin.PostDelete)
+	}
 
 	// Listen and server on 0.0.0.0:8080
 	router.Run(":8080")
@@ -122,8 +123,12 @@ func runMigrations(command *string) {
 func setTemplate(router *gin.Engine) {
 	box := rice.MustFindBox("views")
 	tmpl := template.New("").Funcs(template.FuncMap{
-		"isActive": helpers.IsActive,
-		"dateTime": helpers.DateTime,
+		"isActive":    helpers.IsActive,
+		"dateTime":    helpers.DateTime,
+		"monthHuman":  helpers.MonthHuman,
+		"recentPosts": helpers.RecentPosts,
+		"tags":        helpers.Tags,
+		"archives":    helpers.Archives,
 	})
 
 	fn := func(path string, f os.FileInfo, err error) error {
@@ -153,7 +158,7 @@ func setSessions(router *gin.Engine) {
 	router.Use(sessions.Sessions("gin-session", store))
 	//https://github.com/utrack/gin-csrf
 	router.Use(csrf.Middleware(csrf.Options{
-		Secret: config.CsrfSecret,
+		Secret: config.SessionSecret,
 		ErrorFunc: func(c *gin.Context) {
 			c.String(400, "CSRF token mismatch")
 			c.Abort()
@@ -185,7 +190,8 @@ func AuthRequired() gin.HandlerFunc {
 		if user, _ := c.Get("User"); user != nil {
 			c.Next()
 		} else {
-			c.AbortWithError(http.StatusForbidden, fmt.Errorf("Access forbidden"))
+			c.HTML(http.StatusForbidden, "errors/403", nil)
+			c.Abort()
 		}
 	}
 }

@@ -3,15 +3,15 @@ package admin
 import (
 	"net/http"
 
-	"github.com/denisbakhtin/ginbasic/helpers"
-	"github.com/denisbakhtin/ginbasic/models"
+	"github.com/denisbakhtin/ginblog/helpers"
+	"github.com/denisbakhtin/ginblog/models"
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
 // GET page list
 func PageIndex(c *gin.Context) {
-	list, err := models.GetPageList()
+	list, err := models.GetPages()
 	if err != nil {
 		c.HTML(http.StatusInternalServerError, "errors/500", nil)
 		return

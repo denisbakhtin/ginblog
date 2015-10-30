@@ -1,14 +1,16 @@
 -- +migrate Up
 -- SQL in section 'Up' is executed when this migration is applied
-CREATE TABLE pages(
+CREATE TABLE posts(
   id SERIAL PRIMARY KEY,
   name TEXT NOT NULL,
   description TEXT NOT NULL,
-  published boolean NOT NULL DEFAULT true
+  published BOOLEAN NOT NULL DEFAULT true,
+  user_id INTEGER REFERENCES users (id) ON DELETE SET NULL,
+  timestamp TIMESTAMP
 );
 
 
 -- +migrate Down
 -- SQL in section 'Down' is executed when this migration is rolled back
-DROP TABLE pages;
+DROP TABLE posts;
 

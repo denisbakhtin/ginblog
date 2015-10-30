@@ -1,11 +1,14 @@
-{{define "pages/show"}}
+{{define "archives/show"}}
 {{template "header" .}}
 {{template "navbar" .}}
 <div class="container" role="main">		
   {{template "sidebar" .}}
   <div id="main-column">
     <h2>{{.Title}}</h2>
-    <div class="description">{{.Description}}</div>
+    {{range .List}}
+    <h3><a href="/posts/{{.Id}}">{{.Name}}</a></h3>
+    <div class="excerpt">{{.Excerpt}}</div>
+    {{end}}
   </div>
 </div>
 {{template "footer" .}}

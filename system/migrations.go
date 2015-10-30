@@ -25,12 +25,12 @@ func RunMigrations(box *rice.Box, db *sqlx.DB, command *string) {
 	case "new":
 		migrateNew(box)
 	case "up":
-		migrateUp(db.DB, box)
+		migrateUp(db.DB, box, 0)
 	case "down":
-		migrateDown(db.DB, box)
+		migrateDown(db.DB, box, 1)
 	case "redo":
-		migrateDown(db.DB, box)
-		migrateUp(db.DB, box)
+		migrateDown(db.DB, box, 1)
+		migrateUp(db.DB, box, 1)
 	default:
 		logrus.Fatalf("Wrong migration flag %q, acceptable values: up, down", *command)
 	}
@@ -60,10 +60,10 @@ func migrateNew(box *rice.Box) {
 	}
 }
 
-//migrateUp applies db migrations
-func migrateUp(DB *sql.DB, box *rice.Box) {
+//migrateUp applies {{max}} pending db migrations. If max == 0, it applies all
+func migrateUp(DB *sql.DB, box *rice.Box, max int) {
 	migrations := getRiceMigrations(box)
-	n, err := migrate.Exec(DB, "postgres", migrations, migrate.Up)
+	n, err := migrate.ExecMax(DB, "postgres", migrations, migrate.Up, max)
 	if err != nil {
 		logrus.Error(err)
 	} else {
@@ -71,10 +71,10 @@ func migrateUp(DB *sql.DB, box *rice.Box) {
 	}
 }
 
-//migrateDown rolls back db migrations
-func migrateDown(DB *sql.DB, box *rice.Box) {
+//migrateDown rolls back {{max}} db migrations. If max == 0, it rolles back all of them
+func migrateDown(DB *sql.DB, box *rice.Box, max int) {
 	migrations := getRiceMigrations(box)
-	n, err := migrate.Exec(DB, "postgres", migrations, migrate.Down)
+	n, err := migrate.ExecMax(DB, "postgres", migrations, migrate.Down, max)
 	if err != nil {
 		logrus.Error(err)
 	} else {

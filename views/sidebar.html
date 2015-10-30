@@ -1,0 +1,30 @@
+{{define "sidebar"}}
+<aside id="sidebar">
+  <div class="">
+    <h5>Recent posts</h5>
+    <ul class="nav nav-pills nav-stacked">
+      {{range recentPosts}}
+      <li>
+        <a href="/posts/{{.Id}}">{{.Name}}</a>
+      </li>
+      {{end}}
+    </ul>
+    <h5>Tags</h5>
+    <ul class="nav nav-pills nav-stacked">
+      {{range tags}}
+      <li>
+        <a href="/posts/{{.Id}}">{{.Name}}</a>
+      </li>
+      {{end}}
+    </ul>
+    <h5>Archives</h5>
+    <ul class="nav nav-pills nav-stacked">
+      {{range archives}}
+      <li>
+        <a href="/archives/{{printf "%d/%02d" .Timestamp.Year .Timestamp.Month}}"><i class="glyphicon glyphicon-chevron-right indent"></i>{{printf "%s %d" (monthHuman .Timestamp.Month) .Timestamp.Year}}</a>
+      </li>
+      {{end}}
+    </ul>
+  </div>
+</aside>
+{{end}}

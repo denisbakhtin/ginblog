@@ -3,7 +3,7 @@ package models
 import (
 	"fmt"
 
-	"github.com/denisbakhtin/ginbasic/system"
+	"github.com/denisbakhtin/ginblog/system"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 )

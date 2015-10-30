@@ -1,0 +1,50 @@
+{{define "admin/posts/form"}}
+{{template "header" .}}
+{{template "admin/navbar" .}}
+{{template "admin/sidebar" .}}
+<div id="main-column" class="container-fluid" role="main">		
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <form class="form-horizontal" method="post">
+      <fieldset>
+        <legend>{{.Title}}</legend>
+        {{range .Flash}}
+          <div class="alert alert-danger">{{.}}</div><p>
+        {{end}}
+        <input type="hidden" name="id" value="{{.Post.Id}}" >
+        <div class="form-group">
+          <label class="col-md-2 control-label" for="name">Name</label>  
+          <div class="col-md-10">
+            <input id="name" name="name" value="{{.Post.Name}}" placeholder="Post title" class="form-control input-md" required="" >    
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-md-2 control-label" for="description">Description</label>
+          <div class="col-md-10">
+            <input id="description" type="hidden" name="description">
+            <div id="markdown-editor">{{.Post.Description}}</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-md-offset-2 col-md-10" for="published">
+            <input id="published" name="published" type="checkbox" value="true" {{if .Post.Published}}checked{{end}} >
+            Publish
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label class="col-md-2"></label>
+          <div class="col-md-10">
+            <input type="submit" class="btn btn-primary" value="Submit" onclick="$('#description').val($('#markdown-editor').markdownEditor('content'))">
+            <input type="button" class="btn btn-default" formnovalidate onclick="window.history.back();" value="Cancel">
+          </div>
+        </div>
+      </fieldset>
+      </form>
+    </div>
+  </div>
+</div>
+{{template "footer" .}}
+{{end}}

@@ -28,7 +28,7 @@ func GetPage(id interface{}) (*Page, error) {
 	return page, err
 }
 
-func GetPageList() ([]Page, error) {
+func GetPages() ([]Page, error) {
 	var list []Page
 	err := db.Select(&list, "SELECT * FROM pages ORDER BY id")
 	return list, err

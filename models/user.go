@@ -50,7 +50,7 @@ func GetUser(id interface{}) (*User, error) {
 	return user, err
 }
 
-func GetUserList() ([]User, error) {
+func GetUsers() ([]User, error) {
 	var list []User
 	err := db.Select(&list, "SELECT * FROM users ORDER BY id")
 	return list, err

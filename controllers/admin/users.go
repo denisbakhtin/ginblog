@@ -3,15 +3,15 @@ package admin
 import (
 	"net/http"
 
-	"github.com/denisbakhtin/ginbasic/helpers"
-	"github.com/denisbakhtin/ginbasic/models"
+	"github.com/denisbakhtin/ginblog/helpers"
+	"github.com/denisbakhtin/ginblog/models"
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
 // GET user list
 func UserIndex(c *gin.Context) {
-	list, err := models.GetUserList()
+	list, err := models.GetUsers()
 	if err != nil {
 		c.HTML(http.StatusInternalServerError, "errors/500", nil)
 		return
@@ -68,6 +68,7 @@ func UserEdit(c *gin.Context) {
 	h := helpers.DefaultH(c)
 	h["Title"] = "Edit user"
 	h["Active"] = "users"
+	h["User"] = user
 	session := sessions.Default(c)
 	h["Flash"] = session.Flashes()
 	session.Save()

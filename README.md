@@ -1,7 +1,7 @@
-GIN-powered Blog boilerplate
+GIN-powered blog boilerplate
 ===============
 
-Provides essentials that most web blogs need - MVC pattern, user authorisation, SQL db migration, admin dashboard, javascript form validation, rss feeds, etc. Based on https://github.com/denisbakhtin/ginbasic
+Provides essentials that most web blogs need - MVC pattern, user authorisation, SQL db migration, admin dashboard, javascript form validation, rss feeds, etc. Based on https://github.com/denisbakhtin/ginblog
 
 It consists of the following core components:
 
@@ -16,6 +16,7 @@ It consists of the following core components:
 - Parsley JS - form validation - http://parsleyjs.org
 - Bootstrap Markdown Editor with image upload - https://github.com/inacho/bootstrap-markdown-editor
 - blackfriday - markdown processor - https://github.com/russross/blackfriday 
+- bluemonday - html sanitizer (for excerpts, etc) - https://github.com/microcosm-cc/bluemonday 
 
 # TODO
 - RSS feeds - https://github.com/gorilla/feeds
@@ -37,7 +38,7 @@ It consists of the following core components:
 
 # Usage
 ```
-git clone https://github.com/denisbakhtin/ginblog.git
+git clone https://github.com/denisbakhtin/amazingblog.git
 cd ginblog
 go get .
 ```
@@ -102,19 +103,19 @@ Now I have to prepare `ginblog`. First thing is that I have to delete its `.git`
 I issue:
 
 ```
-rm -rf src/github.com/denisbakhtin/ginblog/.git
+rm -rf src/github.com/denisbakhtin/amazingblog/.git
 ```
 
-Then I want to replace all references from `github.com/denisbakhtin/ginblog` to `github.com/denisbakhtin/amazingblog`:
+Then I want to replace all references from `github.com/denisbakhtin/amazingblog` to `github.com/denisbakhtin/amazingblog`:
 
 ```
-grep -rl 'github.com/denisbakhtin/ginblog' ./ | xargs sed -i 's/github.com\/denisbakhtin\/ginblog/github.com\/denisbakhtin\/amazingblog/g'
+grep -rl 'github.com/denisbakhtin/amazingblog' ./ | xargs sed -i 's/github.com\/denisbakhtin\/ginblog/github.com\/denisbakhtin\/amazingblog/g'
 ```
 
 Now I have to move all `ginblog` files to the new location:
 
 ```
-mv src/github.com/denisbakhtin/ginblog/ src/github.com/denisbakhtin/amazingblog
+mv src/github.com/denisbakhtin/amazingblog/ src/github.com/denisbakhtin/amazingblog
 ```
 
 And push it to my new repository at `GitHub`:

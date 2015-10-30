@@ -1,0 +1,14 @@
+{{define "errors/403"}}
+{{template "header" .}}
+{{template "navbar" .}}
+<div class="container" role="main">		
+  <div class="jumbotron">
+    <h1>403 Error</h1>
+    <div class="description">
+      <i class="glyphicon glyphicon-exclamation-sign indent"></i>
+      Oops, access forbidden!
+    </div>
+  </div>
+</div>
+{{template "footer" .}}
+{{end}}
