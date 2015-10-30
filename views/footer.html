@@ -1,0 +1,31 @@
+{{define "footer"}}
+  </div><!-- .container -->
+	<div id="footer">
+		<div class="container">			
+			<br>
+			<p class="text-muted">☮ 2014 Default Project
+		</div>
+	</div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/parsley.js/2.0.2/parsley.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="/public/js/ace.js"></script>
+    <script src="/public/js/bootstrap-markdown-editor.js"></script>
+    <script src="/public/js/jquery.slimscroll.min.js"></script>
+    <script>
+      $('#markdown-editor').markdownEditor({
+        imageUpload: true,
+        uploadPath: '/admin/upload',
+      });
+    </script>
+    <script>
+      $('#sidebar-dashboard .slimscroll').slimScroll({
+        height: '100%',
+      });
+    </script>
+  </body>
+</html>
+{{end}}

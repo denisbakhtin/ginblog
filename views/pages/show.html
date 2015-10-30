@@ -1,0 +1,11 @@
+{{define "pages/show"}}
+{{template "header" .}}
+{{template "navbar" .}}
+<div class="container" role="main">		
+  <div class="content">
+    <h2>{{.Title}}</h2>
+    <div class="description">{{.Description}}</div>
+  </div>
+</div>
+{{template "footer" .}}
+{{end}}

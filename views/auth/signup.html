@@ -1,0 +1,58 @@
+{{define "auth/signup"}}
+{{template "header" .}}
+{{template "navbar" .}}
+<div class="container" role="main">		
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <form method="post" class="form-horizontal" data-parsley-validate>
+      <fieldset>
+
+        <legend>Sign Up</legend>
+        {{range .Flash}}
+          <div class="alert alert-danger">{{.}}</div><p>
+        {{end}}
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="email">Email</label>  
+          <div class="col-md-6">
+            <input id="email" name="email" type="email" placeholder="Email address" class="form-control input-md" required="" data-parsley-required-message="Please enter your email">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="password">Password</label>
+          <div class="col-md-6">
+            <input id="password" name="password" type="password" placeholder="Password" class="form-control input-md" required="" data-parsley-required-message="Please enter your password">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="passwordrepeat">Repeat password</label>
+          <div class="col-md-6">
+            <input id="passwordrepeat" name="passwordrepeat" type="password" placeholder="Repeat password" class="form-control input-md" required="" data-parsley-required-message="Please repeat your password" data-parsley-equalto="#password" data-parsley-equalto-message="Passwords do not match">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-md-4 control-label" for=""></label>
+          <div class="col-md-6">
+            <label class="checkbox-inline" for="terms">
+              <input type="checkbox" name="terms" id="terms" required="" data-parsley-required-message="You can't continue without accepting our Terms and Conditions">
+              I accept terms and conditions
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="signup"></label>
+          <div class="col-md-4">
+            <button id="signup" name="signup" class="btn btn-primary">Sign Up</button>
+          </div>
+        </div>
+
+      </fieldset>
+      </form>
+    </div>
+  </div>
+</div>
+{{template "footer" .}}
+{{end}}

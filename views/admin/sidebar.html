@@ -1,0 +1,37 @@
+{{define "admin/sidebar"}}
+<aside id="sidebar-dashboard">
+  <div class="slimscroll">
+    <div class="sidebar-panel">
+      <h5 class="sidebar-panel-title">Profile</h5>
+    </div>
+    <div class="user-info">
+      <i class="glyphicon glyphicon-user"></i>
+      <span class="email">{{.ActiveUser.Email}}</span>
+      <div class="btn-group">
+        <button type="button" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-cog"></i>
+        </button>
+        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">settings <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu right" role="menu" style="margin-left: -24px;">
+          <li><a href="/admin/users/{{.ActiveUser.Id}}/edit"><i class="glyphicon glyphicon-edit indent"></i>Edit profile</a>
+          </li>
+          <li class="divider"></li>
+          <li><a href="/logout"><i class="glyphicon glyphicon-off indent"></i>Logout</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="sidebar-panel">
+      <h5 class="sidebar-panel-title">Navigation</h5>
+    </div>
+    <ul class="nav">
+      <li class="{{isActive .Active "users"}}">
+        <a href="/admin/users"><i class="glyphicon glyphicon-user indent"></i>Users</a>
+      </li>
+      <li class="{{isActive .Active "pages"}}">
+        <a href="/admin/pages"><i class="glyphicon glyphicon-duplicate indent"></i>Pages</a>
+      </li>
+    </ul>
+  </div>
+</aside>
+{{end}}

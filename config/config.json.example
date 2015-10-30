@@ -1,0 +1,38 @@
+{
+  "debug": {
+    "uploads": "public/uploads",
+    "session_secret": "session-secret-phrase",
+    "csrf_secret": "csrf-secret-phrase",
+    "signup_enabled": true,
+    "database": {
+      "host": "192.168.0.1",
+      "name": "ginbasic_dev",
+      "user": "your_db_user",
+      "password": "your_db_user_password"
+    }
+  },
+  "release": {
+    "uploads": "path_to_uploads_dir",
+    "session_secret": "session-secret-phrase",
+    "csrf_secret": "csrf-secret-phrase",
+    "signup_enabled": false, 
+    "database": {
+      "host": "192.168.0.1",
+      "name": "ginbasic_dev",
+      "user": "your_db_user",
+      "password": "your_db_user_password"
+    }
+  },
+  "test": {
+    "uploads": "public/uploads",
+    "session_secret": "session-secret-phrase",
+    "csrf_secret": "csrf-secret-phrase",
+    "signup_enabled": true,
+    "database": {
+      "host": "192.168.0.1",
+      "name": "ginbasic_dev",
+      "user": "your_db_user",
+      "password": "your_db_user_password"
+    }
+  }
+}

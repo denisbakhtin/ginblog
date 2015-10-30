@@ -1,0 +1,14 @@
+{{define "errors/500"}}
+{{template "header" .}}
+{{template "navbar" .}}
+<div class="container" role="main">		
+  <div class="jumbotron">
+    <h1>500 Error</h1>
+    <div class="description">
+      <i class="glyphicon glyphicon-exclamation-sign indent"></i>
+      Oops, something went wrong!
+    </div>
+  </div>
+</div>
+{{template "footer" .}}
+{{end}}

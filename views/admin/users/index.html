@@ -1,0 +1,39 @@
+{{define "admin/users/index"}}
+{{template "header" .}}
+{{template "admin/navbar" .}}
+{{template "admin/sidebar" .}}
+<div id="main-column" class="container-fluid" role="main">		
+  <h2>{{.Title}}</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th class="id">ID</th>
+        <th class="name">Name</th>
+        <th class="email">Email</th>
+        <th class="timestamp">Timestamp</th>
+        <th class="actions">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{range .List}}
+        <tr>
+          <td class="id">{{.Id}}</td>
+          <td class="name">{{.Name}}</td>
+          <td class="email">{{.Email}}</td>
+          <td class="timestamp">{{dateTime .Timestamp}}</td>
+          <td class="actions">
+            <a href="/admin/users/{{.Id}}/edit" class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-pencil"></span></a>
+            <form class="inline-block" action="/admin/users/{{.Id}}/delete" method="post">
+              <button type="button" class="btn btn-sm btn-danger" onclick="((confirm('Are you sure')) ? this.form.submit() : null);"><span class="glyphicon glyphicon-remove"></span></button>
+            </form>
+          </td>
+        </tr>
+      {{end}}
+    </tbody>
+  </table>
+  <div class="actions">
+    <a href="/admin/new_user" class="btn btn-primary">New user</a>
+  </div>
+</div>
+{{template "footer" .}}
+{{end}}

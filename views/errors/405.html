@@ -1,0 +1,14 @@
+{{define "errors/405"}}
+{{template "header" .}}
+{{template "navbar" .}}
+<div class="container" role="main">		
+  <div class="jumbotron">
+    <h1>405 Error</h1>
+    <div class="description">
+      <i class="glyphicon glyphicon-exclamation-sign indent"></i>
+      Oops, request method not allowed!
+    </div>
+  </div>
+</div>
+{{template "footer" .}}
+{{end}}

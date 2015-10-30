@@ -1,0 +1,44 @@
+{{define "admin/pages/index"}}
+{{template "header" .}}
+{{template "admin/navbar" .}}
+{{template "admin/sidebar" .}}
+<div id="main-column" class="container-fluid" role="main">		
+  <h2>{{.Title}}</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th class="id">ID</th>
+        <th class="name">Name</th>
+        <th class="published">Published</th>
+        <th class="actions">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{range .List}}
+        <tr>
+          <td class="id">{{.Id}}</td>
+          <td class="name">{{.Name}}</td>
+          <td class="published">
+            {{if .Published}}
+            <span class="glyphicon glyphicon-ok"></span>
+            {{else}}
+            <span class="glyphicon glyphicon-remove"></span>
+            {{end}}
+          </td>
+          <td class="actions">
+            <a href="/pages/{{.Id}}" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-eye-open"></span></a>
+            <a href="/admin/pages/{{.Id}}/edit" class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-pencil"></span></a>
+            <form class="inline-block" action="/admin/pages/{{.Id}}/delete" method="post">
+              <button type="button" class="btn btn-sm btn-danger" onclick="((confirm('Are you sure')) ? this.form.submit() : null);"><span class="glyphicon glyphicon-remove"></span></button>
+            </form>
+          </td>
+        </tr>
+      {{end}}
+    </tbody>
+  </table>
+  <div class="actions">
+    <a href="/admin/new_page" class="btn btn-primary">New page</a>
+  </div>
+</div>
+{{template "footer" .}}
+{{end}}
