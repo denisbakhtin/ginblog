@@ -23,6 +23,16 @@ func DateTime(t time.Time) string {
 	return fmt.Sprintf("%d-%02d-%02d %02d:%02d:%02d", t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second())
 }
 
+//StringInSlice returns true if value is in list slice
+func StringInSlice(value string, list []string) bool {
+	for i := range list {
+		if value == list[i] {
+			return true
+		}
+	}
+	return false
+}
+
 //RecentPosts returns the list of recent blog posts
 func RecentPosts() []models.Post {
 	list, _ := models.GetRecentPosts()

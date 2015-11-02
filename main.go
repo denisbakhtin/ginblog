@@ -83,6 +83,11 @@ func main() {
 		authorized.GET("/posts/:id/edit", admin.PostEdit)
 		authorized.POST("/posts/:id/edit", admin.PostUpdate)
 		authorized.POST("/posts/:id/delete", admin.PostDelete)
+
+		authorized.GET("/tags", admin.TagIndex)
+		authorized.GET("/new_tag", admin.TagNew)
+		authorized.POST("/new_tag", admin.TagCreate)
+		authorized.POST("/tags/:name/delete", admin.TagDelete)
 	}
 
 	// Listen and server on 0.0.0.0:8080
@@ -123,11 +128,12 @@ func runMigrations(command *string) {
 func setTemplate(router *gin.Engine) {
 	box := rice.MustFindBox("views")
 	tmpl := template.New("").Funcs(template.FuncMap{
-		"isActive":    helpers.IsActive,
-		"dateTime":    helpers.DateTime,
-		"recentPosts": helpers.RecentPosts,
-		"tags":        helpers.Tags,
-		"archives":    helpers.Archives,
+		"isActive":      helpers.IsActive,
+		"stringInSlice": helpers.StringInSlice,
+		"dateTime":      helpers.DateTime,
+		"recentPosts":   helpers.RecentPosts,
+		"tags":          helpers.Tags,
+		"archives":      helpers.Archives,
 	})
 
 	fn := func(path string, f os.FileInfo, err error) error {

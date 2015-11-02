@@ -28,6 +28,18 @@
         </div>
 
         <div class="form-group">
+          <label class="col-md-2 control-label" for="tags">Tags</label>
+          <div class="col-md-10">
+            <select id="tags" name="tags" class="form-control" multiple="multiple">
+              {{$post := .Post}}
+              {{range .Tags}}
+              <option {{if stringInSlice .Name $post.Tags}}selected="selected"{{end}}>{{.Name}}</option>
+              {{end}}
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
           <label class="col-md-offset-2 col-md-10" for="published">
             <input id="published" name="published" type="checkbox" value="true" {{if .Post.Published}}checked{{end}} >
             Publish

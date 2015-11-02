@@ -4,6 +4,7 @@ import (
 	"html/template"
 	"time"
 
+	"github.com/jmoiron/sqlx"
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/russross/blackfriday"
 	"gopkg.in/guregu/null.v3"
@@ -18,16 +19,85 @@ type Post struct {
 	Timestamp   time.Time `form:"-" json:"timestamp"`
 	//calculated fields
 	AuthorName null.String `form:"-" json:"author_name" db:"author_name"`
+	Tags       []string    `form:"tags" json:"tags" db:"-"` //can't make gin Bind form field to []Tag, so use []string instead
 }
 
 func (post *Post) Insert() error {
-	err := db.QueryRow("INSERT INTO posts(name, description, published, user_id, timestamp) VALUES($1,$2,$3,$4,$5) RETURNING id", post.Name, post.Description, post.Published, post.UserId, time.Now()).Scan(&post.Id)
+	tx, err := db.Beginx()
+	if err != nil {
+		return err
+	}
+	err = db.QueryRow("INSERT INTO posts(name, description, published, user_id, timestamp) VALUES($1,$2,$3,$4,$5) RETURNING id", post.Name, post.Description, post.Published, post.UserId, time.Now()).Scan(&post.Id)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	if err := post.UpdateTags(tx); err != nil {
+		tx.Rollback()
+		return err
+	}
+	err = tx.Commit()
 	return err
 }
 
 func (post *Post) Update() error {
-	_, err := db.Exec("UPDATE posts SET name=$2, description=$3, published=$4 WHERE id=$1", post.Id, post.Name, post.Description, post.Published)
+	tx, err := db.Beginx()
+	if err != nil {
+		return err
+	}
+	_, err = tx.Exec("UPDATE posts SET name=$2, description=$3, published=$4 WHERE id=$1", post.Id, post.Name, post.Description, post.Published)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	if err := post.UpdateTags(tx); err != nil {
+		tx.Rollback()
+		return err
+	}
+	err = tx.Commit()
 	return err
+}
+
+//UpdateTags inserts new (non existent) tags & associations and removes obsolete associations
+func (post *Post) UpdateTags(tx *sqlx.Tx) error {
+	neu := make(map[string]bool)
+	old := make(map[string]bool)
+	for i := range post.Tags {
+		neu[post.Tags[i]] = true
+	}
+	exist := make([]string, 0)
+	err := db.Select(&exist, "SELECT tag_name FROM poststags WHERE post_id=$1", post.Id)
+	if err != nil {
+		return err
+	}
+	for i := range exist {
+		if _, ex := neu[exist[i]]; ex {
+			delete(neu, exist[i])
+		} else {
+			old[exist[i]] = true
+		}
+	}
+	for name := range neu {
+		//create new tag if not exists
+		_, err = tx.Exec("INSERT INTO tags (name) SELECT $1 WHERE NOT EXISTS(SELECT null FROM tags WHERE name=$1)", name)
+		if err != nil {
+			return err
+		}
+		//insert new association
+		_, err := tx.Exec("INSERT INTO poststags(post_id, tag_name) VALUES($1,$2)", post.Id, name)
+		if err != nil {
+			return err
+		}
+	}
+
+	for name := range old {
+		//remove association
+		_, err := tx.Exec("DELETE FROM poststags WHERE post_id=$1 AND tag_name=$2", post.Id, name)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (post *Post) Delete() error {
@@ -46,6 +116,10 @@ func (post *Post) Excerpt() template.HTML {
 func GetPost(id interface{}) (*Post, error) {
 	post := &Post{}
 	err := db.Get(post, "SELECT posts.*, users.name as author_name FROM posts LEFT OUTER JOIN users ON posts.user_id=users.id WHERE posts.id=$1", id)
+	if err != nil {
+		return post, err
+	}
+	err = db.Select(&post.Tags, "SELECT name FROM tags WHERE EXISTS (SELECT null FROM poststags WHERE post_id=$1 AND tag_name=tags.name)", id)
 	return post, err
 }
 
