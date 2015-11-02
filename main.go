@@ -171,14 +171,6 @@ func setSessions(router *gin.Engine) {
 }
 
 //+++++++++++++ middlewares +++++++++++++++++++++++
-//CacheAssets sets Cache-Control header for asset requests
-func CacheAssets() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.Next()
-		c.Writer.Header().Set("Cache-Control", "max-age=120")
-	}
-}
-
 //SharedData fills in common data, such as user info, etc...
 func SharedData() gin.HandlerFunc {
 	return func(c *gin.Context) {
