@@ -54,6 +54,7 @@ func main() {
 	router.GET("/posts/:id", controllers.PostGet)
 	router.GET("/tags/:name", controllers.TagGet)
 	router.GET("/archives/:year/:month", controllers.ArchiveGet)
+	router.GET("/rss", controllers.RssGet)
 
 	authorized := router.Group("/admin")
 	authorized.Use(AuthRequired())

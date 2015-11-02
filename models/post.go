@@ -134,6 +134,18 @@ func GetPosts() ([]Post, error) {
 	return list, err
 }
 
+func GetPublishedPosts() ([]Post, error) {
+	var list []Post
+	err := db.Select(&list, "SELECT * FROM posts WHERE published=$1 ORDER BY posts.id DESC", true)
+	if err != nil {
+		return list, err
+	}
+	if err := fillPostsAssociations(list); err != nil {
+		return list, err
+	}
+	return list, err
+}
+
 func GetRecentPosts() ([]Post, error) {
 	var list []Post
 	err := db.Select(&list, "SELECT id, name FROM posts WHERE published=$1 ORDER BY id DESC LIMIT 7", true)
@@ -152,15 +164,8 @@ func GetPostsByArchive(year, month int) ([]Post, error) {
 	if err != nil {
 		return list, err
 	}
-	for i := range list {
-		err := db.Get(&list[i].Author, "SELECT id,name FROM users WHERE id=$1", list[i].UserId)
-		if err != nil {
-			return list, err
-		}
-		err = db.Select(&list[i].Tags, "SELECT name FROM tags WHERE EXISTS (SELECT null FROM poststags WHERE post_id=$1 AND tag_name=tags.name)", list[i].Id)
-		if err != nil {
-			return list, err
-		}
+	if err := fillPostsAssociations(list); err != nil {
+		return list, err
 	}
 	return list, err
 }
@@ -171,15 +176,22 @@ func GetPostsByTag(name string) ([]Post, error) {
 	if err != nil {
 		return list, err
 	}
+	if err := fillPostsAssociations(list); err != nil {
+		return list, err
+	}
+	return list, nil
+}
+
+func fillPostsAssociations(list []Post) error {
 	for i := range list {
 		err := db.Get(&list[i].Author, "SELECT id,name FROM users WHERE id=$1", list[i].UserId)
 		if err != nil {
-			return list, err
+			return err
 		}
 		err = db.Select(&list[i].Tags, "SELECT name FROM tags WHERE EXISTS (SELECT null FROM poststags WHERE post_id=$1 AND tag_name=tags.name)", list[i].Id)
 		if err != nil {
-			return list, err
+			return err
 		}
 	}
-	return list, err
+	return nil
 }
