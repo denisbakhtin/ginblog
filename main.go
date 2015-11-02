@@ -35,9 +35,7 @@ func main() {
 	setTemplate(router)
 	setSessions(router)
 
-	router.StaticFS("/uploads", http.Dir(system.GetConfig().Uploads))
-	router.StaticFS("/public", rice.MustFindBox("public").HTTPBox()) //<3 rice
-
+	router.StaticFS("/public", http.Dir(system.PublicPath())) //better use nginx to serve assets (Cache-Control, Etag, fast gzip, etc)
 	router.Use(SharedData())
 
 	router.GET("/", controllers.HomeGet)
@@ -173,6 +171,14 @@ func setSessions(router *gin.Engine) {
 }
 
 //+++++++++++++ middlewares +++++++++++++++++++++++
+//CacheAssets sets Cache-Control header for asset requests
+func CacheAssets() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Next()
+		c.Writer.Header().Set("Cache-Control", "max-age=120")
+	}
+}
+
 //SharedData fills in common data, such as user info, etc...
 func SharedData() gin.HandlerFunc {
 	return func(c *gin.Context) {

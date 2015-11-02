@@ -16,7 +16,7 @@ type Configs struct {
 }
 
 type Config struct {
-	Uploads       string `json:"uploads"`
+	Public        string `json:"public"`
 	SessionSecret string `json:"session_secret"`
 	SignupEnabled bool   `json:"signup_enabled"` //always set to false in release mode (config.json)
 	Database      DatabaseConfig
@@ -48,15 +48,23 @@ func LoadConfig(data []byte) {
 	default:
 		panic(fmt.Sprintf("Unknown gin mode %s", gin.Mode()))
 	}
-	if !path.IsAbs(config.Uploads) {
+	if !path.IsAbs(config.Public) {
 		workingDir, err := os.Getwd()
 		if err != nil {
 			panic(err)
 		}
-		config.Uploads = path.Join(workingDir, config.Uploads)
+		config.Public = path.Join(workingDir, config.Public)
 	}
 }
 
 func GetConfig() *Config {
 	return config
+}
+
+func PublicPath() string {
+	return config.Public
+}
+
+func UploadsPath() string {
+	return path.Join(config.Public, "uploads")
 }

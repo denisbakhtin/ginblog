@@ -3,7 +3,7 @@ package models
 import ()
 
 type Tag struct {
-	Name string `form:"name" json:"name" binding:"required"`
+	Name string `form:"name" json:"name"`
 	//calculated fields
 	PostCount int64 `form:"-" json:"post_count" db:"post_count"`
 }

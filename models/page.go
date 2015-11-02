@@ -2,7 +2,7 @@ package models
 
 type Page struct {
 	Id          int64  `form:"id" json:"id"`
-	Name        string `form:"name" json:"name" binding:"required"`
+	Name        string `form:"name" json:"name"`
 	Description string `form:"description" json:"description"`
 	Published   bool   `form:"published" json:"published"`
 }

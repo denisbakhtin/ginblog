@@ -9,9 +9,9 @@ import (
 
 type User struct {
 	Id        int64     `form:"id" json:"id"`
-	Email     string    `form:"email" json:"email" binding:"required"`
+	Email     string    `form:"email" json:"email"`
 	Name      string    `form:"name" json:"name"`
-	Password  string    `form:"password" json:"password" binding:"required"`
+	Password  string    `form:"password" json:"password"`
 	Timestamp time.Time `form:"-" json:"timestamp"`
 }
 

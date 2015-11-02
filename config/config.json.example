@@ -1,6 +1,6 @@
 {
   "debug": {
-    "uploads": "public/uploads",
+    "public": "public",
     "session_secret": "session-secret-phrase",
     "signup_enabled": true,
     "database": {
@@ -11,7 +11,7 @@
     }
   },
   "release": {
-    "uploads": "path_to_uploads_dir",
+    "public": "path_to_public_dir",
     "session_secret": "session-secret-phrase",
     "signup_enabled": false, 
     "database": {
@@ -22,7 +22,7 @@
     }
   },
   "test": {
-    "uploads": "public/uploads",
+    "public": "public",
     "session_secret": "session-secret-phrase",
     "signup_enabled": true,
     "database": {

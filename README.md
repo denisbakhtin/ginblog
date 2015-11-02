@@ -52,7 +52,7 @@ Type `go run main.go -migrate=up` to create users and pages tables.
 ```
 go generate && go build && rm ./*.rice-box.go
 ```
-Upload `ginblog` binary to your server. If you find `rice embed-go` is running slow on your system, consider using other [go.rice packing options](https://github.com/GeertJohan/go.rice#tool-usage) with `go generate` command.
+Upload `ginblog` binary and `public` directory to your server. If you find `rice embed-go` is running slow on your system, consider using other [go.rice packing options](https://github.com/GeertJohan/go.rice#tool-usage) with `go generate` command.
 
 # Project structure
 

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/Sirupsen/logrus"
 	"github.com/denisbakhtin/ginblog/helpers"
 	"github.com/denisbakhtin/ginblog/models"
 	"github.com/gin-gonic/contrib/sessions"
@@ -83,9 +82,7 @@ func PostEdit(c *gin.Context) {
 func PostUpdate(c *gin.Context) {
 	post := &models.Post{}
 	if err := c.Bind(post); err == nil {
-		logrus.Warn(post)
 		if err := post.Update(); err != nil {
-			logrus.Warn(err)
 			c.HTML(http.StatusInternalServerError, "errors/500", nil)
 			return
 		}
