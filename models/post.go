@@ -146,3 +146,9 @@ func GetPostsByYearMonth(year, month int) ([]Post, error) {
 	err := db.Select(&list, "SELECT * FROM posts WHERE published=$1 AND date_part('year', timestamp)=$2 AND date_part('month', timestamp)=$3 ORDER BY timestamp DESC", true, year, month)
 	return list, err
 }
+
+func GetPostsByTag(name string) ([]Post, error) {
+	var list []Post
+	err := db.Select(&list, "SELECT * FROM posts WHERE published=$1 AND EXISTS (SELECT null FROM poststags WHERE poststags.post_id=posts.id AND poststags.tag_name=$2) ORDER BY timestamp DESC", true, name)
+	return list, err
+}

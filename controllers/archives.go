@@ -23,6 +23,6 @@ func ArchiveGet(c *gin.Context) {
 	h := helpers.DefaultH(c)
 	h["Title"] = fmt.Sprintf("%s %d archives", time.Month(month).String(), year)
 	h["List"] = list
-	h["Active"] = "archives"
+	h["Active"] = fmt.Sprintf("archives/%d/%02d", year, month)
 	c.HTML(http.StatusOK, "archives/show", h)
 }

@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 
 	"html/template"
@@ -22,7 +23,7 @@ func PostGet(c *gin.Context) {
 	h := helpers.DefaultH(c)
 	h["Title"] = post.Name
 	h["Description"] = template.HTML(string(blackfriday.MarkdownCommon([]byte(post.Description))))
-	h["Active"] = "posts"
+	h["Active"] = fmt.Sprintf("posts/%d", post.Id)
 	h["Author"] = author
 	c.HTML(http.StatusOK, "posts/show", h)
 }

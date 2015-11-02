@@ -40,8 +40,8 @@ func RecentPosts() []models.Post {
 }
 
 //Tags returns the list of blog tags
-func Tags() []models.Post {
-	list, _ := models.GetPostsByYearMonth(2015, 10)
+func Tags() []models.Tag {
+	list, _ := models.GetNotEmptyTags()
 	return list
 }
 

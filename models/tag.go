@@ -29,3 +29,9 @@ func GetTags() ([]Tag, error) {
 	err := db.Select(&list, "SELECT * FROM tags ORDER BY name ASC")
 	return list, err
 }
+
+func GetNotEmptyTags() ([]Tag, error) {
+	var list []Tag
+	err := db.Select(&list, "SELECT * FROM tags WHERE EXISTS (SELECT null FROM poststags WHERE poststags.tag_name=tags.name) ORDER BY name ASC")
+	return list, err
+}

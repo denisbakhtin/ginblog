@@ -1,27 +1,29 @@
 {{define "sidebar"}}
+{{$active := .Active}}
 <aside id="sidebar">
   <div class="">
-    <h5>Recent posts</h5>
+    <h5><i class="glyphicon glyphicon-pencil indent"></i>Recent posts</h5>
     <ul class="nav nav-pills nav-stacked">
       {{range recentPosts}}
-      <li>
+      <li class="{{isActive $active (printf "posts/%d" .Id)}}">
         <a href="/posts/{{.Id}}">{{.Name}}</a>
       </li>
       {{end}}
     </ul>
-    <h5>Tags</h5>
-    <ul class="nav nav-pills nav-stacked">
+    <h5><i class="glyphicon glyphicon-tags indent"></i>Tags</h5>
+    <div class="sidebar-tags">
       {{range tags}}
-      <li>
-        <a href="/posts/{{.Id}}">{{.Name}}</a>
-      </li>
+        <a class="label label-success" href="/tags/{{.Name}}">{{.Name}}</a>
       {{end}}
-    </ul>
-    <h5>Archives</h5>
+    </div>
+    <h5><i class="glyphicon glyphicon-menu-hamburger indent"></i>Archives</h5>
     <ul class="nav nav-pills nav-stacked">
       {{range archives}}
-      <li>
-        <a href="/archives/{{printf "%d/%02d" .Timestamp.Year .Timestamp.Month}}"><i class="glyphicon glyphicon-chevron-right indent"></i>{{printf "%s %d" (.Timestamp.Month.String) .Timestamp.Year}}</a>
+      <li class="{{isActive $active (printf "archives/%d/%02d" .Timestamp.Year .Timestamp.Month)}}">
+        <a href="/archives/{{printf "%d/%02d" .Timestamp.Year .Timestamp.Month}}">
+          <i class="glyphicon glyphicon-chevron-right indent"></i>
+          {{printf "%s %d" (.Timestamp.Month.String) .Timestamp.Year}}
+        </a>
       </li>
       {{end}}
     </ul>
