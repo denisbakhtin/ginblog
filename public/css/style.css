@@ -156,3 +156,9 @@ textarea.parsley-error {
 .glyphicon.indent {
   margin-right: 0.5em;
 }
+.post-info {
+  font-size: 90%;
+}
+.post-info-item {
+  margin-right: 1em;
+}

@@ -11,7 +11,6 @@
         <th class="name">Name</th>
         <th class="published">Published</th>
         <th class="timestamp">Timestamp</th>
-        <th class="author">Author</th>
         <th class="actions">Actions</th>
       </tr>
     </thead>
@@ -28,7 +27,6 @@
             {{end}}
           </td>
           <td class="timestamp">{{dateTime .Timestamp}}</td>
-          <td class="author">{{.AuthorName.Value}}</td>
           <td class="actions">
             <a href="/posts/{{.Id}}" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-eye-open"></span></a>
             <a href="/admin/posts/{{.Id}}/edit" class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-pencil"></span></a>

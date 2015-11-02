@@ -18,8 +18,9 @@ type Post struct {
 	UserId      null.Int  `form:"-" json:"user_id" db:"user_id"`
 	Timestamp   time.Time `form:"-" json:"timestamp"`
 	//calculated fields
-	AuthorName null.String `form:"-" json:"author_name" db:"author_name"`
-	Tags       []string    `form:"tags" json:"tags" db:"-"` //can't make gin Bind form field to []Tag, so use []string instead
+	Author       User     `form:"-" json:"author" db:"author"`
+	Tags         []string `form:"tags" json:"tags" db:"-"` //can't make gin Bind form field to []Tag, so use []string instead
+	CommentCount int64    `form:"-" json:"comment_count" db:"comment_count"`
 }
 
 func (post *Post) Insert() error {
@@ -109,13 +110,17 @@ func (post *Post) Excerpt() template.HTML {
 	//you can sanitize, cut it down, add images, etc
 	policy := bluemonday.StrictPolicy() //remove all html tags
 	sanitized := policy.Sanitize(string(blackfriday.MarkdownCommon([]byte(post.Description))))
-	excerpt := template.HTML(sanitized)
+	excerpt := template.HTML(truncate(sanitized, 300) + "...")
 	return excerpt
 }
 
 func GetPost(id interface{}) (*Post, error) {
 	post := &Post{}
-	err := db.Get(post, "SELECT posts.*, users.name as author_name FROM posts LEFT OUTER JOIN users ON posts.user_id=users.id WHERE posts.id=$1", id)
+	err := db.Get(post, "SELECT * FROM posts WHERE id=$1", id)
+	if err != nil {
+		return post, err
+	}
+	err = db.Get(&post.Author, "SELECT id,name FROM users WHERE id=$1", post.UserId)
 	if err != nil {
 		return post, err
 	}
@@ -125,7 +130,7 @@ func GetPost(id interface{}) (*Post, error) {
 
 func GetPosts() ([]Post, error) {
 	var list []Post
-	err := db.Select(&list, "SELECT posts.*, users.name as author_name FROM posts LEFT OUTER JOIN users ON posts.user_id=users.id ORDER BY posts.id DESC")
+	err := db.Select(&list, "SELECT * FROM posts ORDER BY posts.id DESC")
 	return list, err
 }
 
@@ -141,14 +146,40 @@ func GetPostMonths() ([]Post, error) {
 	return list, err
 }
 
-func GetPostsByYearMonth(year, month int) ([]Post, error) {
+func GetPostsByArchive(year, month int) ([]Post, error) {
 	var list []Post
 	err := db.Select(&list, "SELECT * FROM posts WHERE published=$1 AND date_part('year', timestamp)=$2 AND date_part('month', timestamp)=$3 ORDER BY timestamp DESC", true, year, month)
+	if err != nil {
+		return list, err
+	}
+	for i := range list {
+		err := db.Get(&list[i].Author, "SELECT id,name FROM users WHERE id=$1", list[i].UserId)
+		if err != nil {
+			return list, err
+		}
+		err = db.Select(&list[i].Tags, "SELECT name FROM tags WHERE EXISTS (SELECT null FROM poststags WHERE post_id=$1 AND tag_name=tags.name)", list[i].Id)
+		if err != nil {
+			return list, err
+		}
+	}
 	return list, err
 }
 
 func GetPostsByTag(name string) ([]Post, error) {
 	var list []Post
 	err := db.Select(&list, "SELECT * FROM posts WHERE published=$1 AND EXISTS (SELECT null FROM poststags WHERE poststags.post_id=posts.id AND poststags.tag_name=$2) ORDER BY timestamp DESC", true, name)
+	if err != nil {
+		return list, err
+	}
+	for i := range list {
+		err := db.Get(&list[i].Author, "SELECT id,name FROM users WHERE id=$1", list[i].UserId)
+		if err != nil {
+			return list, err
+		}
+		err = db.Select(&list[i].Tags, "SELECT name FROM tags WHERE EXISTS (SELECT null FROM poststags WHERE post_id=$1 AND tag_name=tags.name)", list[i].Id)
+		if err != nil {
+			return list, err
+		}
+	}
 	return list, err
 }

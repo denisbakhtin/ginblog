@@ -7,6 +7,7 @@
     <h2>{{.Title}}</h2>
     {{range .List}}
     <h3><a href="/posts/{{.Id}}">{{.Name}}</a></h3>
+    {{template "posts/post-info" .}}
     <div class="excerpt">{{.Excerpt}}</div>
     {{end}}
   </div>

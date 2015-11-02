@@ -15,7 +15,7 @@ import (
 func ArchiveGet(c *gin.Context) {
 	year, _ := strconv.Atoi(c.Param("year"))
 	month, _ := strconv.Atoi(c.Param("month"))
-	list, err := models.GetPostsByYearMonth(year, month)
+	list, err := models.GetPostsByArchive(year, month)
 	if err != nil {
 		c.HTML(http.StatusNotFound, "errors/404", nil)
 		return

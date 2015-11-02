@@ -1,0 +1,21 @@
+{{define "posts/post-info"}}
+<div class="well well-sm post-info">
+  {{if .Author}}
+  <span class="post-info-item">
+    <i class="glyphicon glyphicon-user indent"></i>{{.Author.Name}}
+  </span>
+  {{end}}
+  <span class="post-info-item">
+    <i class="glyphicon glyphicon-calendar indent"></i>{{printf "%d-%02d-%02d" .Timestamp.Year .Timestamp.Month .Timestamp.Day}}
+  </span>
+  <span class="post-info-item">
+    <a href="#comments"><i class="glyphicon glyphicon-comment indent"></i>Comments: {{.CommentCount}}</a>
+  </span>
+  <span class="post-info-item">
+    <i class="glyphicon glyphicon-tags indent"></i>
+    {{range .Tags}}
+    <a href="/tags/{{.}}" class="label label-success">{{.}}</a>
+    {{end}}
+  </span>
+</div>
+{{end}}
