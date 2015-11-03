@@ -206,21 +206,6 @@ func SessionMiddleware(name string, store sessions.Store) gin.HandlerFunc {
 	}
 }
 
-//CsrfMiddleware stores session handler in gin.Context
-func CsrfMiddleware(name string, store sessions.Store) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		defer context.Clear(c.Request)
-		session, err := store.Get(c.Request, name)
-		if err != nil {
-			logrus.Error(err)
-			c.AbortWithError(500, err)
-			return
-		}
-		c.Set("Session", session)
-		c.Next()
-	}
-}
-
 //SharedData fills in common data, such as user info, etc...
 func SharedData() gin.HandlerFunc {
 	return func(c *gin.Context) {
