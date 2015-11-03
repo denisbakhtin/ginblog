@@ -13,7 +13,6 @@ import (
 	"github.com/Sirupsen/logrus"
 	"github.com/claudiu/gocron"
 	"github.com/denisbakhtin/ginblog/controllers"
-	"github.com/denisbakhtin/ginblog/controllers/admin"
 	"github.com/denisbakhtin/ginblog/helpers"
 	"github.com/denisbakhtin/ginblog/models"
 	"github.com/denisbakhtin/ginblog/system"
@@ -65,35 +64,35 @@ func main() {
 	authorized := router.Group("/admin")
 	authorized.Use(AuthRequired())
 	{
-		authorized.GET("/", admin.AdminGet)
+		authorized.GET("/", controllers.AdminGet)
 
-		authorized.POST("/upload", admin.UploadPost) //image upload
+		authorized.POST("/upload", controllers.UploadPost) //image upload
 
-		authorized.GET("/users", admin.UserIndex)
-		authorized.GET("/new_user", admin.UserNew)
-		authorized.POST("/new_user", admin.UserCreate)
-		authorized.GET("/users/:id/edit", admin.UserEdit)
-		authorized.POST("/users/:id/edit", admin.UserUpdate)
-		authorized.POST("/users/:id/delete", admin.UserDelete)
+		authorized.GET("/users", controllers.UserIndex)
+		authorized.GET("/new_user", controllers.UserNew)
+		authorized.POST("/new_user", controllers.UserCreate)
+		authorized.GET("/users/:id/edit", controllers.UserEdit)
+		authorized.POST("/users/:id/edit", controllers.UserUpdate)
+		authorized.POST("/users/:id/delete", controllers.UserDelete)
 
-		authorized.GET("/pages", admin.PageIndex)
-		authorized.GET("/new_page", admin.PageNew)
-		authorized.POST("/new_page", admin.PageCreate)
-		authorized.GET("/pages/:id/edit", admin.PageEdit)
-		authorized.POST("/pages/:id/edit", admin.PageUpdate)
-		authorized.POST("/pages/:id/delete", admin.PageDelete)
+		authorized.GET("/pages", controllers.PageIndex)
+		authorized.GET("/new_page", controllers.PageNew)
+		authorized.POST("/new_page", controllers.PageCreate)
+		authorized.GET("/pages/:id/edit", controllers.PageEdit)
+		authorized.POST("/pages/:id/edit", controllers.PageUpdate)
+		authorized.POST("/pages/:id/delete", controllers.PageDelete)
 
-		authorized.GET("/posts", admin.PostIndex)
-		authorized.GET("/new_post", admin.PostNew)
-		authorized.POST("/new_post", admin.PostCreate)
-		authorized.GET("/posts/:id/edit", admin.PostEdit)
-		authorized.POST("/posts/:id/edit", admin.PostUpdate)
-		authorized.POST("/posts/:id/delete", admin.PostDelete)
+		authorized.GET("/posts", controllers.PostIndex)
+		authorized.GET("/new_post", controllers.PostNew)
+		authorized.POST("/new_post", controllers.PostCreate)
+		authorized.GET("/posts/:id/edit", controllers.PostEdit)
+		authorized.POST("/posts/:id/edit", controllers.PostUpdate)
+		authorized.POST("/posts/:id/delete", controllers.PostDelete)
 
-		authorized.GET("/tags", admin.TagIndex)
-		authorized.GET("/new_tag", admin.TagNew)
-		authorized.POST("/new_tag", admin.TagCreate)
-		authorized.POST("/tags/:name/delete", admin.TagDelete)
+		authorized.GET("/tags", controllers.TagIndex)
+		authorized.GET("/new_tag", controllers.TagNew)
+		authorized.POST("/new_tag", controllers.TagCreate)
+		authorized.POST("/tags/:name/delete", controllers.TagDelete)
 	}
 
 	// Listen and server on 0.0.0.0:8080

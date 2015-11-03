@@ -1,4 +1,4 @@
-package admin
+package controllers
 
 import (
 	"net/http"
@@ -22,7 +22,7 @@ func UserIndex(c *gin.Context) {
 	h["Title"] = "List of users"
 	h["Active"] = "users"
 	h["List"] = list
-	c.HTML(http.StatusOK, "admin/users/index", h)
+	c.HTML(http.StatusOK, "users/index", h)
 }
 
 // GET user creation form
@@ -33,7 +33,7 @@ func UserNew(c *gin.Context) {
 	session := sessions.Default(c)
 	h["Flash"] = session.Flashes()
 	session.Save()
-	c.HTML(http.StatusOK, "admin/users/form", h)
+	c.HTML(http.StatusOK, "users/form", h)
 }
 
 // POST user creation form
@@ -75,7 +75,7 @@ func UserEdit(c *gin.Context) {
 	session := sessions.Default(c)
 	h["Flash"] = session.Flashes()
 	session.Save()
-	c.HTML(http.StatusOK, "admin/users/form", h)
+	c.HTML(http.StatusOK, "users/form", h)
 }
 
 // POST user update form

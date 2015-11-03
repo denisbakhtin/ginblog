@@ -1,7 +1,7 @@
-{{define "admin/posts/index"}}
+{{define "pages/index"}}
 {{template "header" .}}
-{{template "admin/navbar" .}}
-{{template "admin/sidebar" .}}
+{{template "dashboard/navbar" .}}
+{{template "dashboard/sidebar" .}}
 <div id="main-column" class="container-fluid" role="main">		
   <h2>{{.Title}}</h2>
   <table class="table">
@@ -28,9 +28,9 @@
           </td>
           <td class="timestamp">{{dateTime .CreatedAt}}</td>
           <td class="actions">
-            <a href="/posts/{{.Id}}" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-eye-open"></span></a>
-            <a href="/admin/posts/{{.Id}}/edit" class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-pencil"></span></a>
-            <form class="inline-block" action="/admin/posts/{{.Id}}/delete" method="post">
+            <a href="/pages/{{.Id}}" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-eye-open"></span></a>
+            <a href="/admin/pages/{{.Id}}/edit" class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-pencil"></span></a>
+            <form class="inline-block" action="/admin/pages/{{.Id}}/delete" method="post">
               <button type="button" class="btn btn-sm btn-danger" onclick="((confirm('Are you sure')) ? this.form.submit() : null);"><span class="glyphicon glyphicon-remove"></span></button>
             </form>
           </td>
@@ -39,7 +39,7 @@
     </tbody>
   </table>
   <div class="actions">
-    <a href="/admin/new_post" class="btn btn-primary">New Post</a>
+    <a href="/admin/new_page" class="btn btn-primary">New page</a>
   </div>
 </div>
 {{template "footer" .}}

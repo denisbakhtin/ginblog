@@ -1,4 +1,4 @@
-package admin
+package controllers
 
 import (
 	"net/http"
@@ -10,5 +10,5 @@ import (
 func AdminGet(c *gin.Context) {
 	h := helpers.DefaultH(c)
 	h["Title"] = "Admin dashboard"
-	c.HTML(http.StatusOK, "admin/home/show", h)
+	c.HTML(http.StatusOK, "dashboard/show", h)
 }
