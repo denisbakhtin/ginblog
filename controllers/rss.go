@@ -3,6 +3,7 @@ package controllers
 import (
 	"fmt"
 	"github.com/denisbakhtin/ginblog/models"
+	"github.com/denisbakhtin/ginblog/system"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/feeds"
 	"time"
@@ -11,10 +12,11 @@ import (
 // GET /rss route
 func RssGet(c *gin.Context) {
 	now := time.Now()
+	domain := system.GetConfig().Domain
 
 	feed := &feeds.Feed{
 		Title:       "ginblog",
-		Link:        &feeds.Link{Href: "http://localhost:8080"},
+		Link:        &feeds.Link{Href: domain},
 		Description: "GIN-powered blog boilerplate",
 		Author:      &feeds.Author{"Blog Author", "author@blog.net"}, //hide email from spammers?
 		Created:     now,
@@ -30,9 +32,9 @@ func RssGet(c *gin.Context) {
 
 	for i := range posts {
 		feed.Items = append(feed.Items, &feeds.Item{
-			Id:          fmt.Sprintf("http://localhost:8080/posts/%d", posts[i].Id),
+			Id:          fmt.Sprintf("%s/posts/%d", domain, posts[i].Id),
 			Title:       posts[i].Name,
-			Link:        &feeds.Link{Href: fmt.Sprintf("http://localhost:8080/posts/%d", posts[i].Id)},
+			Link:        &feeds.Link{Href: fmt.Sprintf("%s/posts/%d", domain, posts[i].Id)},
 			Description: string(posts[i].Excerpt()),
 			Author:      &feeds.Author{Name: posts[i].Author.Name},
 			Created:     now,

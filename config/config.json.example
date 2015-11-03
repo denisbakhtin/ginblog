@@ -1,6 +1,7 @@
 {
   "debug": {
     "public": "public",
+    "domain": "http://localhost:8080",
     "session_secret": "session-secret-phrase",
     "signup_enabled": true,
     "database": {
@@ -12,6 +13,7 @@
   },
   "release": {
     "public": "path_to_public_dir",
+    "domain": "http://mydomain.com",
     "session_secret": "session-secret-phrase",
     "signup_enabled": false, 
     "database": {
@@ -23,6 +25,7 @@
   },
   "test": {
     "public": "public",
+    "domain": "http://localhost:8080",
     "session_secret": "session-secret-phrase",
     "signup_enabled": true,
     "database": {

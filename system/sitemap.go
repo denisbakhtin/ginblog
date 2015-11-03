@@ -12,7 +12,7 @@ import (
 func CreateXmlSitemap() {
 	logrus.Info("Starting XML sitemap generation")
 	folder := path.Join(GetConfig().Public, "sitemap")
-	domain := "http://localhost:8080" //change in release mode
+	domain := GetConfig().Domain
 	now := time.Now()
 	items := make([]sitemap.Item, 1)
 
