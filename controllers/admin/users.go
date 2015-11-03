@@ -3,6 +3,7 @@ package admin
 import (
 	"net/http"
 
+	"github.com/Sirupsen/logrus"
 	"github.com/denisbakhtin/ginblog/helpers"
 	"github.com/denisbakhtin/ginblog/models"
 	"github.com/gin-gonic/contrib/sessions"
@@ -14,6 +15,7 @@ func UserIndex(c *gin.Context) {
 	list, err := models.GetUsers()
 	if err != nil {
 		c.HTML(http.StatusInternalServerError, "errors/500", nil)
+		logrus.Error(err)
 		return
 	}
 	h := helpers.DefaultH(c)
@@ -40,6 +42,7 @@ func UserCreate(c *gin.Context) {
 	if err := c.Bind(user); err == nil {
 		if err := user.HashPassword(); err != nil {
 			c.HTML(http.StatusInternalServerError, "errors/500", nil)
+			logrus.Error(err)
 			return
 		}
 		if err := user.Insert(); err != nil {
@@ -81,10 +84,12 @@ func UserUpdate(c *gin.Context) {
 	if err := c.Bind(user); err == nil {
 		if err := user.HashPassword(); err != nil {
 			c.HTML(http.StatusInternalServerError, "errors/500", nil)
+			logrus.Error(err)
 			return
 		}
 		if err := user.Update(); err != nil {
 			c.HTML(http.StatusInternalServerError, "errors/500", nil)
+			logrus.Error(err)
 			return
 		}
 		c.Redirect(http.StatusFound, "/admin/users")
@@ -101,6 +106,7 @@ func UserDelete(c *gin.Context) {
 	user, _ := models.GetUser(c.Param("id"))
 	if err := user.Delete(); err != nil {
 		c.HTML(http.StatusInternalServerError, "errors/500", nil)
+		logrus.Error(err)
 		return
 	} else {
 		c.Redirect(http.StatusFound, "/admin/users")

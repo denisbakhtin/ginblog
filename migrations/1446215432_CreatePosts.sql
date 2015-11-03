@@ -6,7 +6,8 @@ CREATE TABLE posts(
   description TEXT NOT NULL,
   published BOOLEAN NOT NULL DEFAULT true,
   user_id INTEGER REFERENCES users (id) ON DELETE SET NULL,
-  timestamp TIMESTAMP
+  created_at TIMESTAMP,
+  updated_at TIMESTAMP
 );
 
 

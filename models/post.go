@@ -16,7 +16,8 @@ type Post struct {
 	Description string    `form:"description" json:"description"`
 	Published   bool      `form:"published" json:"published"`
 	UserId      null.Int  `form:"-" json:"user_id" db:"user_id"`
-	Timestamp   time.Time `form:"-" json:"timestamp"`
+	CreatedAt   time.Time `form:"-" json:"created_at" db:"created_at"`
+	UpdatedAt   time.Time `form:"-" json:"updated_at" db:"updated_at"`
 	//calculated fields
 	Author       User     `form:"-" json:"author" db:"author"`
 	Tags         []string `form:"tags" json:"tags" db:"-"` //can't make gin Bind form field to []Tag, so use []string instead
@@ -28,7 +29,7 @@ func (post *Post) Insert() error {
 	if err != nil {
 		return err
 	}
-	err = db.QueryRow("INSERT INTO posts(name, description, published, user_id, timestamp) VALUES($1,$2,$3,$4,$5) RETURNING id", post.Name, post.Description, post.Published, post.UserId, time.Now()).Scan(&post.Id)
+	err = db.QueryRow("INSERT INTO posts(name, description, published, user_id, created_at, updated_at) VALUES($1,$2,$3,$4,$5,$5) RETURNING id", post.Name, post.Description, post.Published, post.UserId, time.Now()).Scan(&post.Id)
 	if err != nil {
 		tx.Rollback()
 		return err
@@ -46,7 +47,7 @@ func (post *Post) Update() error {
 	if err != nil {
 		return err
 	}
-	_, err = tx.Exec("UPDATE posts SET name=$2, description=$3, published=$4 WHERE id=$1", post.Id, post.Name, post.Description, post.Published)
+	_, err = tx.Exec("UPDATE posts SET name=$2, description=$3, published=$4, updated_at=$5 WHERE id=$1", post.Id, post.Name, post.Description, post.Published, time.Now())
 	if err != nil {
 		tx.Rollback()
 		return err
@@ -154,13 +155,13 @@ func GetRecentPosts() ([]Post, error) {
 
 func GetPostMonths() ([]Post, error) {
 	var list []Post
-	err := db.Select(&list, "SELECT DISTINCT date_trunc('month', timestamp) as timestamp FROM posts WHERE published=$1 ORDER BY timestamp DESC", true)
+	err := db.Select(&list, "SELECT DISTINCT date_trunc('month', created_at) as created_at FROM posts WHERE published=$1 ORDER BY created_at DESC", true)
 	return list, err
 }
 
 func GetPostsByArchive(year, month int) ([]Post, error) {
 	var list []Post
-	err := db.Select(&list, "SELECT * FROM posts WHERE published=$1 AND date_part('year', timestamp)=$2 AND date_part('month', timestamp)=$3 ORDER BY timestamp DESC", true, year, month)
+	err := db.Select(&list, "SELECT * FROM posts WHERE published=$1 AND date_part('year', created_at)=$2 AND date_part('month', created_at)=$3 ORDER BY created_at DESC", true, year, month)
 	if err != nil {
 		return list, err
 	}
@@ -172,7 +173,7 @@ func GetPostsByArchive(year, month int) ([]Post, error) {
 
 func GetPostsByTag(name string) ([]Post, error) {
 	var list []Post
-	err := db.Select(&list, "SELECT * FROM posts WHERE published=$1 AND EXISTS (SELECT null FROM poststags WHERE poststags.post_id=posts.id AND poststags.tag_name=$2) ORDER BY timestamp DESC", true, name)
+	err := db.Select(&list, "SELECT * FROM posts WHERE published=$1 AND EXISTS (SELECT null FROM poststags WHERE poststags.post_id=posts.id AND poststags.tag_name=$2) ORDER BY created_at DESC", true, name)
 	if err != nil {
 		return list, err
 	}

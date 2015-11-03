@@ -17,10 +17,11 @@ It consists of the following core components:
 - Bootstrap Markdown Editor with image upload - https://github.com/inacho/bootstrap-markdown-editor
 - blackfriday - markdown processor - https://github.com/russross/blackfriday 
 - bluemonday - html sanitizer (for excerpts, etc) - https://github.com/microcosm-cc/bluemonday 
+- RSS feeds - https://github.com/gorilla/feeds
+- sitemap - XML sitemap for search engines - https://github.com/denisbakhtin/sitemap 
+- gocron - periodic task launcher (for sitemap generation, etc) - https://github.com/jasonlvhit/gocron
 
 # TODO
-- RSS feeds - https://github.com/gorilla/feeds
-- Sitemaps - https://github.com/joeguo/sitemap or better
 - Comments with oauth2 authentication
 - Social plugins (share, like buttons)
 - Auto posting previews to social walls

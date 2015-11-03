@@ -3,6 +3,7 @@ package admin
 import (
 	"net/http"
 
+	"github.com/Sirupsen/logrus"
 	"github.com/denisbakhtin/ginblog/helpers"
 	"github.com/denisbakhtin/ginblog/models"
 	"github.com/gin-gonic/contrib/sessions"
@@ -14,6 +15,7 @@ func TagIndex(c *gin.Context) {
 	list, err := models.GetTags()
 	if err != nil {
 		c.HTML(http.StatusInternalServerError, "errors/500", nil)
+		logrus.Error(err)
 		return
 	}
 	h := helpers.DefaultH(c)
@@ -41,6 +43,7 @@ func TagCreate(c *gin.Context) {
 	if err := c.Bind(tag); err == nil {
 		if err := tag.Insert(); err != nil {
 			c.HTML(http.StatusInternalServerError, "errors/500", nil)
+			logrus.Error(err)
 			return
 		}
 		c.Redirect(http.StatusFound, "/admin/tags")
@@ -57,6 +60,7 @@ func TagDelete(c *gin.Context) {
 	tag, _ := models.GetTag(c.Param("name"))
 	if err := tag.Delete(); err != nil {
 		c.HTML(http.StatusInternalServerError, "errors/500", nil)
+		logrus.Error(err)
 		return
 	} else {
 		c.Redirect(http.StatusFound, "/admin/tags")

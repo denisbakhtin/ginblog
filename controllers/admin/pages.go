@@ -3,6 +3,7 @@ package admin
 import (
 	"net/http"
 
+	"github.com/Sirupsen/logrus"
 	"github.com/denisbakhtin/ginblog/helpers"
 	"github.com/denisbakhtin/ginblog/models"
 	"github.com/gin-gonic/contrib/sessions"
@@ -14,6 +15,7 @@ func PageIndex(c *gin.Context) {
 	list, err := models.GetPages()
 	if err != nil {
 		c.HTML(http.StatusInternalServerError, "errors/500", nil)
+		logrus.Error(err)
 		return
 	}
 	h := helpers.DefaultH(c)
@@ -41,6 +43,7 @@ func PageCreate(c *gin.Context) {
 	if err := c.Bind(page); err == nil {
 		if err := page.Insert(); err != nil {
 			c.HTML(http.StatusInternalServerError, "errors/500", nil)
+			logrus.Error(err)
 			return
 		}
 		c.Redirect(http.StatusFound, "/admin/pages")
@@ -75,6 +78,7 @@ func PageUpdate(c *gin.Context) {
 	if err := c.Bind(page); err == nil {
 		if err := page.Update(); err != nil {
 			c.HTML(http.StatusInternalServerError, "errors/500", nil)
+			logrus.Error(err)
 			return
 		}
 		c.Redirect(http.StatusFound, "/admin/pages")
@@ -91,6 +95,7 @@ func PageDelete(c *gin.Context) {
 	page, _ := models.GetPage(c.Param("id"))
 	if err := page.Delete(); err != nil {
 		c.HTML(http.StatusInternalServerError, "errors/500", nil)
+		logrus.Error(err)
 		return
 	} else {
 		c.Redirect(http.StatusFound, "/admin/pages")

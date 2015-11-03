@@ -19,10 +19,10 @@
     <h5><i class="glyphicon glyphicon-menu-hamburger indent"></i>Archives</h5>
     <ul class="nav nav-pills nav-stacked">
       {{range archives}}
-      <li class="{{isActive $active (printf "archives/%d/%02d" .Timestamp.Year .Timestamp.Month)}}">
-        <a href="/archives/{{printf "%d/%02d" .Timestamp.Year .Timestamp.Month}}">
+      <li class="{{isActive $active (printf "archives/%d/%02d" .CreatedAt.Year .CreatedAt.Month)}}">
+        <a href="/archives/{{printf "%d/%02d" .CreatedAt.Year .CreatedAt.Month}}">
           <i class="glyphicon glyphicon-chevron-right indent"></i>
-          {{printf "%s %d" (.Timestamp.Month.String) .Timestamp.Year}}
+          {{printf "%s %d" (.CreatedAt.Month.String) .CreatedAt.Year}}
         </a>
       </li>
       {{end}}

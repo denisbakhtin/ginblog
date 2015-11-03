@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/Sirupsen/logrus"
 	"github.com/denisbakhtin/ginblog/helpers"
 	"github.com/denisbakhtin/ginblog/models"
 	"github.com/gin-gonic/contrib/sessions"
@@ -16,6 +17,7 @@ func PostIndex(c *gin.Context) {
 	list, err := models.GetPosts()
 	if err != nil {
 		c.HTML(http.StatusInternalServerError, "errors/500", nil)
+		logrus.Error(err)
 		return
 	}
 	h := helpers.DefaultH(c)
@@ -48,6 +50,7 @@ func PostCreate(c *gin.Context) {
 		}
 		if err := post.Insert(); err != nil {
 			c.HTML(http.StatusInternalServerError, "errors/500", nil)
+			logrus.Error(err)
 			return
 		}
 		c.Redirect(http.StatusFound, "/admin/posts")
@@ -84,6 +87,7 @@ func PostUpdate(c *gin.Context) {
 	if err := c.Bind(post); err == nil {
 		if err := post.Update(); err != nil {
 			c.HTML(http.StatusInternalServerError, "errors/500", nil)
+			logrus.Error(err)
 			return
 		}
 		c.Redirect(http.StatusFound, "/admin/posts")
@@ -100,6 +104,7 @@ func PostDelete(c *gin.Context) {
 	post, _ := models.GetPost(c.Param("id"))
 	if err := post.Delete(); err != nil {
 		c.HTML(http.StatusInternalServerError, "errors/500", nil)
+		logrus.Error(err)
 		return
 	} else {
 		c.Redirect(http.StatusFound, "/admin/posts")

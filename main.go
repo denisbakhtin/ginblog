@@ -3,6 +3,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"html/template"
 	"net/http"
 	"os"
@@ -10,6 +11,7 @@ import (
 
 	"github.com/GeertJohan/go.rice"
 	"github.com/Sirupsen/logrus"
+	"github.com/claudiu/gocron"
 	"github.com/denisbakhtin/ginblog/controllers"
 	"github.com/denisbakhtin/ginblog/controllers/admin"
 	"github.com/denisbakhtin/ginblog/helpers"
@@ -29,11 +31,15 @@ func main() {
 	connectToDB()
 	runMigrations(migration)
 
+	//Periodic tasks
+	gocron.Every(1).Day().Do(system.CreateXmlSitemap)
+	gocron.Start()
+
 	// Creates a gin router with default middleware:
 	// logger and recovery (crash-free) middleware
 	router := gin.Default()
-	setTemplate(router)
-	setSessions(router)
+	setTemplate(router) //initialize templates
+	setSessions(router) //initialize session storage & use sessiom/csrf middlewares
 
 	router.StaticFS("/public", http.Dir(system.PublicPath())) //better use nginx to serve assets (Cache-Control, Etag, fast gzip, etc)
 	router.Use(SharedData())
@@ -111,7 +117,9 @@ func loadConfig() {
 
 //connectToDB initializes *sqlx.DB handler
 func connectToDB() {
-	models.SetDB(system.GetConfig())
+	config := system.GetConfig()
+	connection := fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable", config.Database.Host, config.Database.User, config.Database.Password, config.Database.Name)
+	models.SetDB(connection)
 }
 
 //runMigrations applies database migrations if "migrate" flat is set

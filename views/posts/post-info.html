@@ -6,7 +6,7 @@
   </span>
   {{end}}
   <span class="post-info-item">
-    <i class="glyphicon glyphicon-calendar indent"></i>{{printf "%d-%02d-%02d" .Timestamp.Year .Timestamp.Month .Timestamp.Day}}
+    <i class="glyphicon glyphicon-calendar indent"></i>{{printf "%d-%02d-%02d" .CreatedAt.Year .CreatedAt.Month .CreatedAt.Day}}
   </span>
   <span class="post-info-item">
     <a href="#comments"><i class="glyphicon glyphicon-comment indent"></i>Comments: {{.CommentCount}}</a>

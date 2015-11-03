@@ -10,6 +10,7 @@
         <th class="id">ID</th>
         <th class="name">Name</th>
         <th class="published">Published</th>
+        <th class="timestamp">Created</th>
         <th class="actions">Actions</th>
       </tr>
     </thead>
@@ -25,6 +26,7 @@
             <span class="glyphicon glyphicon-remove"></span>
             {{end}}
           </td>
+          <td class="timestamp">{{dateTime .CreatedAt}}</td>
           <td class="actions">
             <a href="/pages/{{.Id}}" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-eye-open"></span></a>
             <a href="/admin/pages/{{.Id}}/edit" class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-pencil"></span></a>
