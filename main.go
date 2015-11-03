@@ -19,6 +19,7 @@ import (
 	//"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/context"
+	//"github.com/gorilla/csrf"
 	"github.com/gorilla/sessions"
 	//"github.com/utrack/gin-csrf"
 )
@@ -175,6 +176,7 @@ func setSessions(router *gin.Engine) {
 	store := sessions.NewFilesystemStore("", []byte(config.SessionSecret))
 	store.Options = &sessions.Options{HttpOnly: true, MaxAge: 7 * 86400} //Also set Secure: true if using SSL, you should though
 	router.Use(SessionMiddleware("session", store))
+	//router.Use(gin.WrapH(csrf.Protect([]byte(config.SessionSecret))(router)))
 	//https://github.com/utrack/gin-csrf
 	/*
 		router.Use(csrf.Middleware(csrf.Options{
@@ -191,6 +193,21 @@ func setSessions(router *gin.Engine) {
 
 //SessionMiddleware stores session handler in gin.Context
 func SessionMiddleware(name string, store sessions.Store) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		defer context.Clear(c.Request)
+		session, err := store.Get(c.Request, name)
+		if err != nil {
+			logrus.Error(err)
+			c.AbortWithError(500, err)
+			return
+		}
+		c.Set("Session", session)
+		c.Next()
+	}
+}
+
+//CsrfMiddleware stores session handler in gin.Context
+func CsrfMiddleware(name string, store sessions.Store) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		defer context.Clear(c.Request)
 		session, err := store.Get(c.Request, name)
