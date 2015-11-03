@@ -5,8 +5,8 @@
     <h5><i class="glyphicon glyphicon-pencil indent"></i>Recent posts</h5>
     <ul class="nav nav-pills nav-stacked">
       {{range recentPosts}}
-      <li class="{{isActive $active (printf "posts/%d" .Id)}}">
-        <a href="/posts/{{.Id}}">{{.Name}}</a>
+      <li class="{{isActive $active (printf "posts/%d" .ID)}}">
+        <a href="/posts/{{.ID}}">{{.Name}}</a>
       </li>
       {{end}}
     </ul>

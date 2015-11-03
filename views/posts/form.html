@@ -2,7 +2,7 @@
 {{template "header" .}}
 {{template "dashboard/navbar" .}}
 {{template "dashboard/sidebar" .}}
-<div id="main-column" class="container-fluid" role="main">		
+<div id="main-column" class="container-fluid" role="main">
   <div class="panel panel-default">
     <div class="panel-body">
       <form class="form-horizontal" method="post">
@@ -11,11 +11,11 @@
         {{range .Flash}}
           <div class="alert alert-danger">{{.}}</div><p>
         {{end}}
-        <input type="hidden" name="id" value="{{.Post.Id}}" >
+        <input type="hidden" name="id" value="{{.Post.ID}}" >
         <div class="form-group">
-          <label class="col-md-2 control-label" for="name">Name</label>  
+          <label class="col-md-2 control-label" for="name">Name</label>
           <div class="col-md-10">
-            <input id="name" name="name" value="{{.Post.Name}}" placeholder="Post title" class="form-control input-md" required="" >    
+            <input id="name" name="name" value="{{.Post.Name}}" placeholder="Post title" class="form-control input-md" required="" >
           </div>
         </div>
 

@@ -2,7 +2,7 @@
 {{template "header" .}}
 {{template "dashboard/navbar" .}}
 {{template "dashboard/sidebar" .}}
-<div id="main-column" class="container-fluid" role="main">		
+<div id="main-column" class="container-fluid" role="main">
   <h2>{{.Title}}</h2>
   <table class="table">
     <thead>
@@ -17,7 +17,7 @@
     <tbody>
       {{range .List}}
         <tr>
-          <td class="id">{{.Id}}</td>
+          <td class="id">{{.ID}}</td>
           <td class="name">{{.Name}}</td>
           <td class="published">
             {{if .Published}}
@@ -28,9 +28,9 @@
           </td>
           <td class="timestamp">{{dateTime .CreatedAt}}</td>
           <td class="actions">
-            <a href="/pages/{{.Id}}" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-eye-open"></span></a>
-            <a href="/admin/pages/{{.Id}}/edit" class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-pencil"></span></a>
-            <form class="inline-block" action="/admin/pages/{{.Id}}/delete" method="post">
+            <a href="/pages/{{.ID}}" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-eye-open"></span></a>
+            <a href="/admin/pages/{{.ID}}/edit" class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-pencil"></span></a>
+            <form class="inline-block" action="/admin/pages/{{.ID}}/delete" method="post">
               <button type="button" class="btn btn-sm btn-danger" onclick="((confirm('Are you sure')) ? this.form.submit() : null);"><span class="glyphicon glyphicon-remove"></span></button>
             </form>
           </td>

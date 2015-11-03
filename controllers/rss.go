@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-// GET /rss route
+//RssGet handles GET /rss route
 func RssGet(c *gin.Context) {
 	now := time.Now()
 	domain := system.GetConfig().Domain
@@ -18,7 +18,7 @@ func RssGet(c *gin.Context) {
 		Title:       "ginblog",
 		Link:        &feeds.Link{Href: domain},
 		Description: "GIN-powered blog boilerplate",
-		Author:      &feeds.Author{"Blog Author", "author@blog.net"}, //hide email from spammers?
+		Author:      &feeds.Author{Name: "Blog Author", Email: "author@blog.net"}, //hide email from spammers?
 		Created:     now,
 		Copyright:   "This work is copyright © Ginblog",
 	}
@@ -32,9 +32,9 @@ func RssGet(c *gin.Context) {
 
 	for i := range posts {
 		feed.Items = append(feed.Items, &feeds.Item{
-			Id:          fmt.Sprintf("%s/posts/%d", domain, posts[i].Id),
+			Id:          fmt.Sprintf("%s/posts/%d", domain, posts[i].ID),
 			Title:       posts[i].Name,
-			Link:        &feeds.Link{Href: fmt.Sprintf("%s/posts/%d", domain, posts[i].Id)},
+			Link:        &feeds.Link{Href: fmt.Sprintf("%s/posts/%d", domain, posts[i].ID)},
 			Description: string(posts[i].Excerpt()),
 			Author:      &feeds.Author{Name: posts[i].Author.Name},
 			Created:     now,

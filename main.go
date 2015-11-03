@@ -31,7 +31,7 @@ func main() {
 	runMigrations(migration)
 
 	//Periodic tasks
-	gocron.Every(1).Day().Do(system.CreateXmlSitemap)
+	gocron.Every(1).Day().Do(system.CreateXMLSitemap)
 	gocron.Start()
 
 	// Creates a gin router with default middleware:
@@ -179,13 +179,14 @@ func setSessions(router *gin.Engine) {
 }
 
 //+++++++++++++ middlewares +++++++++++++++++++++++
+
 //SharedData fills in common data, such as user info, etc...
 func SharedData() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		session := sessions.Default(c)
-		if uId := session.Get("UserId"); uId != nil {
-			user, _ := models.GetUser(uId)
-			if user.Id != 0 {
+		if uID := session.Get("UserID"); uID != nil {
+			user, _ := models.GetUser(uID)
+			if user.ID != 0 {
 				c.Set("User", user)
 			}
 		}
@@ -202,6 +203,7 @@ func AuthRequired() gin.HandlerFunc {
 		if user, _ := c.Get("User"); user != nil {
 			c.Next()
 		} else {
+			logrus.Warnf("User not authorized to visit %s", c.Request.RequestURI)
 			c.HTML(http.StatusForbidden, "errors/403", nil)
 			c.Abort()
 		}

@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//HomeGet handles GET / route
 func HomeGet(c *gin.Context) {
 	h := helpers.DefaultH(c)
 	h["Title"] = "Welcome to basic GIN blog"

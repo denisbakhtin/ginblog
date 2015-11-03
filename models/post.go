@@ -10,12 +10,13 @@ import (
 	"gopkg.in/guregu/null.v3"
 )
 
+//Post type contains blog post info
 type Post struct {
-	Id          int64     `form:"id" json:"id"`
+	ID          int64     `form:"id" json:"id" database:"id"`
 	Name        string    `form:"name" json:"name"`
 	Description string    `form:"description" json:"description"`
 	Published   bool      `form:"published" json:"published"`
-	UserId      null.Int  `form:"-" json:"user_id" db:"user_id"`
+	UserID      null.Int  `form:"-" json:"user_id" db:"user_id"`
 	CreatedAt   time.Time `form:"-" json:"created_at" db:"created_at"`
 	UpdatedAt   time.Time `form:"-" json:"updated_at" db:"updated_at"`
 	//calculated fields
@@ -24,12 +25,13 @@ type Post struct {
 	CommentCount int64    `form:"-" json:"comment_count" db:"comment_count"`
 }
 
+//Insert saves Post as well as associated tags (creating them if needed) into db. Obsolete associations are removed
 func (post *Post) Insert() error {
 	tx, err := db.Beginx()
 	if err != nil {
 		return err
 	}
-	err = db.QueryRow("INSERT INTO posts(name, description, published, user_id, created_at, updated_at) VALUES($1,$2,$3,$4,$5,$5) RETURNING id", post.Name, post.Description, post.Published, post.UserId, time.Now()).Scan(&post.Id)
+	err = db.QueryRow("INSERT INTO posts(name, description, published, user_id, created_at, updated_at) VALUES($1,$2,$3,$4,$5,$5) RETURNING id", post.Name, post.Description, post.Published, post.UserID, time.Now()).Scan(&post.ID)
 	if err != nil {
 		tx.Rollback()
 		return err
@@ -42,12 +44,13 @@ func (post *Post) Insert() error {
 	return err
 }
 
+//Update saves Post and associated tags changes into db
 func (post *Post) Update() error {
 	tx, err := db.Beginx()
 	if err != nil {
 		return err
 	}
-	_, err = tx.Exec("UPDATE posts SET name=$2, description=$3, published=$4, updated_at=$5 WHERE id=$1", post.Id, post.Name, post.Description, post.Published, time.Now())
+	_, err = tx.Exec("UPDATE posts SET name=$2, description=$3, published=$4, updated_at=$5 WHERE id=$1", post.ID, post.Name, post.Description, post.Published, time.Now())
 	if err != nil {
 		tx.Rollback()
 		return err
@@ -60,15 +63,15 @@ func (post *Post) Update() error {
 	return err
 }
 
-//UpdateTags inserts new (non existent) tags & associations and removes obsolete associations
+//UpdateTags inserts new (non existent) post tags and updates associations
 func (post *Post) UpdateTags(tx *sqlx.Tx) error {
 	neu := make(map[string]bool)
 	old := make(map[string]bool)
 	for i := range post.Tags {
 		neu[post.Tags[i]] = true
 	}
-	exist := make([]string, 0)
-	err := db.Select(&exist, "SELECT tag_name FROM poststags WHERE post_id=$1", post.Id)
+	var exist []string
+	err := db.Select(&exist, "SELECT tag_name FROM poststags WHERE post_id=$1", post.ID)
 	if err != nil {
 		return err
 	}
@@ -86,7 +89,7 @@ func (post *Post) UpdateTags(tx *sqlx.Tx) error {
 			return err
 		}
 		//insert new association
-		_, err := tx.Exec("INSERT INTO poststags(post_id, tag_name) VALUES($1,$2)", post.Id, name)
+		_, err := tx.Exec("INSERT INTO poststags(post_id, tag_name) VALUES($1,$2)", post.ID, name)
 		if err != nil {
 			return err
 		}
@@ -94,7 +97,7 @@ func (post *Post) UpdateTags(tx *sqlx.Tx) error {
 
 	for name := range old {
 		//remove association
-		_, err := tx.Exec("DELETE FROM poststags WHERE post_id=$1 AND tag_name=$2", post.Id, name)
+		_, err := tx.Exec("DELETE FROM poststags WHERE post_id=$1 AND tag_name=$2", post.ID, name)
 		if err != nil {
 			return err
 		}
@@ -102,11 +105,13 @@ func (post *Post) UpdateTags(tx *sqlx.Tx) error {
 	return nil
 }
 
+//Delete removes Post from db. Existing postgresql contstraints remove tag associations on post delete.
 func (post *Post) Delete() error {
-	_, err := db.Exec("DELETE FROM posts WHERE id=$1", post.Id)
+	_, err := db.Exec("DELETE FROM posts WHERE id=$1", post.ID)
 	return err
 }
 
+//Excerpt returns post excerpt by removing html tags first and truncating to 300 symbols
 func (post *Post) Excerpt() template.HTML {
 	//you can sanitize, cut it down, add images, etc
 	policy := bluemonday.StrictPolicy() //remove all html tags
@@ -115,13 +120,14 @@ func (post *Post) Excerpt() template.HTML {
 	return excerpt
 }
 
+//GetPost returns Post by its ID. Also initializes post author and tags fields.
 func GetPost(id interface{}) (*Post, error) {
 	post := &Post{}
 	err := db.Get(post, "SELECT * FROM posts WHERE id=$1", id)
 	if err != nil {
 		return post, err
 	}
-	err = db.Get(&post.Author, "SELECT id,name FROM users WHERE id=$1", post.UserId)
+	err = db.Get(&post.Author, "SELECT id,name FROM users WHERE id=$1", post.UserID)
 	if err != nil {
 		return post, err
 	}
@@ -129,12 +135,14 @@ func GetPost(id interface{}) (*Post, error) {
 	return post, err
 }
 
+//GetPosts returns a slice of posts, order by descending id
 func GetPosts() ([]Post, error) {
 	var list []Post
 	err := db.Select(&list, "SELECT * FROM posts ORDER BY posts.id DESC")
 	return list, err
 }
 
+//GetPublishedPosts returns a slice published of posts with their associations
 func GetPublishedPosts() ([]Post, error) {
 	var list []Post
 	err := db.Select(&list, "SELECT * FROM posts WHERE published=$1 ORDER BY posts.id DESC", true)
@@ -147,18 +155,21 @@ func GetPublishedPosts() ([]Post, error) {
 	return list, err
 }
 
+//GetRecentPosts returns a slice of published posts
 func GetRecentPosts() ([]Post, error) {
 	var list []Post
 	err := db.Select(&list, "SELECT id, name FROM posts WHERE published=$1 ORDER BY id DESC LIMIT 7", true)
 	return list, err
 }
 
+//GetPostMonths returns a slice of distinct months extracted from posts creation dates
 func GetPostMonths() ([]Post, error) {
 	var list []Post
 	err := db.Select(&list, "SELECT DISTINCT date_trunc('month', created_at) as created_at FROM posts WHERE published=$1 ORDER BY created_at DESC", true)
 	return list, err
 }
 
+//GetPostsByArchive returns a slice of published posts, given creation year and month
 func GetPostsByArchive(year, month int) ([]Post, error) {
 	var list []Post
 	err := db.Select(&list, "SELECT * FROM posts WHERE published=$1 AND date_part('year', created_at)=$2 AND date_part('month', created_at)=$3 ORDER BY created_at DESC", true, year, month)
@@ -171,6 +182,7 @@ func GetPostsByArchive(year, month int) ([]Post, error) {
 	return list, err
 }
 
+//GetPostsByTag returns a slice of published posts associated with tag name
 func GetPostsByTag(name string) ([]Post, error) {
 	var list []Post
 	err := db.Select(&list, "SELECT * FROM posts WHERE published=$1 AND EXISTS (SELECT null FROM poststags WHERE poststags.post_id=posts.id AND poststags.tag_name=$2) ORDER BY created_at DESC", true, name)
@@ -183,13 +195,14 @@ func GetPostsByTag(name string) ([]Post, error) {
 	return list, nil
 }
 
+//fillPostsAssociations initialises post associations, given post slice
 func fillPostsAssociations(list []Post) error {
 	for i := range list {
-		err := db.Get(&list[i].Author, "SELECT id,name FROM users WHERE id=$1", list[i].UserId)
+		err := db.Get(&list[i].Author, "SELECT id,name FROM users WHERE id=$1", list[i].UserID)
 		if err != nil {
 			return err
 		}
-		err = db.Select(&list[i].Tags, "SELECT name FROM tags WHERE EXISTS (SELECT null FROM poststags WHERE post_id=$1 AND tag_name=tags.name)", list[i].Id)
+		err = db.Select(&list[i].Tags, "SELECT name FROM tags WHERE EXISTS (SELECT null FROM poststags WHERE post_id=$1 AND tag_name=tags.name)", list[i].ID)
 		if err != nil {
 			return err
 		}

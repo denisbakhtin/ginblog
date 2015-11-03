@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// GET /tags/:name route
+//TagGet handles GET /tags/:name route
 func TagGet(c *gin.Context) {
 	tag, err := models.GetTag(c.Param("name"))
 	if err != nil {
@@ -30,7 +30,7 @@ func TagGet(c *gin.Context) {
 	c.HTML(http.StatusOK, "tags/show", h)
 }
 
-// GET tag list
+//TagIndex handles GET /admin/tags route
 func TagIndex(c *gin.Context) {
 	list, err := models.GetTags()
 	if err != nil {
@@ -45,7 +45,7 @@ func TagIndex(c *gin.Context) {
 	c.HTML(http.StatusOK, "tags/index", h)
 }
 
-// GET tag creation form
+//TagNew handles GET /admin/new_tag route
 func TagNew(c *gin.Context) {
 	h := helpers.DefaultH(c)
 	h["Title"] = "New tag"
@@ -57,32 +57,32 @@ func TagNew(c *gin.Context) {
 	c.HTML(http.StatusOK, "tags/form", h)
 }
 
-// tag tag creation form
+//TagCreate handles POST /admin/new_tag route
 func TagCreate(c *gin.Context) {
 	tag := &models.Tag{}
-	if err := c.Bind(tag); err == nil {
-		if err := tag.Insert(); err != nil {
-			c.HTML(http.StatusInternalServerError, "errors/500", nil)
-			logrus.Error(err)
-			return
-		}
-		c.Redirect(http.StatusFound, "/admin/tags")
-	} else {
+	if err := c.Bind(tag); err != nil {
 		session := sessions.Default(c)
 		session.AddFlash(err.Error())
 		session.Save()
 		c.Redirect(http.StatusSeeOther, "/admin/new_tag")
+		return
 	}
+
+	if err := tag.Insert(); err != nil {
+		c.HTML(http.StatusInternalServerError, "errors/500", nil)
+		logrus.Error(err)
+		return
+	}
+	c.Redirect(http.StatusFound, "/admin/tags")
 }
 
-// tag tag deletion request
+//TagDelete handles POST /admin/tags/:name/delete route
 func TagDelete(c *gin.Context) {
 	tag, _ := models.GetTag(c.Param("name"))
 	if err := tag.Delete(); err != nil {
 		c.HTML(http.StatusInternalServerError, "errors/500", nil)
 		logrus.Error(err)
 		return
-	} else {
-		c.Redirect(http.StatusFound, "/admin/tags")
 	}
+	c.Redirect(http.StatusFound, "/admin/tags")
 }

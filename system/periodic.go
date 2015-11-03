@@ -9,7 +9,8 @@ import (
 	"time"
 )
 
-func CreateXmlSitemap() {
+//CreateXMLSitemap creates xml sitemap for search engines, and saves in public/sitemap folder
+func CreateXMLSitemap() {
 	logrus.Info("Starting XML sitemap generation")
 	folder := path.Join(GetConfig().Public, "sitemap")
 	domain := GetConfig().Domain
@@ -32,7 +33,7 @@ func CreateXmlSitemap() {
 	}
 	for i := range posts {
 		items = append(items, sitemap.Item{
-			Loc:        fmt.Sprintf("%s/posts/%d", domain, posts[i].Id),
+			Loc:        fmt.Sprintf("%s/posts/%d", domain, posts[i].ID),
 			LastMod:    posts[i].UpdatedAt,
 			Changefreq: "weekly",
 			Priority:   0.9,
@@ -47,7 +48,7 @@ func CreateXmlSitemap() {
 	}
 	for i := range pages {
 		items = append(items, sitemap.Item{
-			Loc:        fmt.Sprintf("%s/pages/%d", domain, pages[i].Id),
+			Loc:        fmt.Sprintf("%s/pages/%d", domain, pages[i].ID),
 			LastMod:    pages[i].UpdatedAt,
 			Changefreq: "monthly",
 			Priority:   0.8,

@@ -15,7 +15,7 @@ import (
 	"gopkg.in/guregu/null.v3"
 )
 
-// GET /posts/:id route
+//PostGet handles GET /posts/:id route
 func PostGet(c *gin.Context) {
 	post, err := models.GetPost(c.Param("id"))
 	if err != nil || !post.Published {
@@ -26,11 +26,11 @@ func PostGet(c *gin.Context) {
 	h["Title"] = post.Name
 	h["Description"] = template.HTML(string(blackfriday.MarkdownCommon([]byte(post.Description))))
 	h["Post"] = post
-	h["Active"] = fmt.Sprintf("posts/%d", post.Id)
+	h["Active"] = fmt.Sprintf("posts/%d", post.ID)
 	c.HTML(http.StatusOK, "posts/show", h)
 }
 
-// GET post entry list
+//PostIndex handles GET /admin/posts route
 func PostIndex(c *gin.Context) {
 	list, err := models.GetPosts()
 	if err != nil {
@@ -45,7 +45,7 @@ func PostIndex(c *gin.Context) {
 	c.HTML(http.StatusOK, "posts/index", h)
 }
 
-// GET post creation form
+//PostNew handles GET /admin/new_post route
 func PostNew(c *gin.Context) {
 	tags, _ := models.GetTags()
 	h := helpers.DefaultH(c)
@@ -59,31 +59,32 @@ func PostNew(c *gin.Context) {
 	c.HTML(http.StatusOK, "posts/form", h)
 }
 
-// POST post creation form
+//PostCreate handles POST /admin/new_post route
 func PostCreate(c *gin.Context) {
 	post := &models.Post{}
-	if err := c.Bind(post); err == nil {
-		if user, exists := c.Get("User"); exists {
-			post.UserId = null.IntFrom(user.(*models.User).Id)
-		}
-		if err := post.Insert(); err != nil {
-			c.HTML(http.StatusInternalServerError, "errors/500", nil)
-			logrus.Error(err)
-			return
-		}
-		c.Redirect(http.StatusFound, "/admin/posts")
-	} else {
+	if err := c.Bind(post); err != nil {
 		session := sessions.Default(c)
 		session.AddFlash(err.Error())
 		session.Save()
 		c.Redirect(http.StatusSeeOther, "/admin/new_post")
+		return
 	}
+
+	if user, exists := c.Get("User"); exists {
+		post.UserID = null.IntFrom(user.(*models.User).ID)
+	}
+	if err := post.Insert(); err != nil {
+		c.HTML(http.StatusInternalServerError, "errors/500", nil)
+		logrus.Error(err)
+		return
+	}
+	c.Redirect(http.StatusFound, "/admin/posts")
 }
 
-// GET post update form
+//PostEdit handles GET /admin/posts/:id/edit route
 func PostEdit(c *gin.Context) {
 	post, _ := models.GetPost(c.Param("id"))
-	if post.Id == 0 {
+	if post.ID == 0 {
 		c.HTML(http.StatusNotFound, "errors/404", nil)
 		return
 	}
@@ -99,32 +100,32 @@ func PostEdit(c *gin.Context) {
 	c.HTML(http.StatusOK, "posts/form", h)
 }
 
-// POST post update form
+//PostUpdate handles POST /admin/posts/:id/edit route
 func PostUpdate(c *gin.Context) {
 	post := &models.Post{}
-	if err := c.Bind(post); err == nil {
-		if err := post.Update(); err != nil {
-			c.HTML(http.StatusInternalServerError, "errors/500", nil)
-			logrus.Error(err)
-			return
-		}
-		c.Redirect(http.StatusFound, "/admin/posts")
-	} else {
+	if err := c.Bind(post); err != nil {
 		session := sessions.Default(c)
 		session.AddFlash(err.Error())
 		session.Save()
 		c.Redirect(http.StatusSeeOther, fmt.Sprintf("/admin/posts/%s/edit", c.Param("id")))
+		return
 	}
+
+	if err := post.Update(); err != nil {
+		c.HTML(http.StatusInternalServerError, "errors/500", nil)
+		logrus.Error(err)
+		return
+	}
+	c.Redirect(http.StatusFound, "/admin/posts")
 }
 
-// POST post deletion request
+//PostDelete handles POST /admin/posts/:id/delete route
 func PostDelete(c *gin.Context) {
 	post, _ := models.GetPost(c.Param("id"))
 	if err := post.Delete(); err != nil {
 		c.HTML(http.StatusInternalServerError, "errors/500", nil)
 		logrus.Error(err)
 		return
-	} else {
-		c.Redirect(http.StatusFound, "/admin/posts")
 	}
+	c.Redirect(http.StatusFound, "/admin/posts")
 }

@@ -14,7 +14,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// POST file
+//UploadPost handles POST /upload route
 func UploadPost(c *gin.Context) {
 	err := c.Request.ParseMultipartForm(32 << 20) // ~32MB
 	if err != nil {
@@ -22,26 +22,27 @@ func UploadPost(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, "")
 		return
 	}
-	uris := make([]string, 0)
+	var uris []string
 	fmap := c.Request.MultipartForm.File
-	for k, _ := range fmap {
+	for k := range fmap {
 		file, fileHeader, err := c.Request.FormFile(k)
 		if err != nil {
 			logrus.Error(err)
 			c.JSON(http.StatusInternalServerError, "")
 			return
 		}
-		if uri, err := saveFile(fileHeader, file); err != nil {
+		uri, err := saveFile(fileHeader, file)
+		if err != nil {
 			logrus.Error(err)
 			c.JSON(http.StatusInternalServerError, "")
 			return
-		} else {
-			uris = append(uris, uri)
 		}
+		uris = append(uris, uri)
 	}
 	c.JSON(http.StatusOK, uris)
 }
 
+//saveFile saves file to disc and returns its relative uri
 func saveFile(fh *multipart.FileHeader, f multipart.File) (string, error) {
 	fileExt := filepath.Ext(fh.Filename)
 	newName := fmt.Sprint(time.Now().Unix()) + fileExt //unique file name ;D

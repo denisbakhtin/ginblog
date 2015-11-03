@@ -22,8 +22,9 @@ It consists of the following core components:
 - gocron - periodic task launcher (for sitemap generation, etc) - https://github.com/jasonlvhit/gocron
 
 # TODO
-- Site search with Postgresql full text search (okish for most websites)
+- Site search with Postgresql full text search (okish for most websites) - http://www.postgresql.org/docs/9.4/static/textsearch-intro.html
 - Comments with oauth2 authentication
+  dfdf d
 - Social plugins (share, like buttons)
 - Auto posting previews to social walls
 - Everything that comes to mind later

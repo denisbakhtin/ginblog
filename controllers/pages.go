@@ -13,7 +13,7 @@ import (
 	"github.com/russross/blackfriday"
 )
 
-// GET /pages/:id route
+//PageGet handles GET /pages/:id route
 func PageGet(c *gin.Context) {
 	page, err := models.GetPage(c.Param("id"))
 	if err != nil || !page.Published {
@@ -27,7 +27,7 @@ func PageGet(c *gin.Context) {
 	c.HTML(http.StatusOK, "pages/show", h)
 }
 
-// GET page list
+//PageIndex handles GET /admin/pages route
 func PageIndex(c *gin.Context) {
 	list, err := models.GetPages()
 	if err != nil {
@@ -42,7 +42,7 @@ func PageIndex(c *gin.Context) {
 	c.HTML(http.StatusOK, "pages/index", h)
 }
 
-// GET page creation form
+//PageNew handles GET /admin/new_page route
 func PageNew(c *gin.Context) {
 	h := helpers.DefaultH(c)
 	h["Title"] = "New page"
@@ -54,28 +54,29 @@ func PageNew(c *gin.Context) {
 	c.HTML(http.StatusOK, "pages/form", h)
 }
 
-// POST page creation form
+//PageCreate handles POST /admin/new_page route
 func PageCreate(c *gin.Context) {
 	page := &models.Page{}
-	if err := c.Bind(page); err == nil {
-		if err := page.Insert(); err != nil {
-			c.HTML(http.StatusInternalServerError, "errors/500", nil)
-			logrus.Error(err)
-			return
-		}
-		c.Redirect(http.StatusFound, "/admin/pages")
-	} else {
+	if err := c.Bind(page); err != nil {
 		session := sessions.Default(c)
 		session.AddFlash(err.Error())
 		session.Save()
 		c.Redirect(http.StatusSeeOther, "/admin/new_page")
+		return
 	}
+
+	if err := page.Insert(); err != nil {
+		c.HTML(http.StatusInternalServerError, "errors/500", nil)
+		logrus.Error(err)
+		return
+	}
+	c.Redirect(http.StatusFound, "/admin/pages")
 }
 
-// GET page update form
+//PageEdit handles GET /admin/pages/:id/edit route
 func PageEdit(c *gin.Context) {
 	page, _ := models.GetPage(c.Param("id"))
-	if page.Id == 0 {
+	if page.ID == 0 {
 		c.HTML(http.StatusNotFound, "errors/404", nil)
 		return
 	}
@@ -89,32 +90,31 @@ func PageEdit(c *gin.Context) {
 	c.HTML(http.StatusOK, "pages/form", h)
 }
 
-// POST page update form
+//PageUpdate handles POST /admin/pages/:id/edit route
 func PageUpdate(c *gin.Context) {
 	page := &models.Page{}
-	if err := c.Bind(page); err == nil {
-		if err := page.Update(); err != nil {
-			c.HTML(http.StatusInternalServerError, "errors/500", nil)
-			logrus.Error(err)
-			return
-		}
-		c.Redirect(http.StatusFound, "/admin/pages")
-	} else {
+	if err := c.Bind(page); err != nil {
 		session := sessions.Default(c)
 		session.AddFlash(err.Error())
 		session.Save()
 		c.Redirect(http.StatusSeeOther, "/admin/pages")
+		return
 	}
+	if err := page.Update(); err != nil {
+		c.HTML(http.StatusInternalServerError, "errors/500", nil)
+		logrus.Error(err)
+		return
+	}
+	c.Redirect(http.StatusFound, "/admin/pages")
 }
 
-// POST page deletion request
+//PageDelete handles POST /admin/pages/:id/delete route
 func PageDelete(c *gin.Context) {
 	page, _ := models.GetPage(c.Param("id"))
 	if err := page.Delete(); err != nil {
 		c.HTML(http.StatusInternalServerError, "errors/500", nil)
 		logrus.Error(err)
 		return
-	} else {
-		c.Redirect(http.StatusFound, "/admin/pages")
 	}
+	c.Redirect(http.StatusFound, "/admin/pages")
 }

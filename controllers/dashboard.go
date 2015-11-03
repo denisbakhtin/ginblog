@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//AdminGet handles GET /admin/ route
 func AdminGet(c *gin.Context) {
 	h := helpers.DefaultH(c)
 	h["Title"] = "Admin dashboard"
