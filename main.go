@@ -165,6 +165,7 @@ func setTemplate(router *gin.Engine) {
 func setSessions(router *gin.Engine) {
 	config := system.GetConfig()
 	//https://github.com/gin-gonic/contrib/tree/master/sessions
+	//TODO: switch to pure gorilla/sessions & gorilla/csrf
 	store := sessions.NewCookieStore([]byte(config.SessionSecret))
 	store.Options(sessions.Options{HttpOnly: true, MaxAge: 7 * 86400}) //Also set Secure: true if using SSL, you should though
 	router.Use(sessions.Sessions("gin-session", store))
