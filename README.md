@@ -1,7 +1,7 @@
 GIN-powered blog boilerplate
 ===============
 
-Provides essentials that most web blogs need - MVC pattern, user authorisation, SQL db migration, admin dashboard, javascript form validation, rss feeds, etc. Based on https://github.com/denisbakhtin/ginblog
+Provides essentials that most web blogs need - MVC pattern, user authorisation, SQL db migration, admin dashboard, javascript form validation, rss feeds, etc. 
 
 It consists of the following core components:
 
@@ -21,13 +21,11 @@ It consists of the following core components:
 - sitemap - XML sitemap for search engines - https://github.com/denisbakhtin/sitemap 
 - gocron - periodic task launcher (for sitemap generation, etc) - https://github.com/jasonlvhit/gocron
 
-# TODO
+# TODO (May be)
 - Site search with Postgresql full text search (okish for most websites) - http://www.postgresql.org/docs/9.4/static/textsearch-intro.html
 - Comments with oauth2 authentication
-  dfdf d
 - Social plugins (share, like buttons)
 - Auto posting previews to social walls
-- Everything that comes to mind later
 
 # Screenshots
 ## Home page
@@ -41,7 +39,7 @@ It consists of the following core components:
 
 # Usage
 ```
-git clone https://github.com/denisbakhtin/amazingblog.git
+git clone https://github.com/denisbakhtin/ginblog.git
 cd ginblog
 go get .
 ```
@@ -53,7 +51,7 @@ Type `go run main.go -migrate=up` to create users and pages tables.
 
 # Deployment
 ```
-go generate && go build && rm ./*.rice-box.go
+make build
 ```
 Upload `ginblog` binary and `public` directory to your server. If you find `rice embed-go` is running slow on your system, consider using other [go.rice packing options](https://github.com/GeertJohan/go.rice#tool-usage) with `go generate` command.
 
@@ -106,19 +104,19 @@ Now I have to prepare `ginblog`. First thing is that I have to delete its `.git`
 I issue:
 
 ```
-rm -rf src/github.com/denisbakhtin/amazingblog/.git
+rm -rf src/github.com/denisbakhtin/ginblog/.git
 ```
 
 Then I want to replace all references from `github.com/denisbakhtin/amazingblog` to `github.com/denisbakhtin/amazingblog`:
 
 ```
-grep -rl 'github.com/denisbakhtin/amazingblog' ./ | xargs sed -i 's/github.com\/denisbakhtin\/ginblog/github.com\/denisbakhtin\/amazingblog/g'
+grep -rl 'github.com/denisbakhtin/ginblog' ./ | xargs sed -i 's/github.com\/denisbakhtin\/ginblog/github.com\/denisbakhtin\/amazingblog/g'
 ```
 
 Now I have to move all `ginblog` files to the new location:
 
 ```
-mv src/github.com/denisbakhtin/amazingblog/ src/github.com/denisbakhtin/amazingblog
+mv src/github.com/denisbakhtin/ginblog/ src/github.com/denisbakhtin/amazingblog
 ```
 
 And push it to my new repository at `GitHub`:
@@ -157,11 +155,5 @@ Then create a config file `reflex.conf` in your `GOPATH`:
 -sr '(\.go|\.html)$' go run main.go
 ```
 
-Now if you run:
-
-```
-reflex -c reflex.conf
-```
-
-Project should automatically rebuild itself when a change occurs. For more options read https://github.com/cespare/reflex#usage
+Now if you run `reflex -c reflex.conf`, project will automatically rebuild itself when a change to *.go, *.html file occurs. For more options read https://github.com/cespare/reflex#usage
 
