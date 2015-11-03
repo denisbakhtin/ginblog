@@ -8,7 +8,6 @@ import (
 	"github.com/Sirupsen/logrus"
 	"github.com/denisbakhtin/ginblog/helpers"
 	"github.com/denisbakhtin/ginblog/models"
-	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/russross/blackfriday"
 )
@@ -47,9 +46,9 @@ func PageNew(c *gin.Context) {
 	h := helpers.DefaultH(c)
 	h["Title"] = "New page"
 	h["Active"] = "pages"
-	session := sessions.Default(c)
+	session := helpers.GetSession(c)
 	h["Flash"] = session.Flashes()
-	session.Save()
+	session.Save(c.Request, c.Writer)
 
 	c.HTML(http.StatusOK, "pages/form", h)
 }
@@ -58,9 +57,9 @@ func PageNew(c *gin.Context) {
 func PageCreate(c *gin.Context) {
 	page := &models.Page{}
 	if err := c.Bind(page); err != nil {
-		session := sessions.Default(c)
+		session := helpers.GetSession(c)
 		session.AddFlash(err.Error())
-		session.Save()
+		session.Save(c.Request, c.Writer)
 		c.Redirect(http.StatusSeeOther, "/admin/new_page")
 		return
 	}
@@ -84,9 +83,9 @@ func PageEdit(c *gin.Context) {
 	h["Title"] = "Edit page"
 	h["Active"] = "pages"
 	h["Page"] = page
-	session := sessions.Default(c)
+	session := helpers.GetSession(c)
 	h["Flash"] = session.Flashes()
-	session.Save()
+	session.Save(c.Request, c.Writer)
 	c.HTML(http.StatusOK, "pages/form", h)
 }
 
@@ -94,9 +93,9 @@ func PageEdit(c *gin.Context) {
 func PageUpdate(c *gin.Context) {
 	page := &models.Page{}
 	if err := c.Bind(page); err != nil {
-		session := sessions.Default(c)
+		session := helpers.GetSession(c)
 		session.AddFlash(err.Error())
-		session.Save()
+		session.Save(c.Request, c.Writer)
 		c.Redirect(http.StatusSeeOther, "/admin/pages")
 		return
 	}

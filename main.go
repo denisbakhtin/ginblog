@@ -16,9 +16,15 @@ import (
 	"github.com/denisbakhtin/ginblog/helpers"
 	"github.com/denisbakhtin/ginblog/models"
 	"github.com/denisbakhtin/ginblog/system"
-	"github.com/gin-gonic/contrib/sessions"
+	//"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
-	"github.com/utrack/gin-csrf"
+	"github.com/gorilla/context"
+	"github.com/gorilla/sessions"
+	//"github.com/utrack/gin-csrf"
+)
+
+const (
+	sessionName = "session"
 )
 
 func main() {
@@ -166,26 +172,43 @@ func setSessions(router *gin.Engine) {
 	config := system.GetConfig()
 	//https://github.com/gin-gonic/contrib/tree/master/sessions
 	//TODO: switch to pure gorilla/sessions & gorilla/csrf
-	store := sessions.NewCookieStore([]byte(config.SessionSecret))
-	store.Options(sessions.Options{HttpOnly: true, MaxAge: 7 * 86400}) //Also set Secure: true if using SSL, you should though
-	router.Use(sessions.Sessions("gin-session", store))
+	store := sessions.NewFilesystemStore("", []byte(config.SessionSecret))
+	store.Options = &sessions.Options{HttpOnly: true, MaxAge: 7 * 86400} //Also set Secure: true if using SSL, you should though
+	router.Use(SessionMiddleware("session", store))
 	//https://github.com/utrack/gin-csrf
-	router.Use(csrf.Middleware(csrf.Options{
-		Secret: config.SessionSecret,
-		ErrorFunc: func(c *gin.Context) {
-			c.String(400, "CSRF token mismatch")
-			c.Abort()
-		},
-	}))
+	/*
+		router.Use(csrf.Middleware(csrf.Options{
+			Secret: config.SessionSecret,
+			ErrorFunc: func(c *gin.Context) {
+				c.String(400, "CSRF token mismatch")
+				c.Abort()
+			},
+		}))
+	*/
 }
 
 //+++++++++++++ middlewares +++++++++++++++++++++++
 
+//SessionMiddleware stores session handler in gin.Context
+func SessionMiddleware(name string, store sessions.Store) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		defer context.Clear(c.Request)
+		session, err := store.Get(c.Request, name)
+		if err != nil {
+			logrus.Error(err)
+			c.AbortWithError(500, err)
+			return
+		}
+		c.Set("Session", session)
+		c.Next()
+	}
+}
+
 //SharedData fills in common data, such as user info, etc...
 func SharedData() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		session := sessions.Default(c)
-		if uID := session.Get("UserID"); uID != nil {
+		session := helpers.GetSession(c)
+		if uID := session.Values["UserID"]; uID != nil {
 			user, _ := models.GetUser(uID)
 			if user.ID != 0 {
 				c.Set("User", user)

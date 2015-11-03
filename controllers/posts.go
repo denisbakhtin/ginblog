@@ -9,7 +9,6 @@ import (
 	"github.com/Sirupsen/logrus"
 	"github.com/denisbakhtin/ginblog/helpers"
 	"github.com/denisbakhtin/ginblog/models"
-	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/russross/blackfriday"
 	"gopkg.in/guregu/null.v3"
@@ -52,9 +51,9 @@ func PostNew(c *gin.Context) {
 	h["Title"] = "New post entry"
 	h["Active"] = "posts"
 	h["Tags"] = tags
-	session := sessions.Default(c)
+	session := helpers.GetSession(c)
 	h["Flash"] = session.Flashes()
-	session.Save()
+	session.Save(c.Request, c.Writer)
 
 	c.HTML(http.StatusOK, "posts/form", h)
 }
@@ -63,9 +62,9 @@ func PostNew(c *gin.Context) {
 func PostCreate(c *gin.Context) {
 	post := &models.Post{}
 	if err := c.Bind(post); err != nil {
-		session := sessions.Default(c)
+		session := helpers.GetSession(c)
 		session.AddFlash(err.Error())
-		session.Save()
+		session.Save(c.Request, c.Writer)
 		c.Redirect(http.StatusSeeOther, "/admin/new_post")
 		return
 	}
@@ -94,9 +93,9 @@ func PostEdit(c *gin.Context) {
 	h["Active"] = "posts"
 	h["Post"] = post
 	h["Tags"] = tags
-	session := sessions.Default(c)
+	session := helpers.GetSession(c)
 	h["Flash"] = session.Flashes()
-	session.Save()
+	session.Save(c.Request, c.Writer)
 	c.HTML(http.StatusOK, "posts/form", h)
 }
 
@@ -104,9 +103,9 @@ func PostEdit(c *gin.Context) {
 func PostUpdate(c *gin.Context) {
 	post := &models.Post{}
 	if err := c.Bind(post); err != nil {
-		session := sessions.Default(c)
+		session := helpers.GetSession(c)
 		session.AddFlash(err.Error())
-		session.Save()
+		session.Save(c.Request, c.Writer)
 		c.Redirect(http.StatusSeeOther, fmt.Sprintf("/admin/posts/%s/edit", c.Param("id")))
 		return
 	}

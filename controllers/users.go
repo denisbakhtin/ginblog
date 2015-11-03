@@ -6,7 +6,6 @@ import (
 	"github.com/Sirupsen/logrus"
 	"github.com/denisbakhtin/ginblog/helpers"
 	"github.com/denisbakhtin/ginblog/models"
-	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
@@ -30,9 +29,9 @@ func UserNew(c *gin.Context) {
 	h := helpers.DefaultH(c)
 	h["Title"] = "New user"
 	h["Active"] = "users"
-	session := sessions.Default(c)
+	session := helpers.GetSession(c)
 	h["Flash"] = session.Flashes()
-	session.Save()
+	session.Save(c.Request, c.Writer)
 	c.HTML(http.StatusOK, "users/form", h)
 }
 
@@ -40,9 +39,9 @@ func UserNew(c *gin.Context) {
 func UserCreate(c *gin.Context) {
 	user := &models.User{}
 	if err := c.Bind(user); err != nil {
-		session := sessions.Default(c)
+		session := helpers.GetSession(c)
 		session.AddFlash(err.Error())
-		session.Save()
+		session.Save(c.Request, c.Writer)
 		c.Redirect(http.StatusSeeOther, "/admin/new_user")
 		return
 	}
@@ -53,9 +52,9 @@ func UserCreate(c *gin.Context) {
 		return
 	}
 	if err := user.Insert(); err != nil {
-		session := sessions.Default(c)
+		session := helpers.GetSession(c)
 		session.AddFlash(err.Error())
-		session.Save()
+		session.Save(c.Request, c.Writer)
 		c.Redirect(http.StatusSeeOther, "/admin/new_user")
 		return
 	}
@@ -73,9 +72,9 @@ func UserEdit(c *gin.Context) {
 	h["Title"] = "Edit user"
 	h["Active"] = "users"
 	h["User"] = user
-	session := sessions.Default(c)
+	session := helpers.GetSession(c)
 	h["Flash"] = session.Flashes()
-	session.Save()
+	session.Save(c.Request, c.Writer)
 	c.HTML(http.StatusOK, "users/form", h)
 }
 
@@ -83,9 +82,9 @@ func UserEdit(c *gin.Context) {
 func UserUpdate(c *gin.Context) {
 	user := &models.User{}
 	if err := c.Bind(user); err != nil {
-		session := sessions.Default(c)
+		session := helpers.GetSession(c)
 		session.AddFlash(err.Error())
-		session.Save()
+		session.Save(c.Request, c.Writer)
 		c.Redirect(http.StatusSeeOther, "/admin/users")
 		return
 	}
