@@ -140,20 +140,12 @@ And that's it.
 
 # Continuous Development
 
-For Continuous Development I recommend using `Reflex` - https://github.com/cespare/reflex
+For Continuous Development I recommend using `Watcher` - https://github.com/radovskyb/watcher
 
-You can install `Reflex` by issuing:
-
-```
-go get github.com/cespare/reflex
-```
-
-Then create a config file `reflex.conf` in your `GOPATH`:
+You can install `Watcher` by issuing:
 
 ```
-# Restart server when .go, .html files change
--sr '(\.go|\.html)$' go run main.go
+go get -u github.com/radovskyb/watcher/...
 ```
 
-Now if you run `reflex -c reflex.conf`, project will automatically rebuild itself when a change to *.go, *.html file occurs. For more options read https://github.com/cespare/reflex#usage
-
+Then simply run `watcher` in your project directory.
