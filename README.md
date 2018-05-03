@@ -149,3 +149,6 @@ go get -u github.com/radovskyb/watcher/...
 ```
 
 Then simply run `watcher` in your project directory.
+
+# TODO
+Update project dependencies, switch to gorm, bootstrap 4.0
