@@ -8,21 +8,20 @@ import (
 	"github.com/denisbakhtin/ginblog/models"
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"strings"
 )
 
 //TagGet handles GET /tags/:name route
 func TagGet(c *gin.Context) {
-	tag, err := models.GetTag(c.Param("name"))
-	if err != nil {
+	db := models.GetDB()
+	tag := models.Tag{}
+	db.Where("lower(name) = $1", strings.ToLower(c.Param("name"))).First(&tag)
+	if tag.ID == 0 {
 		c.HTML(http.StatusNotFound, "errors/404", nil)
 		return
 	}
-	list, err := models.GetPostsByTag(tag.Name)
-	if err != nil {
-		c.HTML(http.StatusNotFound, "errors/404", nil)
-		return
-	}
-
+	var list []models.Post
+	db.Where("published = true AND tag_id = $1", tag.ID).Find(&list)
 	h := helpers.DefaultH(c)
 	h["Title"] = tag.Name
 	h["Active"] = "tags"
@@ -32,12 +31,9 @@ func TagGet(c *gin.Context) {
 
 //TagIndex handles GET /admin/tags route
 func TagIndex(c *gin.Context) {
-	list, err := models.GetTags()
-	if err != nil {
-		c.HTML(http.StatusInternalServerError, "errors/500", nil)
-		logrus.Error(err)
-		return
-	}
+	db := models.GetDB()
+	var list []models.Tag
+	db.Find(&list)
 	h := helpers.DefaultH(c)
 	h["Title"] = "List of tags"
 	h["List"] = list
@@ -60,6 +56,7 @@ func TagNew(c *gin.Context) {
 //TagCreate handles POST /admin/new_tag route
 func TagCreate(c *gin.Context) {
 	tag := &models.Tag{}
+	db := models.GetDB()
 	if err := c.Bind(tag); err != nil {
 		session := sessions.Default(c)
 		session.AddFlash(err.Error())
@@ -68,7 +65,7 @@ func TagCreate(c *gin.Context) {
 		return
 	}
 
-	if err := tag.Insert(); err != nil {
+	if err := db.Create(&tag).Error; err != nil {
 		c.HTML(http.StatusInternalServerError, "errors/500", nil)
 		logrus.Error(err)
 		return
@@ -78,8 +75,14 @@ func TagCreate(c *gin.Context) {
 
 //TagDelete handles POST /admin/tags/:name/delete route
 func TagDelete(c *gin.Context) {
-	tag, _ := models.GetTag(c.Param("name"))
-	if err := tag.Delete(); err != nil {
+	db := models.GetDB()
+	tag := models.Tag{}
+	db.Where("lower(name) = $1", strings.ToLower(c.Param("name"))).First(&tag)
+	if tag.ID == 0 {
+		c.HTML(http.StatusNotFound, "errors/404", nil)
+		return
+	}
+	if err := db.Delete(&tag); err != nil {
 		c.HTML(http.StatusInternalServerError, "errors/500", nil)
 		logrus.Error(err)
 		return

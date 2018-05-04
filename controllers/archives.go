@@ -15,11 +15,9 @@ import (
 func ArchiveGet(c *gin.Context) {
 	year, _ := strconv.Atoi(c.Param("year"))
 	month, _ := strconv.Atoi(c.Param("month"))
-	list, err := models.GetPostsByArchive(year, month)
-	if err != nil {
-		c.HTML(http.StatusNotFound, "errors/404", nil)
-		return
-	}
+	db := models.GetDB()
+	var list []models.Post
+	db.Where("published = true AND date_part('year', created_at)=$1 AND date_part('month', created_at)=$2", year, month).Order("created_at desc").Find(&list)
 	h := helpers.DefaultH(c)
 	h["Title"] = fmt.Sprintf("%s %d archives", time.Month(month).String(), year)
 	h["List"] = list

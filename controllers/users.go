@@ -12,12 +12,9 @@ import (
 
 //UserIndex handles GET /admin/users route
 func UserIndex(c *gin.Context) {
-	list, err := models.GetUsers()
-	if err != nil {
-		c.HTML(http.StatusInternalServerError, "errors/500", nil)
-		logrus.Error(err)
-		return
-	}
+	db := models.GetDB()
+	var list []models.User
+	db.Find(&list)
 	h := helpers.DefaultH(c)
 	h["Title"] = "List of users"
 	h["Active"] = "users"
@@ -39,6 +36,7 @@ func UserNew(c *gin.Context) {
 //UserCreate handles POST /admin/new_user route
 func UserCreate(c *gin.Context) {
 	user := &models.User{}
+	db := models.GetDB()
 	if err := c.Bind(user); err != nil {
 		session := sessions.Default(c)
 		session.AddFlash(err.Error())
@@ -47,12 +45,7 @@ func UserCreate(c *gin.Context) {
 		return
 	}
 
-	if err := user.HashPassword(); err != nil {
-		c.HTML(http.StatusInternalServerError, "errors/500", nil)
-		logrus.Error(err)
-		return
-	}
-	if err := user.Insert(); err != nil {
+	if err := db.Create(&user).Error; err != nil {
 		session := sessions.Default(c)
 		session.AddFlash(err.Error())
 		session.Save()
@@ -64,7 +57,9 @@ func UserCreate(c *gin.Context) {
 
 //UserEdit handles GET /admin/users/:id/edit route
 func UserEdit(c *gin.Context) {
-	user, _ := models.GetUser(c.Param("id"))
+	db := models.GetDB()
+	user := models.User{}
+	db.First(&user, c.Param("id"))
 	if user.ID == 0 {
 		c.HTML(http.StatusNotFound, "errors/404", nil)
 		return
@@ -82,6 +77,7 @@ func UserEdit(c *gin.Context) {
 //UserUpdate handles POST /admin/users/:id/edit route
 func UserUpdate(c *gin.Context) {
 	user := &models.User{}
+	db := models.GetDB()
 	if err := c.Bind(user); err != nil {
 		session := sessions.Default(c)
 		session.AddFlash(err.Error())
@@ -90,12 +86,7 @@ func UserUpdate(c *gin.Context) {
 		return
 	}
 
-	if err := user.HashPassword(); err != nil {
-		c.HTML(http.StatusInternalServerError, "errors/500", nil)
-		logrus.Error(err)
-		return
-	}
-	if err := user.Update(); err != nil {
+	if err := db.Update(&user).Error; err != nil {
 		c.HTML(http.StatusInternalServerError, "errors/500", nil)
 		logrus.Error(err)
 		return
@@ -105,8 +96,14 @@ func UserUpdate(c *gin.Context) {
 
 //UserDelete handles POST /admin/users/:id/delete route
 func UserDelete(c *gin.Context) {
-	user, _ := models.GetUser(c.Param("id"))
-	if err := user.Delete(); err != nil {
+	db := models.GetDB()
+	user := models.User{}
+	db.First(&user, c.Param("id"))
+	if user.ID == 0 {
+		c.HTML(http.StatusNotFound, "errors/404", nil)
+		return
+	}
+	if err := db.Delete(&user).Error; err != nil {
 		c.HTML(http.StatusInternalServerError, "errors/500", nil)
 		logrus.Error(err)
 		return

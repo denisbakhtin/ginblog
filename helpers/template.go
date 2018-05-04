@@ -35,19 +35,24 @@ func StringInSlice(value string, list []string) bool {
 
 //RecentPosts returns the list of recent blog posts
 func RecentPosts() []models.Post {
-	list, _ := models.GetRecentPosts()
+	db := models.GetDB()
+	var list []models.Post
+	db.Where("published = true").Order("id desc").Limit(7).Find(&list)
 	return list
 }
 
 //Tags returns the list of blog tags
 func Tags() []models.Tag {
-	list, _ := models.GetNotEmptyTags()
+	var list []models.Tag
+	//list, _ := models.GetNotEmptyTags()
 	return list
 }
 
 //Archives returns the list of blog archives
 func Archives() []models.Post {
-	list, _ := models.GetPostMonths()
+	db := models.GetDB()
+	var list []models.Post
+	db.Select("distinct date_trunc('month', created_at) as created_at").Where("published = true").Order("created_at desc").Find(&list)
 	return list
 }
 

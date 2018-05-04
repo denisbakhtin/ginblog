@@ -13,6 +13,7 @@ import (
 func RssGet(c *gin.Context) {
 	now := time.Now()
 	domain := system.GetConfig().Domain
+	db := models.GetDB()
 
 	feed := &feeds.Feed{
 		Title:       "ginblog",
@@ -24,11 +25,8 @@ func RssGet(c *gin.Context) {
 	}
 
 	feed.Items = make([]*feeds.Item, 0)
-	posts, err := models.GetPublishedPosts()
-	if err != nil {
-		c.HTML(404, "errors/404", nil)
-		return
-	}
+	var posts []models.Post
+	db.Where("published = true").Find(&posts)
 
 	for i := range posts {
 		feed.Items = append(feed.Items, &feeds.Item{
@@ -36,7 +34,7 @@ func RssGet(c *gin.Context) {
 			Title:       posts[i].Name,
 			Link:        &feeds.Link{Href: fmt.Sprintf("%s/posts/%d", domain, posts[i].ID)},
 			Description: string(posts[i].Excerpt()),
-			Author:      &feeds.Author{Name: posts[i].Author.Name},
+			Author:      &feeds.Author{Name: posts[i].User.Name},
 			Created:     now,
 		})
 	}

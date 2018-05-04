@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
+	"strings"
 )
 
 //SignInGet handles GET /signin route
@@ -26,6 +27,7 @@ func SignInGet(c *gin.Context) {
 func SignInPost(c *gin.Context) {
 	session := sessions.Default(c)
 	user := &models.User{}
+	db := models.GetDB()
 	if err := c.Bind(user); err != nil {
 		session.AddFlash("Please, fill out form correctly.")
 		session.Save()
@@ -33,7 +35,9 @@ func SignInPost(c *gin.Context) {
 		return
 	}
 
-	userDB, _ := models.GetUserByEmail(user.Email)
+	userDB := models.User{}
+	db.Where("lower(email) = $1", strings.ToLower(user.Email)).First(&userDB)
+
 	if userDB.ID == 0 {
 		logrus.Errorf("Login error, IP: %s, Email: %s", c.ClientIP(), user.Email)
 		session.AddFlash("Email or password incorrect")
@@ -69,6 +73,7 @@ func SignUpGet(c *gin.Context) {
 func SignUpPost(c *gin.Context) {
 	session := sessions.Default(c)
 	user := &models.User{}
+	db := models.GetDB()
 	if err := c.Bind(user); err != nil {
 		session.AddFlash(err.Error())
 		session.Save()
@@ -76,7 +81,8 @@ func SignUpPost(c *gin.Context) {
 		return
 	}
 
-	userDB, _ := models.GetUserByEmail(user.Email)
+	userDB := models.User{}
+	db.Where("lower(email) = $1", strings.ToLower(user.Email)).First(&userDB)
 	if userDB.ID != 0 {
 		session.AddFlash("User exists")
 		session.Save()
@@ -84,16 +90,7 @@ func SignUpPost(c *gin.Context) {
 		return
 	}
 	//create user
-	err := user.HashPassword()
-	if err != nil {
-		session.AddFlash("Error whilst registering user.")
-		session.Save()
-		logrus.Errorf("Error whilst registering user: %v", err)
-		c.Redirect(http.StatusFound, "/signup")
-		return
-	}
-
-	if err := user.Insert(); err != nil {
+	if err := db.Create(&user).Error; err != nil {
 		session.AddFlash("Error whilst registering user.")
 		session.Save()
 		logrus.Errorf("Error whilst registering user: %v", err)

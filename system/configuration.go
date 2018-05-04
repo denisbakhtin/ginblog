@@ -7,6 +7,7 @@ import (
 	"path"
 
 	"github.com/gin-gonic/gin"
+	"io/ioutil"
 )
 
 //Configs contains application configurations for all gin modes
@@ -37,9 +38,13 @@ type DatabaseConfig struct {
 var config *Config
 
 //LoadConfig unmarshals config for current GIN_MODE
-func LoadConfig(data []byte) {
+func LoadConfig() {
+	data, err := ioutil.ReadFile("config/config.json")
+	if err != nil {
+		panic(err)
+	}
 	configs := &Configs{}
-	err := json.Unmarshal(data, configs)
+	err = json.Unmarshal(data, configs)
 	if err != nil {
 		panic(err)
 	}
@@ -75,4 +80,9 @@ func PublicPath() string {
 //UploadsPath returns path to public/uploads folder
 func UploadsPath() string {
 	return path.Join(config.Public, "uploads")
+}
+
+//GetConnectionString returns a database connection string
+func GetConnectionString() string {
+	return fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable", config.Database.Host, config.Database.User, config.Database.Password, config.Database.Name)
 }

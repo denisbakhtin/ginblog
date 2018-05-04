@@ -148,7 +148,7 @@ You can install `Watcher` by issuing:
 go get -u github.com/radovskyb/watcher/...
 ```
 
-Then simply run `watcher` in your project directory.
+Then simply run `watcher`, or `watcher -keepalive -cmd="go run main.go"` in your project directory.
 
 # TODO
 Update project dependencies, switch to gorm, bootstrap 4.0

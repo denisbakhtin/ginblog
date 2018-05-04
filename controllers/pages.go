@@ -15,8 +15,10 @@ import (
 
 //PageGet handles GET /pages/:id route
 func PageGet(c *gin.Context) {
-	page, err := models.GetPage(c.Param("id"))
-	if err != nil || !page.Published {
+	db := models.GetDB()
+	page := models.Page{}
+	db.First(&page, c.Param("id"))
+	if page.ID == 0 || !page.Published {
 		c.HTML(http.StatusNotFound, "errors/404", nil)
 		return
 	}
@@ -29,12 +31,9 @@ func PageGet(c *gin.Context) {
 
 //PageIndex handles GET /admin/pages route
 func PageIndex(c *gin.Context) {
-	list, err := models.GetPages()
-	if err != nil {
-		c.HTML(http.StatusInternalServerError, "errors/500", nil)
-		logrus.Error(err)
-		return
-	}
+	db := models.GetDB()
+	var list []models.Page
+	db.Find(&list)
 	h := helpers.DefaultH(c)
 	h["Title"] = "List of pages"
 	h["List"] = list
@@ -56,6 +55,7 @@ func PageNew(c *gin.Context) {
 
 //PageCreate handles POST /admin/new_page route
 func PageCreate(c *gin.Context) {
+	db := models.GetDB()
 	page := &models.Page{}
 	if err := c.Bind(page); err != nil {
 		session := sessions.Default(c)
@@ -65,7 +65,7 @@ func PageCreate(c *gin.Context) {
 		return
 	}
 
-	if err := page.Insert(); err != nil {
+	if err := db.Create(&page).Error; err != nil {
 		c.HTML(http.StatusInternalServerError, "errors/500", nil)
 		logrus.Error(err)
 		return
@@ -75,7 +75,9 @@ func PageCreate(c *gin.Context) {
 
 //PageEdit handles GET /admin/pages/:id/edit route
 func PageEdit(c *gin.Context) {
-	page, _ := models.GetPage(c.Param("id"))
+	db := models.GetDB()
+	page := models.Page{}
+	db.First(&page, c.Param("id"))
 	if page.ID == 0 {
 		c.HTML(http.StatusNotFound, "errors/404", nil)
 		return
@@ -93,6 +95,7 @@ func PageEdit(c *gin.Context) {
 //PageUpdate handles POST /admin/pages/:id/edit route
 func PageUpdate(c *gin.Context) {
 	page := &models.Page{}
+	db := models.GetDB()
 	if err := c.Bind(page); err != nil {
 		session := sessions.Default(c)
 		session.AddFlash(err.Error())
@@ -100,7 +103,7 @@ func PageUpdate(c *gin.Context) {
 		c.Redirect(http.StatusSeeOther, "/admin/pages")
 		return
 	}
-	if err := page.Update(); err != nil {
+	if err := db.Update(&page).Error; err != nil {
 		c.HTML(http.StatusInternalServerError, "errors/500", nil)
 		logrus.Error(err)
 		return
@@ -110,8 +113,14 @@ func PageUpdate(c *gin.Context) {
 
 //PageDelete handles POST /admin/pages/:id/delete route
 func PageDelete(c *gin.Context) {
-	page, _ := models.GetPage(c.Param("id"))
-	if err := page.Delete(); err != nil {
+	page := models.Page{}
+	db := models.GetDB()
+	db.First(&page, c.Param("id"))
+	if page.ID == 0 {
+		c.HTML(http.StatusNotFound, "errors/404", nil)
+		return
+	}
+	if err := db.Delete(&page).Error; err != nil {
 		c.HTML(http.StatusInternalServerError, "errors/500", nil)
 		logrus.Error(err)
 		return

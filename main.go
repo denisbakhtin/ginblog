@@ -1,19 +1,12 @@
-//go:generate rice embed-go
 package main
 
 import (
-	"flag"
-	"fmt"
-	"html/template"
 	"net/http"
 	"os"
-	"strings"
 
-	"github.com/GeertJohan/go.rice"
 	"github.com/Sirupsen/logrus"
 	"github.com/claudiu/gocron"
 	"github.com/denisbakhtin/ginblog/controllers"
-	"github.com/denisbakhtin/ginblog/helpers"
 	"github.com/denisbakhtin/ginblog/models"
 	"github.com/denisbakhtin/ginblog/system"
 	"github.com/gin-gonic/contrib/sessions"
@@ -22,13 +15,11 @@ import (
 )
 
 func main() {
-	migration := flag.String("migrate", "", "Run DB migrations: up, down, redo, new [MIGRATION_NAME] and then os.Exit(0)")
-	flag.Parse()
-
-	setLogger()
-	loadConfig()
-	connectToDB()
-	runMigrations(migration)
+	initLogger()
+	system.LoadConfig()
+	models.SetDB(system.GetConnectionString())
+	models.AutoMigrate()
+	system.LoadTemplates()
 
 	//Periodic tasks
 	gocron.Every(1).Day().Do(system.CreateXMLSitemap)
@@ -37,11 +28,11 @@ func main() {
 	// Creates a gin router with default middleware:
 	// logger and recovery (crash-free) middleware
 	router := gin.Default()
-	setTemplate(router) //initialize templates
-	setSessions(router) //initialize session storage & use sessiom/csrf middlewares
+	router.SetHTMLTemplate(system.GetTemplates())
+	initSessions(router) //initialize session storage & use sessiom/csrf middlewares
 
 	router.StaticFS("/public", http.Dir(system.PublicPath())) //better use nginx to serve assets (Cache-Control, Etag, fast gzip, etc)
-	router.Use(SharedData())
+	router.Use(controllers.ContextData())
 
 	router.GET("/", controllers.HomeGet)
 	router.NoRoute(controllers.NotFound)
@@ -62,7 +53,7 @@ func main() {
 	router.GET("/rss", controllers.RssGet)
 
 	authorized := router.Group("/admin")
-	authorized.Use(AuthRequired())
+	authorized.Use(controllers.AuthRequired())
 	{
 		authorized.GET("/", controllers.AdminGet)
 
@@ -99,8 +90,8 @@ func main() {
 	router.Run(":8080")
 }
 
-//setLogger initializes logrus logger with some defaults
-func setLogger() {
+//initLogger initializes logrus logger with some defaults
+func initLogger() {
 	logrus.SetFormatter(&logrus.TextFormatter{})
 	logrus.SetOutput(os.Stderr)
 	if gin.Mode() == gin.DebugMode {
@@ -108,61 +99,8 @@ func setLogger() {
 	}
 }
 
-//setConfig loads config.json from rice box "config"
-func loadConfig() {
-	box := rice.MustFindBox("config")
-	system.LoadConfig(box.MustBytes("config.json"))
-}
-
-//connectToDB initializes *sqlx.DB handler
-func connectToDB() {
-	config := system.GetConfig()
-	connection := fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable", config.Database.Host, config.Database.User, config.Database.Password, config.Database.Name)
-	models.SetDB(connection)
-}
-
-//runMigrations applies database migrations if "migrate" flat is set
-func runMigrations(command *string) {
-	if len(*command) > 0 {
-		//Read https://github.com/rubenv/sql-migrate for more info about migrations
-		box := rice.MustFindBox("migrations")
-		system.RunMigrations(box, models.GetDB(), command)
-		os.Exit(0)
-	}
-}
-
-//setTemplate loads templates from rice box "views"
-func setTemplate(router *gin.Engine) {
-	box := rice.MustFindBox("views")
-	tmpl := template.New("").Funcs(template.FuncMap{
-		"isActive":      helpers.IsActive,
-		"stringInSlice": helpers.StringInSlice,
-		"dateTime":      helpers.DateTime,
-		"recentPosts":   helpers.RecentPosts,
-		"tags":          helpers.Tags,
-		"archives":      helpers.Archives,
-	})
-
-	fn := func(path string, f os.FileInfo, err error) error {
-		if f.IsDir() != true && strings.HasSuffix(f.Name(), ".html") {
-			var err error
-			tmpl, err = tmpl.Parse(box.MustString(path))
-			if err != nil {
-				return err
-			}
-		}
-		return nil
-	}
-
-	err := box.Walk("", fn)
-	if err != nil {
-		panic(err)
-	}
-	router.SetHTMLTemplate(tmpl)
-}
-
-//setSessions initializes sessions & csrf middlewares
-func setSessions(router *gin.Engine) {
+//initSessions initializes sessions & csrf middlewares
+func initSessions(router *gin.Engine) {
 	config := system.GetConfig()
 	//https://github.com/gin-gonic/contrib/tree/master/sessions
 	store := sessions.NewCookieStore([]byte(config.SessionSecret))
@@ -176,36 +114,4 @@ func setSessions(router *gin.Engine) {
 			c.Abort()
 		},
 	}))
-}
-
-//+++++++++++++ middlewares +++++++++++++++++++++++
-
-//SharedData fills in common data, such as user info, etc...
-func SharedData() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		session := sessions.Default(c)
-		if uID := session.Get("UserID"); uID != nil {
-			user, _ := models.GetUser(uID)
-			if user.ID != 0 {
-				c.Set("User", user)
-			}
-		}
-		if system.GetConfig().SignupEnabled {
-			c.Set("SignupEnabled", true)
-		}
-		c.Next()
-	}
-}
-
-//AuthRequired grants access to authenticated users, requires SharedData middleware
-func AuthRequired() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		if user, _ := c.Get("User"); user != nil {
-			c.Next()
-		} else {
-			logrus.Warnf("User not authorized to visit %s", c.Request.RequestURI)
-			c.HTML(http.StatusForbidden, "errors/403", nil)
-			c.Abort()
-		}
-	}
 }

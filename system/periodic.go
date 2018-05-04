@@ -16,6 +16,7 @@ func CreateXMLSitemap() {
 	domain := GetConfig().Domain
 	now := time.Now()
 	items := make([]sitemap.Item, 1)
+	db := models.GetDB()
 
 	//Home page
 	items = append(items, sitemap.Item{
@@ -26,11 +27,8 @@ func CreateXMLSitemap() {
 	})
 
 	//Posts
-	posts, err := models.GetPublishedPosts()
-	if err != nil {
-		logrus.Error(err)
-		return
-	}
+	var posts []models.Post
+	db.Where("published = true").Find(&posts)
 	for i := range posts {
 		items = append(items, sitemap.Item{
 			Loc:        fmt.Sprintf("%s/posts/%d", domain, posts[i].ID),
@@ -41,11 +39,8 @@ func CreateXMLSitemap() {
 	}
 
 	//Static pages
-	pages, err := models.GetPublishedPages()
-	if err != nil {
-		logrus.Error(err)
-		return
-	}
+	var pages []models.Page
+	db.Where("published = true").Find(&pages)
 	for i := range pages {
 		items = append(items, sitemap.Item{
 			Loc:        fmt.Sprintf("%s/pages/%d", domain, pages[i].ID),
