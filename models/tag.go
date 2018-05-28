@@ -8,6 +8,6 @@ import (
 type Tag struct {
 	gorm.Model
 	Name string
-	//calculated fields
+	Posts []Post `gorm:"many2many:posts_tags;"`
 	PostCount int64 `form:"-"`
 }

@@ -1,13 +1,13 @@
 {{define "home/show"}}
 {{template "header" .}}
 {{template "navbar" .}}
-<div class="container" role="main">		
+<div class="container" role="main">
   {{template "sidebar" .}}
   <div id="main-column">
     <div class="jumbotron">
       <h2>{{.Title}}</h2>
 
-      This is a blog boilerplate created in Go using <a href="https://github.com/gin-gonic/gin">GIN</a> web microframework, <a href="http://www.gorillatoolkit.org/pkg/sessions">Gorilla web toolkit sessions</a> and <a href="https://github.com/jmoiron/sqlx">sqlx</a>
+      This is a blog boilerplate created in Go using <a href="https://github.com/gin-gonic/gin">GIN</a> web microframework, <a href="https://github.com/gin-contrib/sessions">gin sessions</a> and <a href="http://gorm.io">gorm</a>
       <br>
       <br>
       It provides essentials that most web applications need - MVC pattern user authorisation, database migrations, CSRF protection, admin dashboard, static pages and much more...
@@ -17,7 +17,7 @@
       <br>
       <br>
       <div class="well">
-        <a href="https://github.com/denisbakhtin/amazingblog">https://github.com/denisbakhtin/amazingblog</a>
+        <a href="https://github.com/denisbakhtin/ginblog">https://github.com/denisbakhtin/ginblog</a>
       </div>
     </div>
   </div>

@@ -1,0 +1,29 @@
+{{define "auth/signin"}}
+{{template "header" .}}
+{{template "navbar" .}}
+<div class="container" role="main">
+  <div class="card auth-card">
+    <div class="card-body">
+      <form method="post" data-parsley-validate>
+        <h4 class="card-title">Sign In</h4>
+        {{range .Flash}}
+          <div class="alert alert-danger">{{.}}</div><p>
+        {{end}}
+        <input type="hidden" name="_csrf" value="{{.Csrf}}">
+        <div class="form-group">
+          <label class="control-label" for="email">Email</label>
+          <input id="email" name="email" type="email" placeholder="Email address" class="form-control input-md" required="" data-parsley-required-message="Please enter your email">
+        </div>
+
+        <div class="form-group">
+          <label class="control-label" for="password">Password</label>
+          <input id="password" name="password" type="password" placeholder="Password" class="form-control input-md" required="" data-parsley-required-message="Please enter your password">
+        </div>
+
+        <button id="signin" name="signin" class="btn btn-primary">Sign In</button>
+      </form>
+    </div>
+  </div>
+</div>
+{{template "footer" .}}
+{{end}}

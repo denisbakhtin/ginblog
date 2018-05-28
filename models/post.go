@@ -17,7 +17,7 @@ type Post struct {
 	UserID      uint
 	User        User
 	//calculated fields
-	Tags         []string `form:"tags" json:"tags" db:"-"` //can't make gin Bind form field to []Tag, so use []string instead
+	Tags         []Tag `form:"tags" json:"tags" gorm:"many2many:posts_tags;"`
 	CommentCount int64    `form:"-" json:"comment_count" db:"comment_count"`
 }
 

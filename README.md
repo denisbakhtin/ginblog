@@ -1,27 +1,27 @@
 GIN-powered blog boilerplate
 ===============
 
-Provides essentials that most web blogs need - MVC pattern, user authorisation, SQL db migration, admin dashboard, javascript form validation, rss feeds, etc. 
+*Update in progress*
+
+Provides essentials that most web blogs need - MVC pattern, user authorisation, SQL db migration, admin dashboard, javascript form validation, rss feeds, etc.
 
 It consists of the following core components:
 
 - GIN - A web microframework (with best performance atm) for Golang - https://github.com/gin-gonic/gin
 - GIN middlewares [gin-csrf](https://github.com/utrack/gin-csrf), [gin/contrib/sessions](https://github.com/gin-gonic/contrib/tree/master/sessions)
-- pq - Postgres driver for the Go language - https://github.com/lib/pq
-- sqlx - Relational database access interface - https://github.com/jmoiron/sqlx
-- sql-migrate - SQL schema migration tool - https://github.com/rubenv/sql-migrate
-- go.rice - Asset packaging tool for easy deployment - https://github.com/GeertJohan/go.rice
+- gorm - The orm library for go - http://gorm.io/
 - logrus - advanced Go logger - https://github.com/Sirupsen/logrus
-- Twitter Bootstrap - popular HTML, CSS, JS framework for developing responsive, mobile first web projects - http://getbootstrap.com
+- Twitter Bootstrap 4 - popular HTML, CSS, JS framework for developing responsive, mobile first web projects - http://getbootstrap.com
 - Parsley JS - form validation - http://parsleyjs.org
 - Bootstrap Markdown Editor with image upload - https://github.com/inacho/bootstrap-markdown-editor
-- blackfriday - markdown processor - https://github.com/russross/blackfriday 
-- bluemonday - html sanitizer (for excerpts, etc) - https://github.com/microcosm-cc/bluemonday 
+- blackfriday - markdown processor - https://github.com/russross/blackfriday
+- bluemonday - html sanitizer (for excerpts, etc) - https://github.com/microcosm-cc/bluemonday
 - RSS feeds - https://github.com/gorilla/feeds
-- sitemap - XML sitemap for search engines - https://github.com/denisbakhtin/sitemap 
+- sitemap - XML sitemap for search engines - https://github.com/denisbakhtin/sitemap
 - gocron - periodic task launcher (for sitemap generation, etc) - https://github.com/jasonlvhit/gocron
 
 # TODO (May be)
+- add gulp asset compiler
 - Site search with Postgresql full text search (okish for most websites) - http://www.postgresql.org/docs/9.4/static/textsearch-intro.html
 - Comments with oauth2 authentication
 - Social plugins (share, like buttons)
@@ -45,15 +45,13 @@ go get .
 ```
 Copy sample config `cp config/config.json.example config/config.json`, create postgresql database, modify config/config.json accordingly.
 
-Type `go run main.go -migrate=up` to create users and pages tables.
-
-`go run main.go` to launch web server.
+Type `go run main.go` to launch web server.
 
 # Deployment
 ```
 make build
 ```
-Upload `ginblog` binary and `public` directory to your server. If you find `rice embed-go` is running slow on your system, consider using other [go.rice packing options](https://github.com/GeertJohan/go.rice#tool-usage) with `go generate` command.
+Upload `ginblog` binary `config`, `views` and `public` directory to your server.
 
 # Project structure
 
@@ -69,17 +67,13 @@ All your controllers that serve defined routes.
 
 Helper functions.
 
-`/migrations`
-
-Database schema migrations
-
 `/models`
 
 You database models.
 
 `/public`
 
-It has all your static files
+It contains all web-site static files
 
 `/system`
 
@@ -136,19 +130,16 @@ You can now go back to your `GOPATH` and check if everything is ok:
 go install github.com/denisbakhtin/amazingblog
 ```
 
-And that's it. 
+And that's it.
 
 # Continuous Development
 
-For Continuous Development I recommend using `Watcher` - https://github.com/radovskyb/watcher
+For Continuous Development I recommend using `reflex` - https://github.com/cespare/reflex
 
-You can install `Watcher` by issuing:
+You can install `reflex` by issuing:
 
 ```
-go get -u github.com/radovskyb/watcher/...
+go get -u github.com/cespare/reflex
 ```
 
-Then simply run `watcher`, or `watcher -keepalive -cmd="go run main.go"` in your project directory.
-
-# TODO
-Update project dependencies, switch to gorm, bootstrap 4.0
+Then simply run `reflex -c reflex.conf` in the project directory.

@@ -2,14 +2,14 @@ package main
 
 import (
 	"net/http"
-	"os"
 
 	"github.com/Sirupsen/logrus"
 	"github.com/claudiu/gocron"
 	"github.com/denisbakhtin/ginblog/controllers"
 	"github.com/denisbakhtin/ginblog/models"
 	"github.com/denisbakhtin/ginblog/system"
-	"github.com/gin-gonic/contrib/sessions"
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	"github.com/utrack/gin-csrf"
 )
@@ -93,7 +93,7 @@ func main() {
 //initLogger initializes logrus logger with some defaults
 func initLogger() {
 	logrus.SetFormatter(&logrus.TextFormatter{})
-	logrus.SetOutput(os.Stderr)
+	//logrus.SetOutput(os.Stderr)
 	if gin.Mode() == gin.DebugMode {
 		logrus.SetLevel(logrus.InfoLevel)
 	}
@@ -102,8 +102,7 @@ func initLogger() {
 //initSessions initializes sessions & csrf middlewares
 func initSessions(router *gin.Engine) {
 	config := system.GetConfig()
-	//https://github.com/gin-gonic/contrib/tree/master/sessions
-	store := sessions.NewCookieStore([]byte(config.SessionSecret))
+	store := cookie.NewStore([]byte(config.SessionSecret))
 	store.Options(sessions.Options{HttpOnly: true, MaxAge: 7 * 86400}) //Also set Secure: true if using SSL, you should though
 	router.Use(sessions.Sessions("gin-session", store))
 	//https://github.com/utrack/gin-csrf

@@ -3,7 +3,7 @@
 default: build
 
 build: vet
-	@go generate && go build && rm ./*.rice-box.go
+	go build
 
 doc:
 	@godoc -http=:6060 -index

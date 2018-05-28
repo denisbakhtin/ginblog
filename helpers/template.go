@@ -57,6 +57,7 @@ func Archives() []models.Post {
 }
 
 //DefaultH returns common to all pages template data
+//TODO: move to functions
 func DefaultH(c *gin.Context) gin.H {
 	user, _ := c.Get("User")
 	signupEnabled, _ := c.Get("SignupEnabled")

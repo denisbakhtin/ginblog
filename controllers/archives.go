@@ -17,7 +17,7 @@ func ArchiveGet(c *gin.Context) {
 	month, _ := strconv.Atoi(c.Param("month"))
 	db := models.GetDB()
 	var list []models.Post
-	db.Where("published = true AND date_part('year', created_at)=$1 AND date_part('month', created_at)=$2", year, month).Order("created_at desc").Find(&list)
+	db.Where("published = true AND date_part('year', created_at)=? AND date_part('month', created_at)=?", year, month).Order("created_at desc").Find(&list)
 	h := helpers.DefaultH(c)
 	h["Title"] = fmt.Sprintf("%s %d archives", time.Month(month).String(), year)
 	h["List"] = list

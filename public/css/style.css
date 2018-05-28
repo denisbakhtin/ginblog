@@ -1,11 +1,12 @@
 html {
 	position: relative;
 	min-height: 100%;
-	padding-top: 70px;
+	padding-top: 80px;
 }
 
 body {
 	margin-bottom: 60px;
+	background: #f8f8f8;
 }
 
 #footer {
@@ -19,13 +20,13 @@ body {
 
 input.parsley-success,
 select.parsley-success,
-textarea.parsley-success {		
+textarea.parsley-success {
 	border: 2px solid #62c462;
 }
 
 input.parsley-error,
 select.parsley-error,
-textarea.parsley-error {		
+textarea.parsley-error {
 	border: 2px solid #ee5f5b;
 }
 
@@ -161,4 +162,12 @@ textarea.parsley-error {
 }
 .post-info-item {
   margin-right: 1em;
+}
+
+.auth-card {
+	max-width: 450px;
+	margin: 0 auto;
+	margin-top: 100px;
+	margin-bottom: 50px;
+	box-shadow: 0 0 2px rgba(0,0,0,0.2);
 }

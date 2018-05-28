@@ -3,25 +3,26 @@ package controllers
 import (
 	"net/http"
 
+	"strings"
+
 	"github.com/Sirupsen/logrus"
 	"github.com/denisbakhtin/ginblog/helpers"
 	"github.com/denisbakhtin/ginblog/models"
-	"github.com/gin-gonic/contrib/sessions"
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-	"strings"
 )
 
 //TagGet handles GET /tags/:name route
 func TagGet(c *gin.Context) {
 	db := models.GetDB()
 	tag := models.Tag{}
-	db.Where("lower(name) = $1", strings.ToLower(c.Param("name"))).First(&tag)
+	db.Where("lower(name) = ?", strings.ToLower(c.Param("name"))).First(&tag)
 	if tag.ID == 0 {
 		c.HTML(http.StatusNotFound, "errors/404", nil)
 		return
 	}
 	var list []models.Post
-	db.Where("published = true AND tag_id = $1", tag.ID).Find(&list)
+	db.Where("published = true AND tag_id = ?", tag.ID).Find(&list)
 	h := helpers.DefaultH(c)
 	h["Title"] = tag.Name
 	h["Active"] = "tags"
@@ -77,7 +78,7 @@ func TagCreate(c *gin.Context) {
 func TagDelete(c *gin.Context) {
 	db := models.GetDB()
 	tag := models.Tag{}
-	db.Where("lower(name) = $1", strings.ToLower(c.Param("name"))).First(&tag)
+	db.Where("lower(name) = ?", strings.ToLower(c.Param("name"))).First(&tag)
 	if tag.ID == 0 {
 		c.HTML(http.StatusNotFound, "errors/404", nil)
 		return

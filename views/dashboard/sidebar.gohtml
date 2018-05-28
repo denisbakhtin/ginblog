@@ -21,18 +21,18 @@
     </div>
 
     <h5>Navigation</h5>
-    <ul class="nav nav-pills nav-stacked">
-      <li class="{{isActive .Active "posts"}}">
-        <a href="/admin/posts"><i class="glyphicon glyphicon-pencil indent"></i>Posts</a>
+    <ul class="nav flex-column nav-pills">
+      <li class="nav-item">
+        <a class="nav-link {{isActive .Active "posts"}}" href="/admin/posts"><i class="glyphicon glyphicon-pencil indent"></i>Posts</a>
       </li>
-      <li class="{{isActive .Active "tags"}}">
-        <a href="/admin/tags"><i class="glyphicon glyphicon-pencil indent"></i>Tags</a>
+      <li class="nav-item">
+        <a class="nav-link {{isActive .Active "tags"}}" href="/admin/tags"><i class="glyphicon glyphicon-pencil indent"></i>Tags</a>
       </li>
-      <li class="{{isActive .Active "pages"}}">
-        <a href="/admin/pages"><i class="glyphicon glyphicon-duplicate indent"></i>Pages</a>
+      <li class="nav-item">
+        <a class="nav-link {{isActive .Active "pages"}}" href="/admin/pages"><i class="glyphicon glyphicon-duplicate indent"></i>Pages</a>
       </li>
-      <li class="{{isActive .Active "users"}}">
-        <a href="/admin/users"><i class="glyphicon glyphicon-user indent"></i>Users</a>
+      <li class="nav-item">
+        <a class="nav-link {{isActive .Active "users"}}" href="/admin/users"><i class="glyphicon glyphicon-user indent"></i>Users</a>
       </li>
     </ul>
   </div>
