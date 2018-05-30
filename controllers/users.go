@@ -17,7 +17,6 @@ func UserIndex(c *gin.Context) {
 	db.Find(&list)
 	h := helpers.DefaultH(c)
 	h["Title"] = "List of users"
-	h["Active"] = "users"
 	h["List"] = list
 	c.HTML(http.StatusOK, "users/index", h)
 }
@@ -26,7 +25,6 @@ func UserIndex(c *gin.Context) {
 func UserNew(c *gin.Context) {
 	h := helpers.DefaultH(c)
 	h["Title"] = "New user"
-	h["Active"] = "users"
 	session := sessions.Default(c)
 	h["Flash"] = session.Flashes()
 	session.Save()
@@ -66,7 +64,6 @@ func UserEdit(c *gin.Context) {
 	}
 	h := helpers.DefaultH(c)
 	h["Title"] = "Edit user"
-	h["Active"] = "users"
 	h["User"] = user
 	session := sessions.Default(c)
 	h["Flash"] = session.Flashes()

@@ -12,6 +12,7 @@ It consists of the following core components:
 - gorm - The orm library for go - http://gorm.io/
 - logrus - advanced Go logger - https://github.com/Sirupsen/logrus
 - Twitter Bootstrap 4 - popular HTML, CSS, JS framework for developing responsive, mobile first web projects - http://getbootstrap.com
+- Gulp asset compiler
 - Parsley JS - form validation - http://parsleyjs.org
 - Bootstrap Markdown Editor with image upload - https://github.com/inacho/bootstrap-markdown-editor
 - blackfriday - markdown processor - https://github.com/russross/blackfriday
@@ -44,8 +45,9 @@ cd ginblog
 go get .
 ```
 Copy sample config `cp config/config.json.example config/config.json`, create postgresql database, modify config/config.json accordingly.
+Install `npm`, `gulp`, run `npm install` in the project directory.
 
-Type `go run main.go` to launch web server.
+Type `go run main.go` to launch web server, `gulp` to rebuild assets.
 
 # Deployment
 ```
@@ -134,12 +136,9 @@ And that's it.
 
 # Continuous Development
 
-For Continuous Development I recommend using `reflex` - https://github.com/cespare/reflex
-
-You can install `reflex` by issuing:
-
-```
-go get -u github.com/cespare/reflex
-```
-
+For Continuous Development a good option is `reflex` - https://github.com/cespare/reflex
 Then simply run `reflex -c reflex.conf` in the project directory.
+
+Or run `realize s` (works on Windows unlike reflex) - https://github.com/oxequa/realize.
+
+To rebuild assets on change install `npm`, `gulp` and run `gulp watch`.

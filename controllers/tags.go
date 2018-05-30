@@ -25,7 +25,6 @@ func TagGet(c *gin.Context) {
 	db.Where("published = true AND tag_id = ?", tag.ID).Find(&list)
 	h := helpers.DefaultH(c)
 	h["Title"] = tag.Name
-	h["Active"] = "tags"
 	h["List"] = list
 	c.HTML(http.StatusOK, "tags/show", h)
 }
@@ -38,7 +37,6 @@ func TagIndex(c *gin.Context) {
 	h := helpers.DefaultH(c)
 	h["Title"] = "List of tags"
 	h["List"] = list
-	h["Active"] = "tags"
 	c.HTML(http.StatusOK, "tags/index", h)
 }
 
@@ -46,7 +44,6 @@ func TagIndex(c *gin.Context) {
 func TagNew(c *gin.Context) {
 	h := helpers.DefaultH(c)
 	h["Title"] = "New tag"
-	h["Active"] = "tags"
 	session := sessions.Default(c)
 	h["Flash"] = session.Flashes()
 	session.Save()

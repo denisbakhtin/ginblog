@@ -10,7 +10,6 @@ import (
 	"github.com/denisbakhtin/ginblog/models"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-	csrf "github.com/utrack/gin-csrf"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -18,10 +17,8 @@ import (
 func SignInGet(c *gin.Context) {
 	h := helpers.DefaultH(c)
 	h["Title"] = "Basic GIN web-site signin form"
-	h["Active"] = "signin"
 	session := sessions.Default(c)
 	h["Flash"] = session.Flashes()
-	h["Csrf"] = csrf.GetToken(c)
 	session.Save()
 	c.HTML(http.StatusOK, "auth/signin", h)
 }
@@ -58,10 +55,8 @@ func SignInPost(c *gin.Context) {
 func SignUpGet(c *gin.Context) {
 	h := helpers.DefaultH(c)
 	h["Title"] = "Basic GIN web-site signup form"
-	h["Active"] = "signup"
 	session := sessions.Default(c)
 	h["Flash"] = session.Flashes()
-	h["Csrf"] = csrf.GetToken(c)
 	session.Save()
 	c.HTML(http.StatusOK, "auth/signup", h)
 }

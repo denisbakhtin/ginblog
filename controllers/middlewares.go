@@ -18,7 +18,7 @@ func ContextData() gin.HandlerFunc {
 			user := models.User{}
 			models.GetDB().First(&user, uID)
 			if user.ID != 0 {
-				c.Set("User", user)
+				c.Set("User", &user)
 			}
 		}
 		if system.GetConfig().SignupEnabled {

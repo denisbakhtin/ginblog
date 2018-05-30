@@ -25,7 +25,6 @@ func PageGet(c *gin.Context) {
 	h := helpers.DefaultH(c)
 	h["Title"] = page.Name
 	h["Description"] = template.HTML(string(blackfriday.MarkdownCommon([]byte(page.Description))))
-	h["Active"] = "pages"
 	c.HTML(http.StatusOK, "pages/show", h)
 }
 
@@ -37,7 +36,6 @@ func PageIndex(c *gin.Context) {
 	h := helpers.DefaultH(c)
 	h["Title"] = "List of pages"
 	h["List"] = list
-	h["Active"] = "pages"
 	c.HTML(http.StatusOK, "pages/index", h)
 }
 
@@ -45,7 +43,6 @@ func PageIndex(c *gin.Context) {
 func PageNew(c *gin.Context) {
 	h := helpers.DefaultH(c)
 	h["Title"] = "New page"
-	h["Active"] = "pages"
 	session := sessions.Default(c)
 	h["Flash"] = session.Flashes()
 	session.Save()
@@ -84,7 +81,6 @@ func PageEdit(c *gin.Context) {
 	}
 	h := helpers.DefaultH(c)
 	h["Title"] = "Edit page"
-	h["Active"] = "pages"
 	h["Page"] = page
 	session := sessions.Default(c)
 	h["Flash"] = session.Flashes()

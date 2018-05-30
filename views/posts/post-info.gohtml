@@ -2,17 +2,17 @@
 <div class="well well-sm post-info">
   {{if .Author}}
   <span class="post-info-item">
-    <i class="glyphicon glyphicon-user indent"></i>{{.Author.Name}}
+    <i class="fa fa-user mr-1"></i>{{.Author.Name}}
   </span>
   {{end}}
   <span class="post-info-item">
-    <i class="glyphicon glyphicon-calendar indent"></i>{{printf "%d-%02d-%02d" .CreatedAt.Year .CreatedAt.Month .CreatedAt.Day}}
+    <i class="fa fa-calendar-alt mr-1"></i>{{printf "%d-%02d-%02d" .CreatedAt.Year .CreatedAt.Month .CreatedAt.Day}}
   </span>
   <span class="post-info-item">
-    <a href="#comments"><i class="glyphicon glyphicon-comment indent"></i>Comments: {{.CommentCount}}</a>
+    <a href="#comments"><i class="fa fa-comments mr-1"></i>Comments: {{.CommentCount}}</a>
   </span>
   <span class="post-info-item">
-    <i class="glyphicon glyphicon-tags indent"></i>
+    <i class="fa fa-tags mr-1"></i>
     {{range .Tags}}
     <a href="/tags/{{.}}" class="label label-success">{{.}}</a>
     {{end}}

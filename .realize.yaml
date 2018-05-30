@@ -1,0 +1,24 @@
+settings:
+  legacy:
+    force: false
+    interval: 0s
+schema:
+- name: ginblog
+  path: .
+  commands: 
+    run:
+      status: true
+  watcher:
+    extensions:
+    - go
+    - gohtml
+    paths:
+    - /
+    ignored_paths:
+    - .git
+    - .realize
+    - vendor
+    - node_modules
+    scripts:
+    - type: before
+      command: taskkill /im ginblog.exe /F

@@ -27,7 +27,6 @@ func PostGet(c *gin.Context) {
 	h["Title"] = post.Name
 	h["Description"] = template.HTML(string(blackfriday.MarkdownCommon([]byte(post.Description))))
 	h["Post"] = post
-	h["Active"] = fmt.Sprintf("posts/%d", post.ID)
 	c.HTML(http.StatusOK, "posts/show", h)
 }
 
@@ -39,7 +38,6 @@ func PostIndex(c *gin.Context) {
 	h := helpers.DefaultH(c)
 	h["Title"] = "List of blog posts"
 	h["List"] = list
-	h["Active"] = "posts"
 	c.HTML(http.StatusOK, "posts/index", h)
 }
 
@@ -50,7 +48,6 @@ func PostNew(c *gin.Context) {
 	db.Order("name asc").Find(&tags)
 	h := helpers.DefaultH(c)
 	h["Title"] = "New post entry"
-	h["Active"] = "posts"
 	h["Tags"] = tags
 	session := sessions.Default(c)
 	h["Flash"] = session.Flashes()
@@ -95,7 +92,6 @@ func PostEdit(c *gin.Context) {
 	db.Order("name asc").Find(&tags)
 	h := helpers.DefaultH(c)
 	h["Title"] = "Edit post entry"
-	h["Active"] = "posts"
 	h["Post"] = post
 	h["Tags"] = tags
 	session := sessions.Default(c)

@@ -1,40 +1,34 @@
 {{define "dashboard/sidebar"}}
-<aside id="sidebar-dashboard">
-  <div class="slimscroll">
-    <div class="well well-sm user-info">
-      <h5>User Profile</h5>
-      <i class="glyphicon glyphicon-user"></i>
-      <div class="btn-group">
-        <button type="button" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-cog"></i>
-        </button>
-        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">settings <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu right" role="menu" style="margin-left: -24px;">
-          <li><a href="/admin/users/{{.ActiveUser.ID}}/edit"><i class="glyphicon glyphicon-edit indent"></i>Edit profile</a>
-          </li>
-          <li class="divider"></li>
-          <li><a href="/logout"><i class="glyphicon glyphicon-off indent"></i>Logout</a>
-          </li>
-        </ul>
+<aside class="col-sm-3">
+  <div class="well well-sm user-info">
+    <h5>User Profile</h5>
+    <div class="dropdown">
+      <button class="btn btn-default dropdown-toggle" type="button" id="dropdownSettingsButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fa fa-cog mr-2"></i>settings
+      </button>
+      <div class="dropdown-menu" aria-labelledby="dropdownSettingsButton">
+        <a class="dropdown-item" href="/admin/users/{{activeUserID .Context}}/edit"><i class="fa fa-edit mr-3"></i>Edit profile</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="/logout"><i class="fa fa-sign-out-alt mr-3"></i>Logout</a>
       </div>
-      <span class="email">{{.ActiveUser.Email}}</span>
     </div>
-
-    <h5>Navigation</h5>
-    <ul class="nav flex-column nav-pills">
-      <li class="nav-item">
-        <a class="nav-link {{isActive .Active "posts"}}" href="/admin/posts"><i class="glyphicon glyphicon-pencil indent"></i>Posts</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link {{isActive .Active "tags"}}" href="/admin/tags"><i class="glyphicon glyphicon-pencil indent"></i>Tags</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link {{isActive .Active "pages"}}" href="/admin/pages"><i class="glyphicon glyphicon-duplicate indent"></i>Pages</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link {{isActive .Active "users"}}" href="/admin/users"><i class="glyphicon glyphicon-user indent"></i>Users</a>
-      </li>
-    </ul>
+    <span class="email">{{activeUserEmail .Context}}</span>
   </div>
+
+  <h5>Navigation</h5>
+  <ul class="nav flex-column nav-pills">
+    <li class="nav-item">
+      <a class="nav-link {{isActiveLink .Context "/admin/posts"}}" href="/admin/posts"><i class="fa fa-pencil-alt mr-3"></i>Posts</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {{isActiveLink .Context "/admin/tags"}}" href="/admin/tags"><i class="fa fa-tags mr-3"></i>Tags</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {{isActiveLink .Context "/admin/pages"}}" href="/admin/pages"><i class="fa fa-copy mr-3"></i>Pages</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {{isActiveLink .Context "/admin/users"}}" href="/admin/users"><i class="fa fa-user mr-3"></i>Users</a>
+    </li>
+  </ul>
 </aside>
 {{end}}

@@ -1,0 +1,57 @@
+{
+  "_args": [
+    [
+      "ckeditor@4.9.2",
+      "C:\\Go Projects\\src\\github.com\\denisbakhtin\\ginblog"
+    ]
+  ],
+  "_from": "ckeditor@4.9.2",
+  "_id": "ckeditor@4.9.2",
+  "_inBundle": false,
+  "_integrity": "sha1-OFYAy0Ao4AVcknIOIkNbuX9BPNw=",
+  "_location": "/ckeditor",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "version",
+    "registry": true,
+    "raw": "ckeditor@4.9.2",
+    "name": "ckeditor",
+    "escapedName": "ckeditor",
+    "rawSpec": "4.9.2",
+    "saveSpec": null,
+    "fetchSpec": "4.9.2"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/ckeditor/-/ckeditor-4.9.2.tgz",
+  "_spec": "4.9.2",
+  "_where": "C:\\Go Projects\\src\\github.com\\denisbakhtin\\ginblog",
+  "author": {
+    "name": "CKSource",
+    "url": "http://cksource.com/"
+  },
+  "bugs": {
+    "url": "http://dev.ckeditor.com"
+  },
+  "description": "JavaScript WYSIWYG web text editor.",
+  "homepage": "http://ckeditor.com",
+  "keywords": [
+    "ckeditor",
+    "fckeditor",
+    "editor",
+    "wysiwyg",
+    "html",
+    "richtext",
+    "text",
+    "javascript"
+  ],
+  "license": "(GPL-2.0 OR LGPL-2.1 OR MPL-1.1)",
+  "main": "ckeditor.js",
+  "name": "ckeditor",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ckeditor/ckeditor-releases.git"
+  },
+  "version": "4.9.2"
+}

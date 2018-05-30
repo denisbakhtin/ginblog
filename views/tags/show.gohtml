@@ -4,7 +4,7 @@
 <div class="container" role="main">
   {{template "sidebar" .}}
   <div id="main-column">
-    <h2><i class="glyphicon glyphicon-tag indent"></i>{{.Title}}</h2>
+    <h2><i class="fa fa-tags mr-1"></i>{{.Title}}</h2>
     {{range .List}}
     <h3><a href="/posts/{{.ID}}">{{.Name}}</a></h3>
     {{template "posts/post-info" .}}
