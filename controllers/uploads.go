@@ -22,24 +22,22 @@ func UploadPost(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, "")
 		return
 	}
-	var uris []string
-	fmap := c.Request.MultipartForm.File
-	for k := range fmap {
-		file, fileHeader, err := c.Request.FormFile(k)
-		if err != nil {
-			logrus.Error(err)
-			c.JSON(http.StatusInternalServerError, "")
-			return
-		}
-		uri, err := saveFile(fileHeader, file)
-		if err != nil {
-			logrus.Error(err)
-			c.JSON(http.StatusInternalServerError, "")
-			return
-		}
-		uris = append(uris, uri)
+
+	mpartFile, mpartHeader, err := c.Request.FormFile("upload")
+	if err != nil {
+		logrus.Error(err)
+		c.String(400, err.Error())
+		return
 	}
-	c.JSON(http.StatusOK, uris)
+	defer mpartFile.Close()
+	uri, err := saveFile(mpartHeader, mpartFile)
+	if err != nil {
+		logrus.Error(err)
+		c.JSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"uploaded": true, "url": uri})
 }
 
 //saveFile saves file to disc and returns its relative uri

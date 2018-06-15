@@ -1,10 +1,17 @@
+'use strict';
+
 var gulp = require("gulp"),
+    sourcemaps = require('gulp-sourcemaps'),
+    source = require('vinyl-source-stream'),
     sass = require("gulp-sass"),
+    browserify = require('browserify'),
+    babelify = require('babelify'),
     autoprefixer = require("gulp-autoprefixer"),
     notify = require("gulp-notify"),
     concat = require("gulp-concat"),
     gzip = require("gulp-gzip"),
-    del = require("del")
+    del = require("del"),
+    gutil = require('gulp-util');
 
 
 // Compile SCSS files to CSS
@@ -39,10 +46,26 @@ gulp.task("images", function () {
 })
 
 // javascript
+gulp.task('es6', function () {
+    browserify({
+            entries: 'assets/js/application.js',
+            debug: true,
+        })
+        .transform(babelify, {
+            "presets": ["es2015"]
+        })
+        .on('error', gutil.log)
+        .bundle()
+        .on('error', gutil.log)
+        .pipe(source('application.js'))
+        .pipe(gulp.dest('public/js'));
+});
+gulp.task("ckeditor", function () {
+    gulp.src("node_modules/@ckeditor/ckeditor5-build-classic/**/*")
+        .pipe(gulp.dest("public/js/ckeditor"))
+});
 gulp.task("js", function () {
     //del(["public/js/**/*"])
-    gulp.src("node_modules/ckeditor/**/*")
-        .pipe(gulp.dest("public/js/ckeditor"))
     gulp.src([
             "node_modules/jquery/dist/jquery.slim.js",
             "node_modules/popper.js/dist/umd/popper.js",
@@ -50,8 +73,12 @@ gulp.task("js", function () {
             "node_modules/bootstrap/dist/js/bootstrap.js",
             "node_modules/jquery-slimscroll/jquery.slimscroll.js",
             "node_modules/select2/dist/js/select2.js",
+            "node_modules/ckeditor5-simple-upload/src/simpleupload.js",
             "assets/js/application.js",
         ])
+        .pipe(babel({
+            presets: ['es2015']
+        }))
         .pipe(concat("application.js"))
         .pipe(gulp.dest("public/js"))
 })
@@ -74,11 +101,11 @@ gulp.task('gzip', function () {
 });
 
 // Watch asset folder for changes
-gulp.task("watch", ["fonts", "scss", "images", "js"], function () {
+gulp.task("watch", ["fonts", "scss", "images", "ckeditor", "es6"], function () {
     gulp.watch("assets/scss/**/*", ["scss"])
     gulp.watch("assets/images/**/*", ["images"])
-    gulp.watch("assets/js/**/*", ["js"])
+    gulp.watch("assets/js/**/*", ["es6"])
 })
 
 // Set watch as default task
-gulp.task("default", ["fonts", "scss", "images", "js", "gzip"])
+gulp.task("default", ["fonts", "scss", "images", "ckeditor", "es6", "gzip"])

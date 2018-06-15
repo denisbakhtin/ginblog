@@ -7,48 +7,41 @@
     <div class="col-sm-9" role="main">
       <div class="panel panel-default">
         <div class="panel-body">
-          <form class="form-horizontal" method="post">
-          <fieldset>
-            <legend>{{.Title}}</legend>
-            {{range .Flash}}
-              <div class="alert alert-danger">{{.}}</div><p>
-            {{end}}
-            <input type="hidden" name="id" value="{{.Page.ID}}" >
-            <div class="form-group">
-              <label class="col-md-2 control-label" for="name">Name</label>
-              <div class="col-md-10">
-                <input id="name" name="name" value="{{.Page.Name}}" placeholder="Page title" class="form-control input-md" required="" >
+          <form method="post">
+            <fieldset>
+              <legend>{{.Title}}</legend>
+              {{range .Flash}}
+                <div class="alert alert-danger">{{.}}</div><p>
+              {{end}}
+              <input type="hidden" name="id" value="{{.Page.ID}}">
+              <input type="hidden" name="_csrf" value="{{.Csrf}}">
+              
+              <div class="form-group">
+                <label class="control-label" for="title">Title</label>
+                <input id="title" name="title" value="{{.Page.Title}}" class="form-control" required="" >
               </div>
-            </div>
 
-            <div class="form-group">
-              <label class="col-md-2 control-label" for="description">Description</label>
-              <div class="col-md-10">
-                <input id="description" type="hidden" name="description">
-                <div id="markdown-editor">{{.Page.Description}}</div>
+              <div class="form-group">
+                <label class="control-label" for="ck-content">Content</label>
+                <textarea name="content" id="ck-content">{{.Page.Content}}</textarea>
               </div>
-            </div>
 
-            <div class="form-group">
-              <label class="col-md-offset-2 col-md-10" for="published">
+              <div class="form-group">
                 <input id="published" name="published" type="checkbox" value="true" {{if .Page.Published}}checked{{end}} >
-                Publish
-              </label>
-            </div>
-
-            <div class="form-group">
-              <label class="col-md-2"></label>
-              <div class="col-md-10">
-                <input type="submit" class="btn btn-primary" value="Submit" onclick="$('#description').val($('#markdown-editor').markdownEditor('content'))">
-                <input type="button" class="btn btn-default" formnovalidate onclick="window.history.back();" value="Cancel">
+                <label class="control-label" for="published">Publish</label>
               </div>
-            </div>
-          </fieldset>
+
+              <div class="form-group">
+                <input type="submit" class="btn btn-primary" value="Submit">
+                <a class="btn btn-secondary" href="/admin/pages">Cancel</a>
+              </div>
+            </fieldset>
           </form>
         </div>
       </div>
     </div>
   </div>
 </div>
+<script src="/public/assets/ckeditor/build/ckeditor.js"></script>
 {{template "footer" .}}
 {{end}}

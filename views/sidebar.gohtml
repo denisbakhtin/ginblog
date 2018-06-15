@@ -2,26 +2,27 @@
 {{$active := .Active}}
 <aside id="sidebar">
   <div class="">
-    <h5><i class="fa fa-pencil-alt text-info mr-1"></i>Recent posts</h5>
-    <ul class="nav nav-pills nav-stacked">
+    <h5>Recent posts</h5>
+    <ul class="nav flex-column">
       {{range recentPosts}}
-      <li class="{{isActiveLink $.Context (printf "posts/%d" .ID)}}">
-        <a href="/posts/{{.ID}}">{{.Name}}</a>
+      <li class="nav-item {{isActiveLink $.Context (printf "posts/%d" .ID)}}">
+        <a class="nav-link" href="/posts/{{.ID}}">{{.Title}}</a>
       </li>
       {{end}}
     </ul>
-    <h5><i class="fa fa-tags text-info mr-1"></i>Tags</h5>
-    <div class="sidebar-tags">
+    <h5>Tags</h5>
+    <ul class="nav sidebar-tags">
       {{range tags}}
-        <a class="label label-success" href="/tags/{{.Name}}">{{.Name}}</a>
+        <li class="nav-item">
+          <a class="nav-link" href="/tags/{{.Title}}">{{.Title}}</a>
+        </li>
       {{end}}
-    </div>
-    <h5><i class="fa fa-archive text-info mr-1"></i>Archives</h5>
-    <ul class="nav nav-pills nav-stacked">
+    </ul>
+    <h5>Archives</h5>
+    <ul class="nav flex-column">
       {{range archives}}
-      <li class="{{isActiveLink $.Context (printf "archives/%d/%02d" .CreatedAt.Year .CreatedAt.Month)}}">
-        <a href="/archives/{{printf "%d/%02d" .CreatedAt.Year .CreatedAt.Month}}">
-          <i class="fa fa-chevron-right mr-1"></i>
+      <li class="nav-item {{isActiveLink $.Context (printf "archives/%d/%02d" .CreatedAt.Year .CreatedAt.Month)}}">
+        <a class="nav-link" href="/archives/{{printf "%d/%02d" .CreatedAt.Year .CreatedAt.Month}}">
           {{printf "%s %d" (.CreatedAt.Month.String) .CreatedAt.Year}}
         </a>
       </li>

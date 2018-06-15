@@ -1,10 +1,20 @@
 package models
 
 import (
+	"time"
+
 	"github.com/jinzhu/gorm"
 	//postgres dialect, required by gorm
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
+
+//Model is a tuned version of gorm.Model
+type Model struct {
+	ID        uint64    `form:"id" gorm:"primary_key"`
+	CreatedAt time.Time `binding:"-"`
+	UpdatedAt time.Time `binding:"-"`
+	//DeletedAt *time.Time `binding:"-"`
+}
 
 var db *gorm.DB
 
@@ -24,7 +34,7 @@ func GetDB() *gorm.DB {
 
 //AutoMigrate runs gorm auto migration
 func AutoMigrate() {
-	db.AutoMigrate(&User{}, &Tag{}, &Page{}, &Post{})
+	db.AutoMigrate(&User{}, &Tag{}, &Page{}, &Post{}, &Comment{})
 }
 
 //truncate truncates string to n runes

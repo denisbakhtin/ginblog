@@ -1,0 +1,104 @@
+{
+  "_from": "@ckeditor/ckeditor5-build-classic@^10.0.1",
+  "_id": "@ckeditor/ckeditor5-build-classic@10.0.1",
+  "_inBundle": false,
+  "_integrity": "sha1-FZlUQ3U2wQXpM3FNu9DfAYjagX8=",
+  "_location": "/@ckeditor/ckeditor5-build-classic",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "@ckeditor/ckeditor5-build-classic@^10.0.1",
+    "name": "@ckeditor/ckeditor5-build-classic",
+    "escapedName": "@ckeditor%2fckeditor5-build-classic",
+    "scope": "@ckeditor",
+    "rawSpec": "^10.0.1",
+    "saveSpec": null,
+    "fetchSpec": "^10.0.1"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/@ckeditor/ckeditor5-build-classic/-/ckeditor5-build-classic-10.0.1.tgz",
+  "_shasum": "159954437536c105e933714dbbd0df0188da817f",
+  "_spec": "@ckeditor/ckeditor5-build-classic@^10.0.1",
+  "_where": "C:\\Go Projects\\src\\github.com\\denisbakhtin\\ginblog",
+  "author": {
+    "name": "CKSource",
+    "url": "http://cksource.com/"
+  },
+  "bugs": {
+    "url": "https://github.com/ckeditor/ckeditor5-build-classic/issues"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "CKEditor 5 classic editor build.",
+  "devDependencies": {
+    "@ckeditor/ckeditor5-adapter-ckfinder": "^10.0.0",
+    "@ckeditor/ckeditor5-autoformat": "^10.0.0",
+    "@ckeditor/ckeditor5-basic-styles": "^10.0.0",
+    "@ckeditor/ckeditor5-block-quote": "^10.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^9.0.0",
+    "@ckeditor/ckeditor5-dev-webpack-plugin": "^5.0.0",
+    "@ckeditor/ckeditor5-easy-image": "^10.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^10.0.0",
+    "@ckeditor/ckeditor5-essentials": "^10.0.0",
+    "@ckeditor/ckeditor5-heading": "^10.0.0",
+    "@ckeditor/ckeditor5-image": "^10.0.0",
+    "@ckeditor/ckeditor5-link": "^10.0.1",
+    "@ckeditor/ckeditor5-list": "^10.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^10.0.0",
+    "@ckeditor/ckeditor5-theme-lark": "^10.0.0",
+    "@ckeditor/ckeditor5-upload": "^10.0.0",
+    "babel-minify-webpack-plugin": "^0.3.0",
+    "postcss-loader": "^2.0.10",
+    "raw-loader": "^0.5.1",
+    "style-loader": "^0.20.3",
+    "webpack": "^3.11.0",
+    "webpack-sources": "1.0.1"
+  },
+  "engines": {
+    "node": ">=6.0.0",
+    "npm": ">=3.0.0"
+  },
+  "files": [
+    "build"
+  ],
+  "homepage": "https://ckeditor.com",
+  "keywords": [
+    "ckeditor5-build",
+    "CKEditor",
+    "ckeditor5",
+    "ckeditor 5",
+    "WYSIWYG",
+    "WYSIWYM",
+    "text",
+    "rich-text",
+    "richtext",
+    "editor",
+    "html",
+    "contentEditable",
+    "editing",
+    "operational transformation",
+    "ot",
+    "collaboration",
+    "collaborative",
+    "real-time",
+    "virtual dom",
+    "framework"
+  ],
+  "license": "GPL-2.0-or-later",
+  "main": "./build/ckeditor.js",
+  "name": "@ckeditor/ckeditor5-build-classic",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ckeditor/ckeditor5-build-classic.git"
+  },
+  "scripts": {
+    "build": "npm run create-entry-file && npm run build-ckeditor",
+    "build-ckeditor": "sh bin/build-ckeditor.sh",
+    "create-entry-file": "node bin/create-entry-file.js",
+    "preversion": "npm run build; if [ -n \"$(git status src/ckeditor.js build/ --porcelain)\" ]; then git add -u src/ckeditor.js build/ && git commit -m 'Internal: Build.'; fi"
+  },
+  "version": "10.0.1"
+}

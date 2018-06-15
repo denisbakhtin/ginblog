@@ -9,23 +9,24 @@
       <table class="table">
         <thead>
           <tr>
-            <th class="id">ID</th>
-            <th class="name">Name</th>
-            <th class="email">Email</th>
-            <th class="timestamp">Created at</th>
-            <th class="actions">Actions</th>
+            <th class="shrink">ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th class="shrink">Created at</th>
+            <th class="shrink">Actions</th>
           </tr>
         </thead>
         <tbody>
-          {{range .List}}
+          {{range .Users}}
             <tr>
-              <td class="id">{{.ID}}</td>
-              <td class="name">{{.Name}}</td>
-              <td class="email">{{.Email}}</td>
-              <td class="timestamp">{{formatDateTime .CreatedAt}}</td>
-              <td class="actions">
+              <td class="shrink">{{.ID}}</td>
+              <td>{{.Name}}</td>
+              <td>{{.Email}}</td>
+              <td class="shrink">{{formatDateTime .CreatedAt}}</td>
+              <td class="shrink">
                 <a href="/admin/users/{{.ID}}/edit" class="btn btn-sm btn-primary"><span class="fa fa-pencil-alt"></span></a>
                 <form class="inline-block" action="/admin/users/{{.ID}}/delete" method="post">
+                  <input type="hidden" name="_csrf" value="{{$.Csrf}}">
                   <button type="button" class="btn btn-sm btn-danger" onclick="((confirm('Are you sure')) ? this.form.submit() : null);"><span class="fa fa-times"></span></button>
                 </form>
               </td>

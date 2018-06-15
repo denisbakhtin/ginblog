@@ -3,46 +3,41 @@ package controllers
 import (
 	"net/http"
 
-	"strings"
-
 	"github.com/Sirupsen/logrus"
-	"github.com/denisbakhtin/ginblog/helpers"
 	"github.com/denisbakhtin/ginblog/models"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
-//TagGet handles GET /tags/:name route
+//TagGet handles GET /tags/:title route
 func TagGet(c *gin.Context) {
 	db := models.GetDB()
 	tag := models.Tag{}
-	db.Where("lower(name) = ?", strings.ToLower(c.Param("name"))).First(&tag)
-	if tag.ID == 0 {
+	db.Preload("Posts", "published = true").Preload("Posts.Comments", "published = true").Preload("Posts.Tags").Preload("Posts.User").First(&tag, c.Param("title"))
+	if len(tag.Title) == 0 {
 		c.HTML(http.StatusNotFound, "errors/404", nil)
 		return
 	}
-	var list []models.Post
-	db.Where("published = true AND tag_id = ?", tag.ID).Find(&list)
-	h := helpers.DefaultH(c)
-	h["Title"] = tag.Name
-	h["List"] = list
+	h := DefaultH(c)
+	h["Title"] = tag.Title
+	h["Tag"] = tag
 	c.HTML(http.StatusOK, "tags/show", h)
 }
 
 //TagIndex handles GET /admin/tags route
 func TagIndex(c *gin.Context) {
 	db := models.GetDB()
-	var list []models.Tag
-	db.Find(&list)
-	h := helpers.DefaultH(c)
+	var tags []models.Tag
+	db.Preload("Posts").Order("title asc").Find(&tags)
+	h := DefaultH(c)
 	h["Title"] = "List of tags"
-	h["List"] = list
+	h["Tags"] = tags
 	c.HTML(http.StatusOK, "tags/index", h)
 }
 
 //TagNew handles GET /admin/new_tag route
 func TagNew(c *gin.Context) {
-	h := helpers.DefaultH(c)
+	h := DefaultH(c)
 	h["Title"] = "New tag"
 	session := sessions.Default(c)
 	h["Flash"] = session.Flashes()
@@ -53,9 +48,9 @@ func TagNew(c *gin.Context) {
 
 //TagCreate handles POST /admin/new_tag route
 func TagCreate(c *gin.Context) {
-	tag := &models.Tag{}
+	tag := models.Tag{}
 	db := models.GetDB()
-	if err := c.Bind(tag); err != nil {
+	if err := c.ShouldBind(&tag); err != nil {
 		session := sessions.Default(c)
 		session.AddFlash(err.Error())
 		session.Save()
@@ -71,18 +66,18 @@ func TagCreate(c *gin.Context) {
 	c.Redirect(http.StatusFound, "/admin/tags")
 }
 
-//TagDelete handles POST /admin/tags/:name/delete route
+//TagDelete handles POST /admin/tags/:title/delete route
 func TagDelete(c *gin.Context) {
 	db := models.GetDB()
 	tag := models.Tag{}
-	db.Where("lower(name) = ?", strings.ToLower(c.Param("name"))).First(&tag)
-	if tag.ID == 0 {
+	db.First(&tag, c.Param("title"))
+	if len(tag.Title) == 0 {
 		c.HTML(http.StatusNotFound, "errors/404", nil)
 		return
 	}
-	if err := db.Delete(&tag); err != nil {
-		c.HTML(http.StatusInternalServerError, "errors/500", nil)
+	if err := db.Delete(&tag).Error; err != nil {
 		logrus.Error(err)
+		c.HTML(http.StatusInternalServerError, "errors/500", gin.H{"Error": err.Error()})
 		return
 	}
 	c.Redirect(http.StatusFound, "/admin/tags")

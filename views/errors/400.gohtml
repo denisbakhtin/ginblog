@@ -1,0 +1,21 @@
+{{define "errors/400"}}
+{{template "header" .}}
+{{template "navbar" .}}
+<div class="container" role="main">		
+  <div class="jumbotron text-center">
+    <h1>400 Error</h1>
+    <div class="description">
+      <i class="fa fa-exclamation-triangle mr-1"></i>
+      {{if .Error}}
+        {{.Error}}
+      {{else}}
+        Oops, bad request! 
+      {{end}}
+    </div>
+    <div class="mt-2">
+      <a class="btn btn-primary" onclick="window.history.back();" href="#">Go Back</a> 
+    </div>
+  </div>
+</div>
+{{template "footer" .}}
+{{end}}

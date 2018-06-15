@@ -9,6 +9,10 @@
       "name": "ginbasic_dev",
       "user": "your_db_user",
       "password": "your_db_user_password"
+    },
+    "oauth": {
+      "google_client_id": "470128356787-9e6hsdfkjsldfjksdf5lmqdq0bmrr.apps.googleusercontent.com",
+      "google_secret": "UKSJDFisOOL12ZXkPppOVo9fcbj01"
     }
   },
   "release": {
@@ -21,18 +25,10 @@
       "name": "ginbasic_dev",
       "user": "your_db_user",
       "password": "your_db_user_password"
-    }
-  },
-  "test": {
-    "public": "public",
-    "domain": "http://localhost:8080",
-    "session_secret": "session-secret-phrase",
-    "signup_enabled": true,
-    "database": {
-      "host": "192.168.0.1",
-      "name": "ginbasic_dev",
-      "user": "your_db_user",
-      "password": "your_db_user_password"
+    },
+    "oauth": {
+      "google_client_id": "470128356787-9e6hsdfkjsldfjksdf5lmqdq0bmrr.apps.googleusercontent.com",
+      "google_secret": "UKSJDFisOOL12ZXkPppOVo9fcbj01"
     }
   }
 }

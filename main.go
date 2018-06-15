@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/Sirupsen/logrus"
@@ -9,7 +10,7 @@ import (
 	"github.com/denisbakhtin/ginblog/models"
 	"github.com/denisbakhtin/ginblog/system"
 	"github.com/gin-contrib/sessions"
-	"github.com/gin-contrib/sessions/cookie"
+	"github.com/gin-contrib/sessions/memstore"
 	"github.com/gin-gonic/gin"
 	"github.com/utrack/gin-csrf"
 )
@@ -29,7 +30,22 @@ func main() {
 	// logger and recovery (crash-free) middleware
 	router := gin.Default()
 	router.SetHTMLTemplate(system.GetTemplates())
-	initSessions(router) //initialize session storage & use sessiom/csrf middlewares
+
+	//setup sessions
+	config := system.GetConfig()
+	store := memstore.NewStore([]byte(config.SessionSecret))
+	store.Options(sessions.Options{HttpOnly: true, MaxAge: 7 * 86400}) //Also set Secure: true if using SSL, you should though
+	router.Use(sessions.Sessions("gin-session", store))
+
+	//setup csrf protection
+	router.Use(csrf.Middleware(csrf.Options{
+		Secret: config.SessionSecret,
+		ErrorFunc: func(c *gin.Context) {
+			logrus.Error("CSRF token mismatch")
+			controllers.ShowErrorPage(c, 400, fmt.Errorf("CSRF token mismatch"))
+			c.Abort()
+		},
+	}))
 
 	router.StaticFS("/public", http.Dir(system.PublicPath())) //better use nginx to serve assets (Cache-Control, Etag, fast gzip, etc)
 	router.Use(controllers.ContextData())
@@ -46,9 +62,13 @@ func main() {
 	router.POST("/signin", controllers.SignInPost)
 	router.GET("/logout", controllers.LogoutGet)
 
+	router.GET("/oauthgooglelogin", controllers.OauthGoogleLogin)
+	router.GET("/oauthcallback", controllers.OauthCallback)
+	router.POST("/new_comment", controllers.CommentPublicCreate)
+
 	router.GET("/pages/:id", controllers.PageGet)
 	router.GET("/posts/:id", controllers.PostGet)
-	router.GET("/tags/:name", controllers.TagGet)
+	router.GET("/tags/:title", controllers.TagGet)
 	router.GET("/archives/:year/:month", controllers.ArchiveGet)
 	router.GET("/rss", controllers.RssGet)
 
@@ -80,10 +100,17 @@ func main() {
 		authorized.POST("/posts/:id/edit", controllers.PostUpdate)
 		authorized.POST("/posts/:id/delete", controllers.PostDelete)
 
+		authorized.GET("/comments", controllers.CommentIndex)
+		authorized.GET("/new_comment", controllers.CommentNew)
+		authorized.POST("/new_comment", controllers.CommentCreate)
+		authorized.GET("/comments/:id/edit", controllers.CommentEdit)
+		authorized.POST("/comments/:id/edit", controllers.CommentUpdate)
+		authorized.POST("/comments/:id/delete", controllers.CommentDelete)
+
 		authorized.GET("/tags", controllers.TagIndex)
 		authorized.GET("/new_tag", controllers.TagNew)
 		authorized.POST("/new_tag", controllers.TagCreate)
-		authorized.POST("/tags/:name/delete", controllers.TagDelete)
+		authorized.POST("/tags/:title/delete", controllers.TagDelete)
 	}
 
 	// Listen and server on 0.0.0.0:8080
@@ -95,22 +122,6 @@ func initLogger() {
 	logrus.SetFormatter(&logrus.TextFormatter{})
 	//logrus.SetOutput(os.Stderr)
 	if gin.Mode() == gin.DebugMode {
-		logrus.SetLevel(logrus.InfoLevel)
+		logrus.SetLevel(logrus.DebugLevel)
 	}
-}
-
-//initSessions initializes sessions & csrf middlewares
-func initSessions(router *gin.Engine) {
-	config := system.GetConfig()
-	store := cookie.NewStore([]byte(config.SessionSecret))
-	store.Options(sessions.Options{HttpOnly: true, MaxAge: 7 * 86400}) //Also set Secure: true if using SSL, you should though
-	router.Use(sessions.Sessions("gin-session", store))
-	//https://github.com/utrack/gin-csrf
-	router.Use(csrf.Middleware(csrf.Options{
-		Secret: config.SessionSecret,
-		ErrorFunc: func(c *gin.Context) {
-			c.String(400, "CSRF token mismatch")
-			c.Abort()
-		},
-	}))
 }

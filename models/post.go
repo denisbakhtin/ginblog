@@ -3,29 +3,33 @@ package models
 import (
 	"html/template"
 
-	"github.com/jinzhu/gorm"
 	"github.com/microcosm-cc/bluemonday"
-	"github.com/russross/blackfriday"
 )
 
 //Post type contains blog post info
 type Post struct {
-	gorm.Model
-	Name        string
-	Description string
-	Published   bool
-	UserID      uint
-	User        User
-	//calculated fields
-	Tags         []Tag `form:"tags" json:"tags" gorm:"many2many:posts_tags;"`
-	CommentCount int64    `form:"-" json:"comment_count" db:"comment_count"`
+	Model
+
+	Title     string `form:"title" binding:"required"`
+	Content   string `form:"content"`
+	Published bool   `form:"published"`
+	UserID    uint64
+	User      User      `binding:"-" gorm:"association_autoupdate:false;association_autocreate:false"`
+	FormTags  []string  `form:"tags" gorm:"-"`
+	Tags      []Tag     `binding:"-" form:"-" json:"tags" gorm:"many2many:posts_tags;"`
+	Comments  []Comment `binding:"-"`
 }
 
 //Excerpt returns post excerpt by removing html tags first and truncating to 300 symbols
 func (post *Post) Excerpt() template.HTML {
 	//you can sanitize, cut it down, add images, etc
 	policy := bluemonday.StrictPolicy() //remove all html tags
-	sanitized := policy.Sanitize(string(blackfriday.MarkdownCommon([]byte(post.Description))))
+	sanitized := policy.Sanitize(post.Content)
 	excerpt := template.HTML(truncate(sanitized, 300) + "...")
 	return excerpt
+}
+
+//HTMLContent returns html content that won't be escaped
+func (post *Post) HTMLContent() template.HTML {
+	return template.HTML(post.Content)
 }

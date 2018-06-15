@@ -4,10 +4,20 @@
 <div class="container" role="main">
   {{template "sidebar" .}}
   <div id="main-column">
-    <h2>{{.Title}}</h2>
+    <h2>{{.Post.Title}}</h2>
     {{template "posts/post-info" .Post}}
-    <div class="description">{{.Description}}</div>
+    <div class="content">{{noescape .Post.Content}}</div>
     <div id="comments">
+      <h4>Comments</h4>
+      {{template "comments/public-form" .}}
+      {{range .Post.Comments}}
+        <div class="comment" id="comment-{{.ID}}">
+          <h6>{{.UserName}}, <span class="text-muted">{{printf "%04d-%02d-%02d" .CreatedAt.Year .CreatedAt.Month .CreatedAt.Day}}</span></h6>
+          <div class="card">
+            {{.Content}}
+          </div>
+        </div>
+      {{end}}
     </div>
   </div>
 </div>

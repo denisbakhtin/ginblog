@@ -9,7 +9,8 @@
         {{range .Flash}}
           <div class="alert alert-danger">{{.}}</div><p>
         {{end}}
-        <input type="hidden" name="_csrf" value="{{csrfToken .Context}}">
+        <input type="hidden" name="_csrf" value="{{.Csrf}}">
+        
         <div class="form-group">
           <label class="control-label" for="email">Email</label>
           <input id="email" name="email" type="email" placeholder="Email address" class="form-control input-md" required="" data-parsley-required-message="Please enter your email">

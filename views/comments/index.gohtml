@@ -1,0 +1,53 @@
+{{define "comments/index"}}
+{{template "header" .}}
+{{template "dashboard/navbar" .}}
+<div class="container">
+  <div class="row">
+    {{template "dashboard/sidebar" .}}
+    <div class="col-sm-9" role="main">
+      <h2>{{.Title}}</h2>
+      <table class="table">
+        <thead>
+          <tr>
+            <th class="shrink">ID</th>
+            <th>User Name</th>
+            <th>Content</th>
+            <th class="shrink">Published</th>
+            <th class="shrink">Created at</th>
+            <th class="shrink">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{range .Comments}}
+            <tr>
+              <td class="shrink">{{.ID}}</td>
+              <td>{{.UserName}}</td>
+              <td>{{ printf "%.15s" .Content }}</td>
+              <td class="shrink">
+                {{if .Published}}
+                  <span class="fa fa-check"></span>
+                {{else}}
+                  <span class="fa fa-times"></span>
+                {{end}}
+              </td>
+              <td class="shrink">{{formatDateTime .CreatedAt}}</td>
+              <td class="shrink">
+                <a href="/posts/{{.PostID}}#comment-{{.ID}}" class="btn btn-sm btn-secondary"><span class="fa fa-eye"></span></a>
+                <a href="/admin/comments/{{.ID}}/edit" class="btn btn-sm btn-primary"><span class="fa fa-pencil-alt"></span></a>
+                <form class="inline-block" action="/admin/comments/{{.ID}}/delete" method="post">
+                  <input type="hidden" name="_csrf" value="{{$.Csrf}}">
+                  <button type="button" class="btn btn-sm btn-danger" onclick="((confirm('Are you sure')) ? this.form.submit() : null);"><span class="fa fa-times"></span></button>
+                </form>
+              </td>
+            </tr>
+          {{end}}
+        </tbody>
+      </table>
+      <div class="actions">
+        <a href="/admin/new_comment" class="btn btn-primary">New Comment</a>
+      </div>
+    </div>
+  </div>
+</div>
+{{template "footer" .}}
+{{end}}

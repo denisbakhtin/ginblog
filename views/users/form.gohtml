@@ -7,49 +7,40 @@
     <div class="col-sm-9" role="main">
       <div class="panel panel-default">
         <div class="panel-body">
-          <form class="form-horizontal" method="post" data-parsley-validate>
-          <fieldset>
-            <legend>{{.Title}}</legend>
-            {{range .Flash}}
-              <div class="alert alert-danger">{{.}}</div><p>
-            {{end}}
-            <input type="hidden" name="id" value="{{.User.ID}}" >
+          <form method="post" data-parsley-validate>
+            <div class="row">
+              <legend class="col-sm-12">{{.Title}}</legend>
+              {{range .Flash}}
+                <div class="alert alert-danger col-sm-12">{{.}}</div><p>
+              {{end}}
+              <input type="hidden" name="id" value="{{.User.ID}}" >
+              <input type="hidden" name="_csrf" value="{{.Csrf}}">
 
-            <div class="form-group">
-              <label class="col-md-2 control-label" for="name">Name</label>
-              <div class="col-md-10">
-                <input id="name" name="name" value="{{.User.Name}}" placeholder="User name" class="form-control input-md" required="" data-parsley-required-message="Please enter user name">    
+              <div class="form-group col-sm-6">
+                <label class="control-label" for="name">Name</label>
+                <input id="name" name="name" value="{{.User.Name}}" class="form-control" required data-parsley-required-message="Please enter user name">    
               </div>
-            </div>
 
-            <div class="form-group">
-              <label class="col-md-2 control-label" for="email">Email</label>
-              <div class="col-md-10">
-                <input id="email" name="email" value="{{.User.Email}}" placeholder="User email" class="form-control input-md" required="" data-parsley-required-message="Please enter user email">    
+              <div class="form-group col-sm-6">
+                <label class="control-label" for="email">Email</label>
+                <input id="email" name="email" value="{{.User.Email}}" class="form-control" required data-parsley-required-message="Please enter user email">    
               </div>
-            </div>
 
-            <div class="form-group">
-              <label class="col-md-2 control-label" for="password">Password</label>
-              <div class="col-md-10">
-                <input id="password" name="password" type="password" placeholder="Password" class="form-control input-md" required="" data-parsley-required-message="Please enter user password">
+              <div class="form-group col-sm-6">
+                <label class="control-label" for="password">Password</label>
+                <input id="password" name="password" type="password" class="form-control" required data-parsley-required-message="Please enter user password">
               </div>
-            </div>
 
-            <div class="form-group">
-              <label class="col-md-2 control-label" for="passwordrepeat">Repeat password</label>
-              <div class="col-md-10">
-                <input id="passwordrepeat" name="passwordrepeat" type="password" placeholder="Repeat password" class="form-control input-md" required="" data-parsley-required-message="Please repeat user password" data-parsley-equalto="#password" data-parsley-equalto-message="Passwords do not match">
+              <div class="form-group col-sm-6">
+                <label class="control-label" for="passwordrepeat">Repeat password</label>
+                <input id="passwordrepeat" name="passwordrepeat" type="password" class="form-control" required data-parsley-required-message="Please repeat user password" data-parsley-equalto="#password" data-parsley-equalto-message="Passwords do not match">
               </div>
-            </div>
 
-            <div class="form-group">
-              <div class="col-md-offset-2 col-md-10">
+              <div class="form-group col-sm-12">
                 <input type="submit" class="btn btn-primary" value="Submit">
-                <input type="button" class="btn btn-default" formnovalidate onclick="window.history.back();" value="Cancel">
+                <a class="btn btn-secondary" href="/admin/users">Cancel</a>
               </div>
             </div>
-          </fieldset>
           </form>
         </div>
       </div>

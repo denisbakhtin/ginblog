@@ -1,13 +1,12 @@
 package models
 
-import (
-	"github.com/jinzhu/gorm"
-)
+import "time"
 
 //Tag struct contains post tag info
 type Tag struct {
-	gorm.Model
-	Name string
-	Posts []Post `gorm:"many2many:posts_tags;"`
-	PostCount int64 `form:"-"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+
+	Title string `binding:"required" form:"title" gorm:"primary_key"`
+	Posts []Post `gorm:"many2many:posts_tags;foreignkey:title"`
 }

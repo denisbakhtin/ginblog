@@ -1,12 +1,13 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
+	"net/url"
 
 	"strings"
 
 	"github.com/Sirupsen/logrus"
-	"github.com/denisbakhtin/ginblog/helpers"
 	"github.com/denisbakhtin/ginblog/models"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -15,7 +16,7 @@ import (
 
 //SignInGet handles GET /signin route
 func SignInGet(c *gin.Context) {
-	h := helpers.DefaultH(c)
+	h := DefaultH(c)
 	h["Title"] = "Basic GIN web-site signin form"
 	session := sessions.Default(c)
 	h["Flash"] = session.Flashes()
@@ -28,7 +29,8 @@ func SignInPost(c *gin.Context) {
 	session := sessions.Default(c)
 	login := models.Login{}
 	db := models.GetDB()
-	if err := c.Bind(&login); err != nil {
+	returnURL := c.DefaultQuery("return", "/admin/")
+	if err := c.ShouldBind(&login); err != nil {
 		session.AddFlash("Please, fill out form correctly.")
 		session.Save()
 		c.Redirect(http.StatusFound, "/signin")
@@ -42,18 +44,18 @@ func SignInPost(c *gin.Context) {
 		logrus.Errorf("Login error, IP: %s, Email: %s", c.ClientIP(), login.Email)
 		session.AddFlash("Email or password incorrect")
 		session.Save()
-		c.Redirect(http.StatusFound, "/signin")
+		c.Redirect(http.StatusFound, fmt.Sprintf("/signin?return=%s", url.QueryEscape(returnURL)))
 		return
 	}
 
-	session.Set("UserID", user.ID)
+	session.Set(userIDKey, user.ID)
 	session.Save()
-	c.Redirect(http.StatusFound, "/")
+	c.Redirect(http.StatusFound, returnURL)
 }
 
 //SignUpGet handles GET /signup route
 func SignUpGet(c *gin.Context) {
-	h := helpers.DefaultH(c)
+	h := DefaultH(c)
 	h["Title"] = "Basic GIN web-site signup form"
 	session := sessions.Default(c)
 	h["Flash"] = session.Flashes()
@@ -66,7 +68,7 @@ func SignUpPost(c *gin.Context) {
 	session := sessions.Default(c)
 	register := models.Register{}
 	db := models.GetDB()
-	if err := c.Bind(&register); err != nil {
+	if err := c.ShouldBind(&register); err != nil {
 		session.AddFlash(err.Error())
 		session.Save()
 		c.Redirect(http.StatusFound, "/signup")
@@ -84,6 +86,7 @@ func SignUpPost(c *gin.Context) {
 	//create user
 	user.Email = register.Email
 	user.Password = register.Password
+	user.Name = register.Name
 	if err := db.Create(&user).Error; err != nil {
 		session.AddFlash("Error whilst registering user.")
 		session.Save()
@@ -92,7 +95,7 @@ func SignUpPost(c *gin.Context) {
 		return
 	}
 
-	session.Set("UserID", user.ID)
+	session.Set(userIDKey, user.ID)
 	session.Save()
 	c.Redirect(http.StatusFound, "/")
 	return
@@ -101,7 +104,7 @@ func SignUpPost(c *gin.Context) {
 //LogoutGet handles GET /logout route
 func LogoutGet(c *gin.Context) {
 	session := sessions.Default(c)
-	session.Delete("UserID")
+	session.Delete(userIDKey)
 	session.Save()
 	c.Redirect(http.StatusSeeOther, "/")
 }

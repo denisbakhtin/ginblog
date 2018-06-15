@@ -2,11 +2,18 @@
 {{template "header" .}}
 {{template "navbar" .}}
 <div class="container" role="main">		
-  <div class="jumbotron">
+  <div class="jumbotron text-center">
     <h1>500 Error</h1>
     <div class="description">
       <i class="fa fa-exclamation-triangle mr-1"></i>
-      Oops, something went wrong!
+      {{if .Error}}
+        {{.Error}}
+      {{else}}
+        Oops, something went wrong!
+      {{end}}
+    </div>
+    <div class="mt-2">
+      <a class="btn btn-primary" onclick="window.history.back();" href="#">Go Back</a> 
     </div>
   </div>
 </div>

@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-	csrf "github.com/utrack/gin-csrf"
 
 	"github.com/denisbakhtin/ginblog/models"
 )
@@ -25,12 +25,17 @@ func LoadTemplates() {
 		"recentPosts":         recentPosts,
 		"tags":                tags,
 		"archives":            archives,
+		"posts":               posts,
+		"publishedPosts":      publishedPosts,
 		"now":                 now,
 		"activeUserEmail":     activeUserEmail,
+		"activeUserName":      activeUserName,
 		"activeUserID":        activeUserID,
 		"isUserAuthenticated": isUserAuthenticated,
 		"signUpEnabled":       signUpEnabled,
-		"csrfToken":           csrfToken,
+		"noescape":            noescape,
+		"postHasTag":          postHasTag,
+		"oauthUserName":       oauthUserName,
 	})
 	fn := func(path string, f os.FileInfo, err error) error {
 		if f.IsDir() != true && strings.HasSuffix(f.Name(), ".gohtml") {
@@ -55,7 +60,7 @@ func GetTemplates() *template.Template {
 
 //isActiveLink checks uri against currently active (uri, or nil) and returns "active" if they are equal
 func isActiveLink(c *gin.Context, uri string) string {
-	if c.Request.RequestURI == uri {
+	if c != nil && c.Request.RequestURI == uri {
 		return "active"
 	}
 	return ""
@@ -86,9 +91,30 @@ func recentPosts() []models.Post {
 
 //tags returns the list of blog tags
 func tags() []models.Tag {
-	var list []models.Tag
-	//list, _ := models.GetNotEmptyTags()
-	return list
+	var tags []models.Tag
+
+	models.GetDB().Preload("Posts", "published = true").Find(&tags)
+	result := make([]models.Tag, 0, len(tags))
+	for i := range tags {
+		if len(tags[i].Posts) > 0 {
+			result = append(result, tags[i])
+		}
+	}
+	return result
+}
+
+//posts returns the list of blog posts
+func posts() []models.Post {
+	var posts []models.Post
+	models.GetDB().Find(&posts)
+	return posts
+}
+
+//publishedPosts returns the list of published blog posts
+func publishedPosts() []models.Post {
+	var posts []models.Post
+	models.GetDB().Where("published = true").Find(&posts)
+	return posts
 }
 
 //archives returns the list of blog archives
@@ -104,43 +130,84 @@ func now() time.Time {
 	return time.Now()
 }
 
-//activeUserEmail returns current authenticated user email
+//activeUserEmail returns currently authenticated user email
 func activeUserEmail(c *gin.Context) string {
-	u, _ := c.Get("User")
-	if user, ok := u.(*models.User); ok {
-		return user.Email
+	if c != nil {
+		u, _ := c.Get("User")
+		if user, ok := u.(*models.User); ok {
+			return user.Email
+		}
 	}
 	return ""
 }
 
-//activeUserID returns current authenticated user ID
-func activeUserID(c *gin.Context) uint {
-	u, _ := c.Get("User")
-	if user, ok := u.(*models.User); ok {
-		return user.ID
+//activeUserName returns currently authenticated user name
+func activeUserName(c *gin.Context) string {
+	if c != nil {
+		u, _ := c.Get("User")
+		if user, ok := u.(*models.User); ok {
+			return user.Name
+		}
+	}
+	return ""
+}
+
+//activeUserID returns currently authenticated user ID
+func activeUserID(c *gin.Context) uint64 {
+	if c != nil {
+		u, _ := c.Get("User")
+		if user, ok := u.(*models.User); ok {
+			return user.ID
+		}
 	}
 	return 0
 }
 
 //isUserAuthenticated returns true is user is authenticated
 func isUserAuthenticated(c *gin.Context) bool {
-	u, _ := c.Get("User")
-	if _, ok := u.(*models.User); ok {
-		return true
+	if c != nil {
+		u, _ := c.Get("User")
+		if _, ok := u.(*models.User); ok {
+			return true
+		}
 	}
 	return false
 }
 
 //signUpEnabled returns true if sign up is enabled by config
 func signUpEnabled(c *gin.Context) bool {
-	se, _ := c.Get("SignupEnabled")
-	if enabled, ok := se.(bool); ok {
-		return enabled
+	if c != nil {
+		se, _ := c.Get("SignupEnabled")
+		if enabled, ok := se.(bool); ok {
+			return enabled
+		}
 	}
 	return false
 }
 
-//csrfToken returns CSRF protection token
-func csrfToken(c *gin.Context) string {
-	return csrf.GetToken(c)
+//noescape unescapes html content
+func noescape(content string) template.HTML {
+	return template.HTML(content)
+}
+
+//postHasTag checks if Post has tag with tagTitle
+func postHasTag(post models.Post, tagTitle string) bool {
+	if post.ID == 0 || len(post.Tags) == 0 || len(tagTitle) == 0 {
+		return false
+	}
+	for i := range post.Tags {
+		if post.Tags[i].Title == tagTitle {
+			return true
+		}
+	}
+	return false
+}
+
+func oauthUserName(c *gin.Context) string {
+	session := sessions.Default(c)
+	name := session.Get("oauth-username")
+	if name == nil {
+		return ""
+	}
+	return name.(string)
 }

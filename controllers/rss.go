@@ -2,11 +2,12 @@ package controllers
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/denisbakhtin/ginblog/models"
 	"github.com/denisbakhtin/ginblog/system"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/feeds"
-	"time"
 )
 
 //RssGet handles GET /rss route
@@ -31,7 +32,7 @@ func RssGet(c *gin.Context) {
 	for i := range posts {
 		feed.Items = append(feed.Items, &feeds.Item{
 			Id:          fmt.Sprintf("%s/posts/%d", domain, posts[i].ID),
-			Title:       posts[i].Name,
+			Title:       posts[i].Title,
 			Link:        &feeds.Link{Href: fmt.Sprintf("%s/posts/%d", domain, posts[i].ID)},
 			Description: string(posts[i].Excerpt()),
 			Author:      &feeds.Author{Name: posts[i].User.Name},

@@ -10,25 +10,23 @@ It consists of the following core components:
 - GIN - A web microframework (with best performance atm) for Golang - https://github.com/gin-gonic/gin
 - GIN middlewares [gin-csrf](https://github.com/utrack/gin-csrf), [gin/contrib/sessions](https://github.com/gin-gonic/contrib/tree/master/sessions)
 - gorm - The orm library for go - http://gorm.io/
+- Comments with oauth2 authentication
 - logrus - advanced Go logger - https://github.com/Sirupsen/logrus
 - Twitter Bootstrap 4 - popular HTML, CSS, JS framework for developing responsive, mobile first web projects - http://getbootstrap.com
 - Gulp asset compiler
 - Parsley JS - form validation - http://parsleyjs.org
-- Bootstrap Markdown Editor with image upload - https://github.com/inacho/bootstrap-markdown-editor
-- blackfriday - markdown processor - https://github.com/russross/blackfriday
+- CKEditor 5 with image upload - https://ckeditor.com/ckeditor-5/
 - bluemonday - html sanitizer (for excerpts, etc) - https://github.com/microcosm-cc/bluemonday
 - RSS feeds - https://github.com/gorilla/feeds
 - sitemap - XML sitemap for search engines - https://github.com/denisbakhtin/sitemap
 - gocron - periodic task launcher (for sitemap generation, etc) - https://github.com/jasonlvhit/gocron
 
 # TODO (May be)
-- add gulp asset compiler
 - Site search with Postgresql full text search (okish for most websites) - http://www.postgresql.org/docs/9.4/static/textsearch-intro.html
-- Comments with oauth2 authentication
 - Social plugins (share, like buttons)
 - Auto posting previews to social walls
 
-# Screenshots
+# Screenshots (some may be outdated)
 ## Home page
 ![](/public/images/screenshot_home.jpg)
 ## Dashboard
@@ -64,10 +62,6 @@ Contains application configuration file.
 `/controllers`
 
 All your controllers that serve defined routes.
-
-`/helpers`
-
-Helper functions.
 
 `/models`
 
@@ -141,4 +135,4 @@ Then simply run `reflex -c reflex.conf` in the project directory.
 
 Or run `realize s` (works on Windows unlike reflex) - https://github.com/oxequa/realize.
 
-To rebuild assets on change install `npm`, `gulp` and run `gulp watch`.
+To rebuild assets on change install `npm`, run `npm install` and then `npm run watch`. Run `npm run build` to build assets for production.

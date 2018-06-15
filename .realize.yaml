@@ -19,6 +19,8 @@ schema:
     - .realize
     - vendor
     - node_modules
+    - public
+    - assets
     scripts:
     - type: before
       command: taskkill /im ginblog.exe /F

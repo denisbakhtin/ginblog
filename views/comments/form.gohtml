@@ -1,0 +1,57 @@
+{{define "comments/form"}}
+{{template "header" .}}
+{{template "dashboard/navbar" .}}
+<div class="container">
+  <div class="row">
+    {{template "dashboard/sidebar" .}}
+    <div class="col-sm-9" role="main">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <form method="post">
+            <fieldset>
+              <legend>{{.Title}}</legend>
+              {{range .Flash}}
+                <div class="alert alert-danger">{{.}}</div><p>
+              {{end}}
+              <input type="hidden" name="id" value="{{.Comment.ID}}" >
+              <input type="hidden" name="_csrf" value="{{.Csrf}}">
+              
+              <div class="form-group">
+                <label class="control-label" for="content">Content</label>
+                <textarea name="content" class="form-control" id="content">{{.Comment.Content}}</textarea>
+              </div>
+
+              <div class="form-group">
+                <label class="control-label" for="post_id">Post</label>
+                <select id="post_id" name="post_id" class="form-control">
+                  {{range posts}}
+                    {{if $.Comment}}
+                      <option {{if eq $.Comment.PostID .ID}}selected{{end}} value="{{.ID}}">{{.Title}}</option>
+                    {{else}}
+                      <option value="{{.ID}}">{{.Title}}</option>
+                    {{end}}
+                  {{end}}
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="control-label" for="user_name">User</label>
+                <input id="user_name" readonly name="user_name" class="form-control" value="{{activeUserName .Context}}" />
+              </div>
+
+              <div class="form-group">
+                <input id="published" name="published" type="checkbox" value="true" {{if .Comment.Published}}checked{{end}} >
+                <label class="control-label" for="published">Publish</label>
+              </div>
+
+              <input type="submit" class="btn btn-primary" value="Submit">
+              <a class="btn btn-secondary" href="/admin/comments">Cancel</a>
+            </fieldset>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{{template "footer" .}}
+{{end}}

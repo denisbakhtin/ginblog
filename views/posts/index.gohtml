@@ -9,30 +9,31 @@
       <table class="table">
         <thead>
           <tr>
-            <th class="id">ID</th>
-            <th class="name">Name</th>
-            <th class="published">Published</th>
-            <th class="timestamp">Created at</th>
-            <th class="actions">Actions</th>
+            <th class="shrink">ID</th>
+            <th>Title</th>
+            <th class="shrink">Published</th>
+            <th class="shrink">Created at</th>
+            <th class="shrink">Actions</th>
           </tr>
         </thead>
         <tbody>
-          {{range .List}}
+          {{range .Posts}}
             <tr>
-              <td class="id">{{.ID}}</td>
-              <td class="name">{{.Name}}</td>
-              <td class="published">
+              <td class="shrink">{{.ID}}</td>
+              <td>{{.Title}}</td>
+              <td class="shrink">
                 {{if .Published}}
                 <span class="fa fa-check"></span>
                 {{else}}
                 <span class="fa fa-times"></span>
                 {{end}}
               </td>
-              <td class="timestamp">{{formatDateTime .CreatedAt}}</td>
-              <td class="actions">
-                <a href="/posts/{{.ID}}" class="btn btn-sm btn-default"><span class="fa fa-eye"></span></a>
+              <td class="shrink">{{formatDateTime .CreatedAt}}</td>
+              <td class="shrink">
+                <a href="/posts/{{.ID}}" class="btn btn-sm btn-secondary"><span class="fa fa-eye"></span></a>
                 <a href="/admin/posts/{{.ID}}/edit" class="btn btn-sm btn-primary"><span class="fa fa-pencil-alt"></span></a>
                 <form class="inline-block" action="/admin/posts/{{.ID}}/delete" method="post">
+                  <input type="hidden" name="_csrf" value="{{$.Csrf}}">
                   <button type="button" class="btn btn-sm btn-danger" onclick="((confirm('Are you sure')) ? this.form.submit() : null);"><span class="fa fa-times"></span></button>
                 </form>
               </td>

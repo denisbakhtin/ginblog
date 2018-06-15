@@ -1,9 +1,10 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
+	"net/url"
 
-	"github.com/Sirupsen/logrus"
 	"github.com/denisbakhtin/ginblog/models"
 	"github.com/denisbakhtin/ginblog/system"
 	"github.com/gin-contrib/sessions"
@@ -14,13 +15,14 @@ import (
 func ContextData() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		session := sessions.Default(c)
-		if uID := session.Get("UserID"); uID != nil {
+		if uID := session.Get(userIDKey); uID != nil {
 			user := models.User{}
 			models.GetDB().First(&user, uID)
 			if user.ID != 0 {
 				c.Set("User", &user)
 			}
 		}
+
 		if system.GetConfig().SignupEnabled {
 			c.Set("SignupEnabled", true)
 		}
@@ -34,8 +36,7 @@ func AuthRequired() gin.HandlerFunc {
 		if user, _ := c.Get("User"); user != nil {
 			c.Next()
 		} else {
-			logrus.Warnf("User not authorized to visit %s", c.Request.RequestURI)
-			c.HTML(http.StatusForbidden, "errors/403", nil)
+			c.Redirect(http.StatusFound, fmt.Sprintf("/signin?return=%s", url.QueryEscape(c.Request.RequestURI)))
 			c.Abort()
 		}
 	}

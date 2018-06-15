@@ -6,15 +6,15 @@ import (
 	"os"
 	"path"
 
-	"github.com/gin-gonic/gin"
 	"io/ioutil"
+
+	"github.com/gin-gonic/gin"
 )
 
 //Configs contains application configurations for all gin modes
 type Configs struct {
 	Debug   Config
 	Release Config
-	Test    Config
 }
 
 //Config contains application configuration for active gin mode
@@ -24,6 +24,7 @@ type Config struct {
 	SessionSecret string `json:"session_secret"`
 	SignupEnabled bool   `json:"signup_enabled"` //always set to false in release mode (config.json)
 	Database      DatabaseConfig
+	Oauth         OauthConfig
 }
 
 //DatabaseConfig contains database connection info
@@ -32,6 +33,12 @@ type DatabaseConfig struct {
 	Name     string //database name
 	User     string
 	Password string
+}
+
+//OauthConfig contains oauth client ids and secrets
+type OauthConfig struct {
+	GoogleClientID string `json:"google_client_id"`
+	GoogleSecret   string `json:"google_secret"`
 }
 
 //current loaded config
@@ -53,8 +60,6 @@ func LoadConfig() {
 		config = &configs.Debug
 	case gin.ReleaseMode:
 		config = &configs.Release
-	case gin.TestMode:
-		config = &configs.Test
 	default:
 		panic(fmt.Sprintf("Unknown gin mode %s", gin.Mode()))
 	}

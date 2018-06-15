@@ -5,10 +5,10 @@
   {{template "sidebar" .}}
   <div id="main-column">
     <h2>{{.Title}}</h2>
-    {{range .List}}
-    <h3><a href="/posts/{{.ID}}">{{.Name}}</a></h3>
-    {{template "posts/post-info" .}}
-    <div class="excerpt">{{.Excerpt}}</div>
+    {{range .Posts}}
+      <h3><a href="/posts/{{.ID}}">{{.Title}}</a></h3>
+      {{template "posts/post-info" .}}
+      <div class="excerpt">{{.Excerpt}}</div>
     {{end}}
   </div>
 </div>

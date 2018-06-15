@@ -1,0 +1,30 @@
+{{define "comments/public-form"}}
+  <div class="panel panel-default public-comment">
+    <div class="panel-body">
+      {{range .Flash}}
+        <div class="alert alert-danger">{{.}}</div><p>
+      {{end}}
+      {{if oauthUserName $.Context}}
+        <form method="post" action="/new_comment">
+          <input type="hidden" name="_csrf" value="{{$.Csrf}}">
+          <input type="hidden" name="post_id" value="{{.Post.ID}}">
+          <input type="hidden" name="published" value="true">
+          <input type="hidden" name="user_name" value="{{oauthUserName $.Context}}">
+          
+          <div class="form-group">
+            <textarea name="content" class="form-control" placeholder="Enter your comment" id="content"></textarea>
+          </div>
+
+          <input type="submit" class="btn btn-primary" value="Submit">
+        </form>
+      {{else}}
+        <div class="card bg-light">
+          <div class="card-body text-center">
+            Sign in with google account to post your comment <br/>
+            <a class="btn btn-primary" href="/oauthgooglelogin">Sign in</a>
+          </div>
+        </div>
+      {{end}}
+    </div>
+  </div>
+{{end}}

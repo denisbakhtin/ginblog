@@ -13,19 +13,15 @@
             {{range .Flash}}
               <div class="alert alert-danger">{{.}}</div><p>
             {{end}}
+            <input type="hidden" name="_csrf" value="{{.Csrf}}">
             <div class="form-group">
-              <label class="col-md-2 control-label" for="name">Name</label>
-              <div class="col-md-10">
-                <input id="name" name="name" value="{{.Tag.Name}}" placeholder="Tag name" class="form-control input-md" required="" >
-              </div>
+              <label class="control-label" for="title">Title</label>
+              <input id="title" name="title" value="{{.Tag.Title}}" class="form-control" required="">
             </div>
 
             <div class="form-group">
-              <label class="col-md-2"></label>
-              <div class="col-md-10">
-                <input type="submit" class="btn btn-primary" value="Submit">
-                <input type="button" class="btn btn-default" formnovalidate onclick="window.history.back();" value="Cancel">
-              </div>
+              <input type="submit" class="btn btn-primary" value="Submit">
+              <a class="btn btn-secondary" href="/admin/tags">Cancel</a>
             </div>
           </fieldset>
           </form>

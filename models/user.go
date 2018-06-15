@@ -1,7 +1,6 @@
 package models
 
 import (
-	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -13,13 +12,15 @@ type Login struct {
 
 //Register view model
 type Register struct {
+	Name     string `form:"name" binding:"required"`
 	Email    string `form:"email" binding:"required"`
 	Password string `form:"password" binding:"required"`
 }
 
 //User type contains user info
 type User struct {
-	gorm.Model
+	Model
+
 	Email    string `form:"email" binding:"required"`
 	Name     string `form:"name"`
 	Password string `form:"password" binding:"required"`

@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/Sirupsen/logrus"
-	"github.com/denisbakhtin/ginblog/helpers"
 	"github.com/denisbakhtin/ginblog/models"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -13,17 +12,17 @@ import (
 //UserIndex handles GET /admin/users route
 func UserIndex(c *gin.Context) {
 	db := models.GetDB()
-	var list []models.User
-	db.Find(&list)
-	h := helpers.DefaultH(c)
+	var users []models.User
+	db.Find(&users)
+	h := DefaultH(c)
 	h["Title"] = "List of users"
-	h["List"] = list
+	h["Users"] = users
 	c.HTML(http.StatusOK, "users/index", h)
 }
 
 //UserNew handles GET /admin/new_user route
 func UserNew(c *gin.Context) {
-	h := helpers.DefaultH(c)
+	h := DefaultH(c)
 	h["Title"] = "New user"
 	session := sessions.Default(c)
 	h["Flash"] = session.Flashes()
@@ -35,7 +34,7 @@ func UserNew(c *gin.Context) {
 func UserCreate(c *gin.Context) {
 	user := &models.User{}
 	db := models.GetDB()
-	if err := c.Bind(user); err != nil {
+	if err := c.ShouldBind(user); err != nil {
 		session := sessions.Default(c)
 		session.AddFlash(err.Error())
 		session.Save()
@@ -62,7 +61,7 @@ func UserEdit(c *gin.Context) {
 		c.HTML(http.StatusNotFound, "errors/404", nil)
 		return
 	}
-	h := helpers.DefaultH(c)
+	h := DefaultH(c)
 	h["Title"] = "Edit user"
 	h["User"] = user
 	session := sessions.Default(c)
@@ -75,7 +74,7 @@ func UserEdit(c *gin.Context) {
 func UserUpdate(c *gin.Context) {
 	user := &models.User{}
 	db := models.GetDB()
-	if err := c.Bind(user); err != nil {
+	if err := c.ShouldBind(user); err != nil {
 		session := sessions.Default(c)
 		session.AddFlash(err.Error())
 		session.Save()
@@ -83,7 +82,7 @@ func UserUpdate(c *gin.Context) {
 		return
 	}
 
-	if err := db.Update(&user).Error; err != nil {
+	if err := db.Save(&user).Error; err != nil {
 		c.HTML(http.StatusInternalServerError, "errors/500", nil)
 		logrus.Error(err)
 		return

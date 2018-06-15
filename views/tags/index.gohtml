@@ -9,19 +9,20 @@
       <table class="table">
         <thead>
           <tr>
-            <th class="name">Name</th>
-            <th class="post_count">Posts</th>
-            <th class="actions">Actions</th>
+            <th>Title</th>
+            <th class="shrink">Posts</th>
+            <th class="shrink">Actions</th>
           </tr>
         </thead>
         <tbody>
-          {{range .List}}
+          {{range .Tags}}
             <tr>
-              <td class="name">{{.Name}}</td>
-              <td class="post_count">{{.PostCount}}</td>
-              <td class="actions">
-                <a href="/tags/{{.Name}}" class="btn btn-sm btn-default"><span class="fa fa-eye"></span></a>
-                <form class="inline-block" action="/admin/tags/{{.Name}}/delete" method="post">
+              <td>{{.Title}}</td>
+              <td class="shrink">{{len .Posts}}</td>
+              <td class="shrink">
+                <a href="/tags/{{.Title}}" class="btn btn-sm btn-secondary"><span class="fa fa-eye"></span></a>
+                <form class="inline-block" action="/admin/tags/{{.Title}}/delete" method="post">
+                  <input type="hidden" name="_csrf" value="{{$.Csrf}}">
                   <button type="button" class="btn btn-sm btn-danger" onclick="((confirm('Are you sure')) ? this.form.submit() : null);"><span class="fa fa-times"></span></button>
                 </form>
               </td>
