@@ -10,10 +10,10 @@ import (
 
 //Model is a tuned version of gorm.Model
 type Model struct {
-	ID        uint64    `form:"id" gorm:"primary_key"`
-	CreatedAt time.Time `binding:"-"`
-	UpdatedAt time.Time `binding:"-"`
-	//DeletedAt *time.Time `binding:"-"`
+	ID        uint64     `form:"id" gorm:"primary_key"`
+	CreatedAt time.Time  `binding:"-" form:"-"`
+	UpdatedAt time.Time  `binding:"-" form:"-"`
+	DeletedAt *time.Time `binding:"-" form:"-"`
 }
 
 var db *gorm.DB
