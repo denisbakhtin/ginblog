@@ -17,6 +17,7 @@ func MethodNotAllowed(c *gin.Context) {
 	ShowErrorPage(c, http.StatusMethodNotAllowed, nil)
 }
 
+//ShowErrorPage executes error template given its code
 func ShowErrorPage(c *gin.Context, code int, err error) {
 	H := DefaultH(c)
 	H["Error"] = err

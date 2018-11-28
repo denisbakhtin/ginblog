@@ -13,7 +13,7 @@ It consists of the following core components:
 - Comments with oauth2 authentication
 - logrus - advanced Go logger - https://github.com/Sirupsen/logrus
 - Twitter Bootstrap 4 - popular HTML, CSS, JS framework for developing responsive, mobile first web projects - http://getbootstrap.com
-- Gulp asset compiler
+- Webpack asset compiler
 - Parsley JS - form validation - http://parsleyjs.org
 - CKEditor 5 with image upload - https://ckeditor.com/ckeditor-5/
 - bluemonday - html sanitizer (for excerpts, etc) - https://github.com/microcosm-cc/bluemonday
@@ -130,9 +130,7 @@ And that's it.
 
 # Continuous Development
 
-For Continuous Development a good option is `reflex` - https://github.com/cespare/reflex
-Then simply run `reflex -c reflex.conf` in the project directory.
-
-Or run `realize s` (works on Windows unlike reflex) - https://github.com/oxequa/realize.
+For Continuous Development a good option is to install `fresh` - https://github.com/gravityblast/fresh
+Then simply run `fresh` in the project directory.
 
 To rebuild assets on change install `npm`, run `npm install` and then `npm run watch`. Run `npm run build` to build assets for production.
