@@ -8,6 +8,8 @@
     "webpack-cli": "^3.1.2"
   },
   "devDependencies": {
+    "@babel/core": "^7.1.6",
+    "@babel/preset-env": "^7.1.6",
     "@ckeditor/ckeditor5-build-classic": "^11.1.1",
     "@fortawesome/fontawesome": "^1.1.8",
     "@fortawesome/fontawesome-free-regular": "^5.0.13",
