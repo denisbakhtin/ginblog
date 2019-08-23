@@ -9,7 +9,7 @@ import (
 	"net/http"
 
 	"github.com/Sirupsen/logrus"
-	"github.com/denisbakhtin/ginblog/system"
+	"github.com/denisbakhtin/ginblog/config"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/oauth2"
@@ -34,7 +34,7 @@ func OauthCallback(c *gin.Context) {
 	// Handle the exchange code to initiate a transport.
 	session := sessions.Default(c)
 	returnURL := session.Get("oauth2-return").(string)
-	retrievedState := session.Get("state")
+	retrievedState := session.Get("state").(string)
 	queryState := c.Request.URL.Query().Get("state")
 	if retrievedState != queryState {
 		logrus.Errorf("Invalid session state: retrieved: %s; Param: %s", retrievedState, queryState)
@@ -96,11 +96,12 @@ func randToken(l int) string {
 
 func googleConfig() *oauth2.Config {
 	return &oauth2.Config{
-		ClientID:     system.GetConfig().Oauth.GoogleClientID,
-		ClientSecret: system.GetConfig().Oauth.GoogleSecret,
-		RedirectURL:  "http://localhost:8080/oauthcallback",
+		ClientID:     config.GetConfig().Oauth.GoogleClientID,
+		ClientSecret: config.GetConfig().Oauth.GoogleSecret,
+		RedirectURL:  fmt.Sprintf("%s/oauthcallback", config.GetConfig().Domain),
 		Scopes: []string{
-			"https://www.googleapis.com/auth/userinfo.email", // You have to select your own scope from here -> https://developers.google.com/identity/protocols/googlescopes#google_sign-in
+			"email", // You have to select your own scope from here -> https://developers.google.com/identity/protocols/googlescopes#google_sign-in
+			"profile",
 		},
 		Endpoint: google.Endpoint,
 	}

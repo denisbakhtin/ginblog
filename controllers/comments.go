@@ -86,6 +86,7 @@ func CommentPublicCreate(c *gin.Context) {
 		return
 	}
 
+	//force original user name
 	if name, ok := session.Get("oauth-username").(string); ok {
 		comment.UserName = name
 	}

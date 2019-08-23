@@ -20,7 +20,7 @@
               <td>{{.Title}}</td>
               <td class="shrink">{{len .Posts}}</td>
               <td class="shrink">
-                <a href="/tags/{{.Title}}" class="btn btn-sm btn-secondary"><span class="fa fa-eye"></span></a>
+                <a href="{{.URL}}" class="btn btn-sm btn-secondary"><span class="fa fa-eye"></span></a>
                 <form class="inline-block" action="/admin/tags/{{.Title}}/delete" method="post">
                   <input type="hidden" name="_csrf" value="{{$.Csrf}}">
                   <button type="button" class="btn btn-sm btn-danger" onclick="((confirm('Are you sure')) ? this.form.submit() : null);"><span class="fa fa-times"></span></button>

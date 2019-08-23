@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"html/template"
 
 	"github.com/microcosm-cc/bluemonday"
@@ -32,4 +33,9 @@ func (post *Post) Excerpt() template.HTML {
 //HTMLContent returns html content that won't be escaped
 func (post *Post) HTMLContent() template.HTML {
 	return template.HTML(post.Content)
+}
+
+//URL returns the post's canonical url
+func (post *Post) URL() string {
+	return fmt.Sprintf("/posts/%d", post.ID)
 }

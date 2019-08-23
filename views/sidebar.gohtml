@@ -6,7 +6,7 @@
     <ul class="nav flex-column">
       {{range recentPosts}}
       <li class="nav-item {{isActiveLink $.Context (printf "posts/%d" .ID)}}">
-        <a class="nav-link" href="/posts/{{.ID}}">{{.Title}}</a>
+        <a class="nav-link" href="{{.URL}}">{{.Title}}</a>
       </li>
       {{end}}
     </ul>
@@ -14,7 +14,7 @@
     <ul class="nav sidebar-tags">
       {{range tags}}
         <li class="nav-item">
-          <a class="nav-link" href="/tags/{{.Title}}">{{.Title}}</a>
+          <a class="nav-link" href="{{.URL}}">{{.Title}}</a>
         </li>
       {{end}}
     </ul>
@@ -25,6 +25,14 @@
         <a class="nav-link" href="/archives/{{printf "%d/%02d" .CreatedAt.Year .CreatedAt.Month}}">
           {{printf "%s %d" (.CreatedAt.Month.String) .CreatedAt.Year}}
         </a>
+      </li>
+      {{end}}
+    </ul>
+    <h5>Pages</h5>
+    <ul class="nav flex-column">
+      {{range pages}}
+      <li class="nav-item {{isActiveLink $.Context (printf "pages/%d" .ID)}}">
+        <a class="nav-link" href="{{.URL}}">{{.Title}}</a>
       </li>
       {{end}}
     </ul>

@@ -6,40 +6,39 @@ import (
 
 	"github.com/Sirupsen/logrus"
 	"github.com/claudiu/gocron"
+	"github.com/denisbakhtin/ginblog/config"
 	"github.com/denisbakhtin/ginblog/controllers"
 	"github.com/denisbakhtin/ginblog/models"
-	"github.com/denisbakhtin/ginblog/system"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/memstore"
 	"github.com/gin-gonic/gin"
-	"github.com/utrack/gin-csrf"
+	csrf "github.com/utrack/gin-csrf"
 )
 
 func main() {
 	initLogger()
-	system.LoadConfig()
-	models.SetDB(system.GetConnectionString())
+	config.LoadConfig()
+	models.SetDB(config.GetConnectionString())
 	models.AutoMigrate()
-	system.LoadTemplates()
+	controllers.LoadTemplates()
 
 	//Periodic tasks
-	gocron.Every(1).Day().Do(system.CreateXMLSitemap)
+	gocron.Every(1).Day().Do(controllers.CreateXMLSitemap)
 	gocron.Start()
 
 	// Creates a gin router with default middleware:
 	// logger and recovery (crash-free) middleware
 	router := gin.Default()
-	router.SetHTMLTemplate(system.GetTemplates())
+	router.SetHTMLTemplate(controllers.GetTemplates())
 
 	//setup sessions
-	config := system.GetConfig()
-	store := memstore.NewStore([]byte(config.SessionSecret))
-	store.Options(sessions.Options{HttpOnly: true, MaxAge: 7 * 86400}) //Also set Secure: true if using SSL, you should though
-	router.Use(sessions.Sessions("gin-session", store))
+	store := memstore.NewStore([]byte(config.GetConfig().SessionSecret))
+	store.Options(sessions.Options{Path: "/", HttpOnly: true, MaxAge: 7 * 86400}) //Also set Secure: true if using SSL, you should though
+	router.Use(sessions.Sessions("ginblog-session", store))
 
 	//setup csrf protection
 	router.Use(csrf.Middleware(csrf.Options{
-		Secret: config.SessionSecret,
+		Secret: config.GetConfig().SessionSecret,
 		ErrorFunc: func(c *gin.Context) {
 			logrus.Error("CSRF token mismatch")
 			controllers.ShowErrorPage(c, 400, fmt.Errorf("CSRF token mismatch"))
@@ -47,14 +46,14 @@ func main() {
 		},
 	}))
 
-	router.StaticFS("/public", http.Dir(system.PublicPath())) //better use nginx to serve assets (Cache-Control, Etag, fast gzip, etc)
+	router.StaticFS("/public", http.Dir(config.PublicPath())) //better use nginx to serve assets (Cache-Control, Etag, fast gzip, etc)
 	router.Use(controllers.ContextData())
 
 	router.GET("/", controllers.HomeGet)
 	router.NoRoute(controllers.NotFound)
 	router.NoMethod(controllers.MethodNotAllowed)
 
-	if system.GetConfig().SignupEnabled {
+	if config.GetConfig().SignupEnabled {
 		router.GET("/signup", controllers.SignUpGet)
 		router.POST("/signup", controllers.SignUpPost)
 	}
@@ -68,7 +67,7 @@ func main() {
 
 	router.GET("/pages/:id", controllers.PageGet)
 	router.GET("/posts/:id", controllers.PostGet)
-	router.GET("/tags/:title", controllers.TagGet)
+	router.GET("/tags/:slug", controllers.TagGet)
 	router.GET("/archives/:year/:month", controllers.ArchiveGet)
 	router.GET("/rss", controllers.RssGet)
 

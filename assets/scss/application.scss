@@ -7,20 +7,19 @@
 html {
   position: relative;
   min-height: 100%;
-  padding-top: 80px;
 }
 
 body {
-  margin-bottom: 60px;
   background: #f8f8f8;
+  min-height: 100vh;
+
   &>.container {
     padding-bottom: 15px;
+    min-height: calc(100vh - 64px);
   }
 }
 
 #footer {
-  position: absolute;
-  bottom: 0;
   width: 100%;
   height: 60px;
   background-color: #f5f5f5;
@@ -67,10 +66,12 @@ textarea.parsley-error {
   height: auto;
   padding: 50px 0 70px;
   z-index: 2;
+
   h5 {
     padding: 10px 15px;
     font-weight: bold;
   }
+
   .nav li {
     a {
       transition: background;
@@ -82,13 +83,16 @@ textarea.parsley-error {
 #sidebar {
   width: 210px;
   float: right;
+
   &+#main-column {
     margin-right: 225px;
     overflow: hidden;
   }
+
   h5 {
     font-weight: bold;
   }
+
   .svg-inline--fa,
   .fa {
     min-width: 35px;
@@ -115,18 +119,25 @@ textarea.parsley-error {
   color: #333;
 }
 
+.navbar.fixed-top+.container {
+  padding-top: 80px;
+}
+
 .navbar-dashboard {
   background-color: #eee;
+
   .navbar-brand {
     width: 210px;
     color: #333;
     background-color: #eee;
     text-transform: uppercase;
     font-weight: bold;
+
     &:hover {
       color: #555;
       background-color: #eee;
     }
+
     .fa {
       color: #333;
     }
@@ -135,15 +146,18 @@ textarea.parsley-error {
 
 .user-info {
   margin-top: 20px;
+
   h5 {
     padding: 0 !important;
   }
+
   .fa-user {
     float: left;
     font-size: 20px;
     color: #337ab7;
     margin-right: 10px;
   }
+
   .email {
     margin-top: 10px;
     font-size: 13px;
@@ -184,6 +198,7 @@ textarea.parsley-error {
 }
 
 .btn-sm {
+
   .svg-inline--fa,
   .fa {
     min-width: 15px;
@@ -198,9 +213,11 @@ textarea.parsley-error {
 
 .comment {
   margin-bottom: 20px;
+
   .text-muted {
     font-weight: normal;
   }
+
   .card {
     padding: 10px;
     border: none;

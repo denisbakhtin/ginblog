@@ -6,7 +6,7 @@
     "signup_enabled": true,
     "database": {
       "host": "192.168.0.1",
-      "name": "ginbasic_dev",
+      "name": "ginblog_dev",
       "user": "your_db_user",
       "password": "your_db_user_password"
     },
@@ -22,7 +22,7 @@
     "signup_enabled": false, 
     "database": {
       "host": "192.168.0.1",
-      "name": "ginbasic_dev",
+      "name": "ginblog",
       "user": "your_db_user",
       "password": "your_db_user_password"
     },

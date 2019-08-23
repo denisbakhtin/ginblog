@@ -13,7 +13,9 @@ import (
 func TagGet(c *gin.Context) {
 	db := models.GetDB()
 	tag := models.Tag{}
-	db.Preload("Posts", "published = true").Preload("Posts.Comments", "published = true").Preload("Posts.Tags").Preload("Posts.User").First(&tag, c.Param("title"))
+	db.Preload("Posts", "published = true").
+		Preload("Posts.Comments", "published = true").Preload("Posts.Tags").
+		Preload("Posts.User").Where("slug = ?", c.Param("slug")).First(&tag, c.Param("id"))
 	if len(tag.Title) == 0 {
 		c.HTML(http.StatusNotFound, "errors/404", nil)
 		return

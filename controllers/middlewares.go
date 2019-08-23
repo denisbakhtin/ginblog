@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/denisbakhtin/ginblog/config"
 	"github.com/denisbakhtin/ginblog/models"
-	"github.com/denisbakhtin/ginblog/system"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
@@ -23,7 +23,7 @@ func ContextData() gin.HandlerFunc {
 			}
 		}
 
-		if system.GetConfig().SignupEnabled {
+		if config.GetConfig().SignupEnabled {
 			c.Set("SignupEnabled", true)
 		}
 		c.Next()

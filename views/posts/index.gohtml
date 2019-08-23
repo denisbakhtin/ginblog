@@ -30,7 +30,7 @@
               </td>
               <td class="shrink">{{formatDateTime .CreatedAt}}</td>
               <td class="shrink">
-                <a href="/posts/{{.ID}}" class="btn btn-sm btn-secondary"><span class="fa fa-eye"></span></a>
+                <a href="{{.URL}}" class="btn btn-sm btn-secondary"><span class="fa fa-eye"></span></a>
                 <a href="/admin/posts/{{.ID}}/edit" class="btn btn-sm btn-primary"><span class="fa fa-pencil-alt"></span></a>
                 <form class="inline-block" action="/admin/posts/{{.ID}}/delete" method="post">
                   <input type="hidden" name="_csrf" value="{{$.Csrf}}">

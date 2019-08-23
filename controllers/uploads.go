@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/Sirupsen/logrus"
-	"github.com/denisbakhtin/ginblog/system"
+	"github.com/denisbakhtin/ginblog/config"
 	"github.com/gin-gonic/gin"
 )
 
@@ -45,7 +45,7 @@ func saveFile(fh *multipart.FileHeader, f multipart.File) (string, error) {
 	fileExt := filepath.Ext(fh.Filename)
 	newName := fmt.Sprint(time.Now().Unix()) + fileExt //unique file name ;D
 	uri := "/public/uploads/" + newName
-	fullName := filepath.Join(system.UploadsPath(), newName)
+	fullName := filepath.Join(config.UploadsPath(), newName)
 
 	file, err := os.OpenFile(fullName, os.O_WRONLY|os.O_CREATE, 0666)
 	if err != nil {

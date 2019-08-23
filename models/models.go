@@ -1,9 +1,13 @@
 package models
 
 import (
+	"regexp"
+	"strings"
 	"time"
 
+	"github.com/fiam/gounidecode/unidecode"
 	"github.com/jinzhu/gorm"
+
 	//postgres dialect, required by gorm
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
@@ -43,5 +47,13 @@ func truncate(s string, n int) string {
 	if len(runes) > n {
 		return string(runes[:n])
 	}
+	return s
+}
+
+//createSlug makes a friendly url slug out of a string
+func createSlug(s string) string {
+	s = strings.ToLower(unidecode.Unidecode(s))                     //transliterate if it is not in english
+	s = regexp.MustCompile("[^a-z0-9\\s]+").ReplaceAllString(s, "") //spaces
+	s = regexp.MustCompile("\\s+").ReplaceAllString(s, "-")         //spaces
 	return s
 }

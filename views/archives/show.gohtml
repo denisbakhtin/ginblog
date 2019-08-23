@@ -6,7 +6,7 @@
   <div id="main-column">
     <h2>{{.Title}}</h2>
     {{range .Posts}}
-      <h3><a href="/posts/{{.ID}}">{{.Title}}</a></h3>
+      <h3><a href="{{.URL}}">{{.Title}}</a></h3>
       {{template "posts/post-info" .}}
       <div class="excerpt">{{.Excerpt}}</div>
     {{end}}
