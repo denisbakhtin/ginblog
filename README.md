@@ -62,23 +62,23 @@ Contains application configuration file & go wrapper.
 
 `/controllers`
 
-All your controllers that serve defined routes.
+MVC controllers
 
 `/models`
 
-You database models.
+Database models.
 
 `/public`
 
-It contains all web-site static files
+All web-site static files
 
 `/views`
 
-Your views using standard `Go` template system.
+Web-site views.
 
 `main.go`
 
-This file starts your web application, contains routes definition & some custom middlewares.
+Main file that starts the application, initializes subsystems and web routes
 
 # Make it your own
 
