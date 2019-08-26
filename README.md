@@ -2,6 +2,7 @@ GIN-powered blog boilerplate
 ===============
 
 This is a skeleton project that provides essentials most web blogs need - MVC pattern, user authorisation, orm, admin dashboard, javascript form validation, rss feeds, etc.
+
 You can check out [GinShop](https://github.com/denisbakhtin/ginshop) for a more modern e-shop bundle.
 
 It consists of the following core components:
