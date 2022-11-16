@@ -4,7 +4,7 @@
   "description": "GIN-powered blog boilerplate",
   "dependencies": {
     "webpack": "^4.39.2",
-    "webpack-cli": "^3.3.7"
+    "webpack-cli": "^3.3.12"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
