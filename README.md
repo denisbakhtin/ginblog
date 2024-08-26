@@ -14,7 +14,7 @@ It consists of the following core components:
 - slog - advanced Go logger - log/slog
 - Twitter Bootstrap 5 - popular HTML, CSS, JS framework for developing responsive, mobile first web projects - http://getbootstrap.com
 - CKEditor 5 with image upload integration - https://ckeditor.com/ckeditor-5/
-- Tom Select - fast and compact <select> enhancement for post tags selection and creation on the fly - https://github.com/orchidjs/tom-select
+- Tom Select - fast and compact &lt;select&gt; enhancement for post tags selection and creation on the fly - https://github.com/orchidjs/tom-select
 - bluemonday - html sanitizer (for excerpts, etc) - https://github.com/microcosm-cc/bluemonday
 - RSS feeds - https://github.com/gorilla/feeds
 - sitemap - XML sitemap for search engines - https://github.com/denisbakhtin/sitemap
