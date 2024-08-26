@@ -2,17 +2,17 @@
 <div class="card card-block bg-faded flex-row post-info">
   {{if .User}}
     <span class="post-info-item">
-      <i class="fa fa-user mr-1"></i>{{.User.Name}}
+      <i class="bi bi-person-fill"></i>{{.User.Name}}
     </span>
   {{end}}
   <span class="post-info-item">
-    <i class="fa fa-calendar-alt mr-1"></i>{{printf "%04d-%02d-%02d" .CreatedAt.Year .CreatedAt.Month .CreatedAt.Day}}
+    <i class="bi bi-calendar"></i>{{printf "%04d-%02d-%02d" .CreatedAt.Year .CreatedAt.Month .CreatedAt.Day}}
   </span>
   <span class="post-info-item">
-    <a href="#comments"><i class="fa fa-comments mr-1"></i>Comments: {{len .Comments}}</a>
+    <a href="/posts/{{.ID}}#comments"><i class="bi bi-chat-dots"></i>Comments: {{len .Comments}}</a>
   </span>
   <span class="post-info-item">
-    <i class="fa fa-tags mr-1"></i>
+    <i class="bi bi-tags"></i>
     {{range .Tags}}
       <a href="{{.URL}}" class="label label-success">{{.Title}}</a>
     {{end}}

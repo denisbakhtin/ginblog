@@ -1,17 +1,14 @@
 {{define "footer"}}
   </div><!-- .container -->
 	<div id="footer">
-		<div class="container">			
-			<br>
+		<div class="container">						
 			<p class="text-muted">&copy; {{now.Year}} Gin Blog Boilerplate
 		</div>
 	</div>
 
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-		{{if .Csrf}}
-			<script type="text/javascript">window.csrf_token="{{.Csrf}}";</script>
-		{{end}}
-    <script src="/public/assets/application.js"></script>
+	{{if .Csrf}}
+		<script type="text/javascript">window.csrf_token="{{.Csrf}}";</script>
+	{{end}}    
   </body>
 </html>
 {{end}}

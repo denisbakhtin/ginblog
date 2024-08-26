@@ -1,15 +1,15 @@
 {{define "dashboard/sidebar"}}
-<aside class="col-sm-3">
+<aside id="sidebar-dashboard" class="col-sm-3">
   <div class="well well-sm user-info">
     <h5>User Profile</h5>
     <div class="dropdown">
-      <button class="btn btn-default dropdown-toggle" type="button" id="dropdownSettingsButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <i class="fa fa-cog mr-2"></i>settings
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownSettingsButton" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="bi bi-nut"></i>settings
       </button>
       <div class="dropdown-menu" aria-labelledby="dropdownSettingsButton">
-        <a class="dropdown-item" href="/admin/users/{{activeUserID .Context}}/edit"><i class="fa fa-edit mr-3"></i>Edit profile</a>
+        <a class="dropdown-item" href="/admin/users/{{activeUserID .Context}}/edit"><i class="bi bi-pencil-square"></i>Edit profile</a>
         <div class="dropdown-divider"></div>
-        <a class="dropdown-item" href="/logout"><i class="fa fa-sign-out-alt mr-3"></i>Logout</a>
+        <a class="dropdown-item" href="/logout"><i class="bi bi-escape"></i>Logout</a>
       </div>
     </div>
     <span class="email">{{activeUserEmail .Context}}</span>
@@ -18,19 +18,19 @@
   <h5>Navigation</h5>
   <ul class="nav flex-column nav-pills">
     <li class="nav-item">
-      <a class="nav-link {{isActiveLink .Context "/admin/posts"}}" href="/admin/posts"><i class="fa fa-pencil-alt mr-3"></i>Posts</a>
+      <a class="nav-link {{isActiveLink .Context "/admin/posts"}}" href="/admin/posts"><i class="bi bi-pencil-fill"></i>Posts</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link {{isActiveLink .Context "/admin/tags"}}" href="/admin/tags"><i class="fa fa-tags mr-3"></i>Tags</a>
+      <a class="nav-link {{isActiveLink .Context "/admin/tags"}}" href="/admin/tags"><i class="bi bi-tags"></i>Tags</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link {{isActiveLink .Context "/admin/comments"}}" href="/admin/comments"><i class="fa fa-comments mr-3"></i>Comments</a>
+      <a class="nav-link {{isActiveLink .Context "/admin/comments"}}" href="/admin/comments"><i class="bi bi-chat-dots"></i>Comments</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link {{isActiveLink .Context "/admin/pages"}}" href="/admin/pages"><i class="fa fa-copy mr-3"></i>Pages</a>
+      <a class="nav-link {{isActiveLink .Context "/admin/pages"}}" href="/admin/pages"><i class="bi bi-file-earmark-post"></i>Pages</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link {{isActiveLink .Context "/admin/users"}}" href="/admin/users"><i class="fa fa-user mr-3"></i>Users</a>
+      <a class="nav-link {{isActiveLink .Context "/admin/users"}}" href="/admin/users"><i class="bi bi-people"></i>Users</a>
     </li>
   </ul>
 </aside>

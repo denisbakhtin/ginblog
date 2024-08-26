@@ -16,22 +16,22 @@
               <input type="hidden" name="id" value="{{.Page.ID}}">
               <input type="hidden" name="_csrf" value="{{.Csrf}}">
               
-              <div class="form-group">
-                <label class="control-label" for="title">Title</label>
+              <div class="mb-3">
+                <label class="form-label" for="title">Title</label>
                 <input id="title" name="title" value="{{.Page.Title}}" class="form-control" required="" >
               </div>
 
-              <div class="form-group">
-                <label class="control-label" for="ck-content">Content</label>
+              <div class="mb-3">
+                <label class="form-label" for="ck-content">Content</label>
                 <textarea name="content" id="ck-content">{{.Page.Content}}</textarea>
               </div>
 
-              <div class="form-group">
-                <input id="published" name="published" type="checkbox" value="true" {{if .Page.Published}}checked{{end}} >
-                <label class="control-label" for="published">Publish</label>
+              <div class="form-check mb-3">
+                <input id="published" name="published" type="checkbox" class="form-check-input" value="true" {{if .Page.Published}}checked{{end}} >
+                <label class="form-check-label" for="published">Publish</label>
               </div>
 
-              <div class="form-group">
+              <div class="mb-3">
                 <input type="submit" class="btn btn-primary" value="Submit">
                 <a class="btn btn-secondary" href="/admin/pages">Cancel</a>
               </div>
@@ -42,6 +42,6 @@
     </div>
   </div>
 </div>
-<script src="/public/assets/ckeditor/build/ckeditor.js"></script>
+
 {{template "footer" .}}
 {{end}}

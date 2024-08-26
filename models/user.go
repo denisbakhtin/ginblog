@@ -2,22 +2,24 @@ package models
 
 import (
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
-//Login view model
+// Login view model
 type Login struct {
 	Email    string `form:"email" binding:"required"`
 	Password string `form:"password" binding:"required"`
 }
 
-//Register view model
+// Register view model
 type Register struct {
-	Name     string `form:"name" binding:"required"`
-	Email    string `form:"email" binding:"required"`
-	Password string `form:"password" binding:"required"`
+	Name           string `form:"name" binding:"required"`
+	Email          string `form:"email" binding:"required"`
+	Password       string `form:"password" binding:"required"`
+	PasswordRepeat string `form:"passwordrepeat" binding:"required"`
 }
 
-//User type contains user info
+// User type contains user info
 type User struct {
 	Model
 
@@ -26,8 +28,8 @@ type User struct {
 	Password string `form:"password" binding:"required"`
 }
 
-//BeforeSave gorm hook
-func (u *User) BeforeSave() (err error) {
+// BeforeSave gorm hook
+func (u *User) BeforeSave(tx *gorm.DB) (err error) {
 	var hash []byte
 	hash, err = bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
 	if err != nil {

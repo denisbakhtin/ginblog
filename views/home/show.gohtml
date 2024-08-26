@@ -4,23 +4,22 @@
 <div class="container" role="main">
   {{template "sidebar" .}}
   <div id="main-column">
-    <div class="jumbotron">
-      <h2>{{.Title}}</h2>
+    <h1>{{.Title}}</h1>
 
+    <p>
       This is a blog boilerplate created in Go using <a href="https://github.com/gin-gonic/gin">GIN</a> web microframework, <a href="https://github.com/gin-contrib/sessions">gin sessions</a> and <a href="http://gorm.io">gorm</a>
-      <br>
-      <br>
-      It provides essentials that most web applications need - MVC pattern user authorisation, database migrations, CSRF protection, admin dashboard, static pages and much more...
-      <br>
-      <br>
-      Project's source code can be found here:
-      <br>
-      <br>
-      <div class="well">
-        <a href="https://github.com/denisbakhtin/ginblog">https://github.com/denisbakhtin/ginblog</a>
+    </p>
+    <p>
+      It provides essentials that most web applications need - MVC pattern user authorisation, database migrations, CSRF protection, admin dashboard, CKEditor 5 WYSIWYG html editor, static pages and more...
+    </p>
+    <p><img src="/public/images/home_image.jpg" /></p>      
+    <p>It is intended to be used as a building block when developing a personal blog.</p>
+    <div class="card">
+      <div class="card-body">
+          Project's source code is under MIT license: <a href="https://github.com/denisbakhtin/ginblog">https://github.com/denisbakhtin/ginblog</a>.          
       </div>
     </div>
-  </div>
+  </div>  
 </div>
 {{template "footer" .}}
 {{end}}

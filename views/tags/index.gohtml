@@ -5,7 +5,7 @@
   <div class="row">
     {{template "dashboard/sidebar" .}}
     <div class="col-sm-9" role="main">
-      <h2>{{.Title}}</h2>
+      <h1>{{.Title}}</h1>
       <table class="table">
         <thead>
           <tr>
@@ -20,10 +20,10 @@
               <td>{{.Title}}</td>
               <td class="shrink">{{len .Posts}}</td>
               <td class="shrink">
-                <a href="{{.URL}}" class="btn btn-sm btn-secondary"><span class="fa fa-eye"></span></a>
-                <form class="inline-block" action="/admin/tags/{{.Title}}/delete" method="post">
+                <a href="{{.URL}}" class="btn btn-sm btn-secondary"><span class="bi bi-eye"></span></a>
+                <form class="inline-block" action="/admin/tags/{{.Slug}}/delete" method="post">
                   <input type="hidden" name="_csrf" value="{{$.Csrf}}">
-                  <button type="button" class="btn btn-sm btn-danger" onclick="((confirm('Are you sure')) ? this.form.submit() : null);"><span class="fa fa-times"></span></button>
+                  <button type="button" class="btn btn-sm btn-danger" onclick="((confirm('Are you sure')) ? this.form.submit() : null);"><span class="bi bi-trash"></span></button>
                 </form>
               </td>
             </tr>

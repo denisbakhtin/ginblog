@@ -1,15 +1,15 @@
 package controllers
 
 import (
+	"log/slog"
 	"net/http"
 
-	"github.com/Sirupsen/logrus"
 	"github.com/denisbakhtin/ginblog/models"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
-//UserIndex handles GET /admin/users route
+// UserIndex handles GET /admin/users route
 func UserIndex(c *gin.Context) {
 	db := models.GetDB()
 	var users []models.User
@@ -20,7 +20,7 @@ func UserIndex(c *gin.Context) {
 	c.HTML(http.StatusOK, "users/index", h)
 }
 
-//UserNew handles GET /admin/new_user route
+// UserNew handles GET /admin/new_user route
 func UserNew(c *gin.Context) {
 	h := DefaultH(c)
 	h["Title"] = "New user"
@@ -30,7 +30,7 @@ func UserNew(c *gin.Context) {
 	c.HTML(http.StatusOK, "users/form", h)
 }
 
-//UserCreate handles POST /admin/new_user route
+// UserCreate handles POST /admin/new_user route
 func UserCreate(c *gin.Context) {
 	user := &models.User{}
 	db := models.GetDB()
@@ -41,7 +41,6 @@ func UserCreate(c *gin.Context) {
 		c.Redirect(http.StatusSeeOther, "/admin/new_user")
 		return
 	}
-
 	if err := db.Create(&user).Error; err != nil {
 		session := sessions.Default(c)
 		session.AddFlash(err.Error())
@@ -52,7 +51,7 @@ func UserCreate(c *gin.Context) {
 	c.Redirect(http.StatusFound, "/admin/users")
 }
 
-//UserEdit handles GET /admin/users/:id/edit route
+// UserEdit handles GET /admin/users/:id/edit route
 func UserEdit(c *gin.Context) {
 	db := models.GetDB()
 	user := models.User{}
@@ -70,7 +69,7 @@ func UserEdit(c *gin.Context) {
 	c.HTML(http.StatusOK, "users/form", h)
 }
 
-//UserUpdate handles POST /admin/users/:id/edit route
+// UserUpdate handles POST /admin/users/:id/edit route
 func UserUpdate(c *gin.Context) {
 	user := &models.User{}
 	db := models.GetDB()
@@ -84,13 +83,13 @@ func UserUpdate(c *gin.Context) {
 
 	if err := db.Save(&user).Error; err != nil {
 		c.HTML(http.StatusInternalServerError, "errors/500", nil)
-		logrus.Error(err)
+		slog.Error(err.Error())
 		return
 	}
 	c.Redirect(http.StatusFound, "/admin/users")
 }
 
-//UserDelete handles POST /admin/users/:id/delete route
+// UserDelete handles POST /admin/users/:id/delete route
 func UserDelete(c *gin.Context) {
 	db := models.GetDB()
 	user := models.User{}
@@ -101,7 +100,7 @@ func UserDelete(c *gin.Context) {
 	}
 	if err := db.Delete(&user).Error; err != nil {
 		c.HTML(http.StatusInternalServerError, "errors/500", nil)
-		logrus.Error(err)
+		slog.Error(err.Error())
 		return
 	}
 	c.Redirect(http.StatusFound, "/admin/users")

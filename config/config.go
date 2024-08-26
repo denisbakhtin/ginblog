@@ -6,18 +6,16 @@ import (
 	"os"
 	"path"
 
-	"io/ioutil"
-
 	"github.com/gin-gonic/gin"
 )
 
-//Configs contains application configurations for all gin modes
+// Configs contains application configurations for all gin modes
 type Configs struct {
 	Debug   Config
 	Release Config
 }
 
-//Config contains application configuration for active gin mode
+// Config contains application configuration for active gin mode
 type Config struct {
 	Public        string `json:"public"`
 	Domain        string `json:"domain"`
@@ -27,7 +25,7 @@ type Config struct {
 	Oauth         OauthConfig
 }
 
-//DatabaseConfig contains database connection info
+// DatabaseConfig contains database connection info
 type DatabaseConfig struct {
 	Host     string
 	Name     string //database name
@@ -35,18 +33,18 @@ type DatabaseConfig struct {
 	Password string
 }
 
-//OauthConfig contains oauth client ids and secrets
+// OauthConfig contains oauth client ids and secrets
 type OauthConfig struct {
 	GoogleClientID string `json:"google_client_id"`
 	GoogleSecret   string `json:"google_secret"`
 }
 
-//current loaded config
+// current loaded config
 var config *Config
 
-//LoadConfig unmarshals config for current GIN_MODE
+// LoadConfig unmarshals config for current GIN_MODE
 func LoadConfig() {
-	data, err := ioutil.ReadFile("config/config.json")
+	data, err := os.ReadFile("config/config.json")
 	if err != nil {
 		panic(err)
 	}
@@ -72,22 +70,22 @@ func LoadConfig() {
 	}
 }
 
-//GetConfig returns actual config
+// GetConfig returns actual config
 func GetConfig() *Config {
 	return config
 }
 
-//PublicPath returns path to application public folder
+// PublicPath returns path to application public folder
 func PublicPath() string {
 	return config.Public
 }
 
-//UploadsPath returns path to public/uploads folder
+// UploadsPath returns path to public/uploads folder
 func UploadsPath() string {
 	return path.Join(config.Public, "uploads")
 }
 
-//GetConnectionString returns a database connection string
+// GetConnectionString returns a database connection string
 func GetConnectionString() string {
 	return fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable", config.Database.Host, config.Database.User, config.Database.Password, config.Database.Name)
 }

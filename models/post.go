@@ -5,9 +5,10 @@ import (
 	"html/template"
 
 	"github.com/microcosm-cc/bluemonday"
+	"gorm.io/gorm"
 )
 
-//Post type contains blog post info
+// Post type contains blog post info
 type Post struct {
 	Model
 
@@ -18,10 +19,15 @@ type Post struct {
 	User      User      `binding:"-" gorm:"association_autoupdate:false;association_autocreate:false"`
 	FormTags  []string  `form:"tags" gorm:"-"`
 	Tags      []Tag     `binding:"-" form:"-" json:"tags" gorm:"many2many:posts_tags;"`
-	Comments  []Comment `binding:"-"`
+	Comments  []Comment `binding:"-" gorm:"constraint:OnDelete:CASCADE;"`
 }
 
-//Excerpt returns post excerpt by removing html tags first and truncating to 300 symbols
+// BeforeDelete gorm hook removes association
+func (post *Post) BeforeDelete(tx *gorm.DB) (err error) {
+	return tx.Exec("DELETE FROM posts_tags WHERE post_id = ?", post.ID).Error
+}
+
+// Excerpt returns post excerpt by removing html tags first and truncating to 300 symbols
 func (post *Post) Excerpt() template.HTML {
 	//you can sanitize, cut it down, add images, etc
 	policy := bluemonday.StrictPolicy() //remove all html tags
@@ -30,12 +36,12 @@ func (post *Post) Excerpt() template.HTML {
 	return excerpt
 }
 
-//HTMLContent returns html content that won't be escaped
+// HTMLContent returns html content that won't be escaped
 func (post *Post) HTMLContent() template.HTML {
 	return template.HTML(post.Content)
 }
 
-//URL returns the post's canonical url
+// URL returns the post's canonical url
 func (post *Post) URL() string {
 	return fmt.Sprintf("/posts/%d", post.ID)
 }

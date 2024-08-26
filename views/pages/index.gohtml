@@ -5,7 +5,7 @@
   <div class="row">
     {{template "dashboard/sidebar" .}}
     <div class="col-sm-9" role="main">
-      <h2>{{.Title}}</h2>
+      <h1>{{.Title}}</h1>
       <table class="table">
         <thead>
           <tr>
@@ -23,18 +23,18 @@
               <td>{{.Title}}</td>
               <td class="shrink">
                 {{if .Published}}
-                <span class="fa fa-check"></span>
+                <span class="bi bi-check"></span>
                 {{else}}
-                <span class="fa fa-times"></span>
+                <span class="bi bi-dash"></span>
                 {{end}}
               </td>
               <td class="shrink">{{formatDateTime .CreatedAt}}</td>
               <td class="shrink">
-                <a href="{{.URL}}" class="btn btn-sm btn-secondary"><span class="fa fa-eye"></span></a>
-                <a href="/admin/pages/{{.ID}}/edit" class="btn btn-sm btn-primary"><span class="fa fa-pencil-alt"></span></a>
+                <a href="{{.URL}}" class="btn btn-sm btn-secondary"><span class="bi bi-eye"></span></a>
+                <a href="/admin/pages/{{.ID}}/edit" class="btn btn-sm btn-primary"><span class="bi bi-pencil"></span></a>
                 <form class="inline-block" action="/admin/pages/{{.ID}}/delete" method="post">
                   <input type="hidden" name="_csrf" value="{{$.Csrf}}">
-                  <button type="button" class="btn btn-sm btn-danger" onclick="((confirm('Are you sure')) ? this.form.submit() : null);"><span class="fa fa-times"></span></button>
+                  <button type="button" class="btn btn-sm btn-danger" onclick="((confirm('Are you sure')) ? this.form.submit() : null);"><span class="bi bi-trash"></span></button>
                 </form>
               </td>
             </tr>

@@ -16,13 +16,13 @@
               <input type="hidden" name="id" value="{{.Comment.ID}}" >
               <input type="hidden" name="_csrf" value="{{.Csrf}}">
               
-              <div class="form-group">
-                <label class="control-label" for="content">Content</label>
+              <div class="mb-3">
+                <label class="form-label" for="content">Content</label>
                 <textarea name="content" class="form-control" id="content">{{.Comment.Content}}</textarea>
               </div>
 
-              <div class="form-group">
-                <label class="control-label" for="post_id">Post</label>
+              <div class="mb-3">
+                <label class="form-label" for="post_id">Post</label>
                 <select id="post_id" name="post_id" class="form-control">
                   {{range posts}}
                     {{if $.Comment}}
@@ -34,14 +34,14 @@
                 </select>
               </div>
 
-              <div class="form-group">
-                <label class="control-label" for="user_name">User</label>
+              <div class="mb-3">
+                <label class="form-label" for="user_name">User</label>
                 <input id="user_name" readonly name="user_name" class="form-control" value="{{activeUserName .Context}}" />
               </div>
 
-              <div class="form-group">
-                <input id="published" name="published" type="checkbox" value="true" {{if .Comment.Published}}checked{{end}} >
-                <label class="control-label" for="published">Publish</label>
+              <div class="form-check mb-3">
+                <input id="published" name="published" type="checkbox" class="form-check-input" value="true" {{if .Comment.Published}}checked{{end}} >
+                <label class="form-check-label" for="published">Publish</label>
               </div>
 
               <input type="submit" class="btn btn-primary" value="Submit">

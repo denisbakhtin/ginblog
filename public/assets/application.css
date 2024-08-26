@@ -1,0 +1,260 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+:root {
+    --bs-body-bg: #f8f8f8;
+    --bs-primary-rgb: 98, 0, 238;
+
+    --footer-bg: #e5e5e5;
+    --footer-height: 60px;
+
+    --sidebar-width: 220px;
+
+    --icon-color: #777;
+}
+
+.navbar,
+.navbar-nav {
+    --bs-navbar-brand-color: #fafafa;
+    --bs-navbar-brand-hover-color: #d0d0d0;
+    --bs-navbar-color: #fafafa;
+    --bs-navbar-hover-color: #d0d0d0;
+}
+
+.navbar .nav-link {
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.navbar .bi {
+    color: var(--bs-navbar-color);
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    min-height: 100vh;
+}
+
+body>.container {
+    padding-bottom: 15px;
+    min-height: calc(100vh - var(--footer-height));
+}
+
+#footer {
+    width: 100%;
+    height: var(--footer-height);
+    background-color: var(--footer-bg);
+    z-index: 10;
+    padding-top: 20px;
+}
+
+h1 {
+    font-size: 2rem;
+    text-transform: uppercase;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+textarea.form-control {
+    min-height: 7em;
+}
+
+.form-control {
+    background-color: var(--bs-white);
+}
+
+#sidebar-dashboard h5 {
+    text-transform: uppercase;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+#sidebar-dashboard .nav-link {
+    padding-left: 0;
+}
+
+#sidebar-dashboard .nav-link .bi {
+    color: var(--bs-primary);
+}
+
+#sidebar-dashboard .btn-secondary .bi {
+    color: var(--bs-white);
+}
+
+#sidebar {
+    width: var(--sidebar-width);
+    float: right;
+}
+
+#sidebar+#main-column {
+    margin-right: var(--sidebar-width);
+    padding-right: 20px;
+    overflow: hidden;
+}
+
+.container #main-column img {
+    max-width: 100%;
+    height: auto;
+}
+
+#sidebar h5 {
+    margin-bottom: 0.2rem;
+    text-transform: uppercase;
+    font-size: 1rem;
+    margin-top: 0.6rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+#sidebar .nav-link {
+    padding-left: 0;
+}
+
+.table>tbody>tr>td {
+    vertical-align: middle;
+}
+
+.table .shrink {
+    white-space: nowrap;
+    width: 1px;
+    text-align: center;
+}
+
+.table .shrink .btn-sm .bi {
+    margin-right: 0;
+    color: #fff;
+}
+
+.inline-block {
+    display: inline-block;
+}
+
+.bi {
+    color: var(--icon-color);
+    margin-right: 0.5rem;
+}
+
+.navbar.fixed-top+.container {
+    padding-top: 80px;
+}
+
+.navbar-dashboard {
+    background-color: #eee;
+}
+
+.navbar-dashboard .navbar-brand {
+    width: 210px;
+    color: #333;
+    background-color: #eee;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.navbar-dashboard .navbar-brand:hover {
+    color: #555;
+    background-color: #eee;
+}
+
+.user-info {
+    margin-top: 20px;
+}
+
+.user-info h5 {
+    padding: 0 !important;
+}
+
+.user-info .email {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #333;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 175px;
+    display: inline-block;
+}
+
+.post-info {
+    font-size: 90%;
+    margin: 15px 0 25px 0;
+    padding: 5px 10px;
+}
+
+.post-info-item {
+    margin-right: 1em;
+}
+
+.auth-card {
+    max-width: 450px;
+    margin: 0 auto;
+    margin-top: 100px;
+    margin-bottom: 50px;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+}
+
+.ck-content {
+    min-height: 20em;
+
+    font-family: 'Lato';
+    line-height: 1.6;
+    word-break: break-word;
+}
+
+.main-container {
+    font-family: 'Lato';
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.editor-container_classic-editor .editor-container__editor {
+    min-width: 795px;
+    max-width: 795px;
+}
+
+.sidebar-tags .nav-link {
+    padding: 0.5rem 0.5rem 0.5rem 0;
+}
+
+.comment {
+    margin-bottom: 20px;
+    background-color: #f1f1f1;
+}
+
+.comment h6 {
+    background-color: #e0e0e0;
+    padding: 0.2rem 0.6rem;
+}
+
+.comment h6 .text-muted {
+    font-weight: normal;
+    font-size: 90%;
+}
+
+.comment .comment-text {
+    padding: 0.6rem;
+}
+
+.public-comment {
+    margin-bottom: 15px;
+}
+
+.ts-wrapper.multi .ts-control {
+    border-radius: var(--bs-border-radius) !important;
+}
+
+.ts-wrapper.multi .ts-control>div {
+    font-size: 1rem;
+    border-radius: var(--bs-border-radius) !important;
+}
+
+.ts-wrapper.multi .ts-control>div.active {
+    background: var(--bs-primary) !important;
+    color: var(--bs-white) !important;
+}
+
+.jumbotron h1 {
+    font-size: 300%;
+}
+
+.jumbotron .description {
+    text-transform: uppercase;
+}

@@ -2,16 +2,16 @@ package controllers
 
 import (
 	"fmt"
+	"log/slog"
 	"net/http"
 
-	"github.com/Sirupsen/logrus"
 	"github.com/denisbakhtin/ginblog/models"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
-//PostGet handles GET /posts/:id route
+// PostGet handles GET /posts/:id route
 func PostGet(c *gin.Context) {
 	db := models.GetDB()
 	session := sessions.Default(c)
@@ -32,7 +32,7 @@ func PostGet(c *gin.Context) {
 	c.HTML(http.StatusOK, "posts/show", h)
 }
 
-//PostIndex handles GET /admin/posts route
+// PostIndex handles GET /admin/posts route
 func PostIndex(c *gin.Context) {
 	db := models.GetDB()
 	var posts []models.Post
@@ -43,7 +43,7 @@ func PostIndex(c *gin.Context) {
 	c.HTML(http.StatusOK, "posts/index", h)
 }
 
-//PostNew handles GET /admin/new_post route
+// PostNew handles GET /admin/new_post route
 func PostNew(c *gin.Context) {
 	var tags []models.Tag
 	db := models.GetDB()
@@ -51,6 +51,7 @@ func PostNew(c *gin.Context) {
 	h := DefaultH(c)
 	h["Title"] = "New post"
 	h["Tags"] = tags
+	h["CKEditor"] = true
 	session := sessions.Default(c)
 	h["Flash"] = session.Flashes()
 	session.Save()
@@ -58,7 +59,7 @@ func PostNew(c *gin.Context) {
 	c.HTML(http.StatusOK, "posts/form", h)
 }
 
-//PostCreate handles POST /admin/new_post route
+// PostCreate handles POST /admin/new_post route
 func PostCreate(c *gin.Context) {
 	post := models.Post{}
 	db := models.GetDB()
@@ -66,7 +67,7 @@ func PostCreate(c *gin.Context) {
 		session := sessions.Default(c)
 		session.AddFlash(err.Error())
 		session.Save()
-		logrus.Error(err)
+		slog.Error(err.Error())
 		c.Redirect(http.StatusSeeOther, "/admin/new_post")
 		return
 	}
@@ -80,13 +81,13 @@ func PostCreate(c *gin.Context) {
 	}
 	if err := db.Create(&post).Error; err != nil {
 		c.HTML(http.StatusInternalServerError, "errors/500", nil)
-		logrus.Error(err)
+		slog.Error(err.Error())
 		return
 	}
 	c.Redirect(http.StatusFound, "/admin/posts")
 }
 
-//PostEdit handles GET /admin/posts/:id/edit route
+// PostEdit handles GET /admin/posts/:id/edit route
 func PostEdit(c *gin.Context) {
 	db := models.GetDB()
 	post := models.Post{}
@@ -95,17 +96,22 @@ func PostEdit(c *gin.Context) {
 		c.HTML(http.StatusNotFound, "errors/404", nil)
 		return
 	}
+
+	var tags []models.Tag
+	db.Order("title asc").Find(&tags)
+
 	h := DefaultH(c)
 	h["Title"] = "Edit post entry"
 	h["Post"] = post
-	h["Tags"] = post.Tags
+	h["Tags"] = tags
+	h["CKEditor"] = true
 	session := sessions.Default(c)
 	h["Flash"] = session.Flashes()
 	session.Save()
 	c.HTML(http.StatusOK, "posts/form", h)
 }
 
-//PostUpdate handles POST /admin/posts/:id/edit route
+// PostUpdate handles POST /admin/posts/:id/edit route
 func PostUpdate(c *gin.Context) {
 	db := models.GetDB()
 	post := models.Post{}
@@ -113,7 +119,7 @@ func PostUpdate(c *gin.Context) {
 		session := sessions.Default(c)
 		session.AddFlash(err.Error())
 		session.Save()
-		logrus.Error(err)
+		slog.Error(err.Error())
 		c.Redirect(http.StatusSeeOther, fmt.Sprintf("/admin/posts/%s/edit", c.Param("id")))
 		return
 	}
@@ -125,18 +131,18 @@ func PostUpdate(c *gin.Context) {
 
 	if err := db.Save(&post).Error; err != nil {
 		c.HTML(http.StatusInternalServerError, "errors/500", nil)
-		logrus.Error(err)
+		slog.Error(err.Error())
 		return
 	}
 	if err := db.Exec("DELETE FROM posts_tags WHERE post_id = ? AND tag_title NOT IN(?)", post.ID, post.FormTags).Error; err != nil {
 		c.HTML(http.StatusInternalServerError, "errors/500", nil)
-		logrus.Error(err)
+		slog.Error(err.Error())
 		return
 	}
 	c.Redirect(http.StatusFound, "/admin/posts")
 }
 
-//PostDelete handles POST /admin/posts/:id/delete route
+// PostDelete handles POST /admin/posts/:id/delete route
 func PostDelete(c *gin.Context) {
 	db := models.GetDB()
 	post := models.Post{}
@@ -147,7 +153,7 @@ func PostDelete(c *gin.Context) {
 	}
 	if err := db.Delete(&post).Error; err != nil {
 		c.HTML(http.StatusInternalServerError, "errors/500", nil)
-		logrus.Error(err)
+		slog.Error(err.Error())
 		return
 	}
 	c.Redirect(http.StatusFound, "/admin/posts")

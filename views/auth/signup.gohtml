@@ -4,41 +4,36 @@
 <div class="container" role="main">
   <div class="card auth-card">
     <div class="card-body">
-      <form method="post" data-parsley-validate>
-        <h4 class="card-title">Sign Up</h4>
+      <form method="post">
+        <h4 class="card-title text-center text-uppercase">Sign Up</h4>
         {{range .Flash}}
           <div class="alert alert-danger">{{.}}</div><p>
         {{end}}
         <input type="hidden" name="_csrf" value="{{.Csrf}}">
 
-        <div class="form-group">
-          <label class="control-label" for="name">Name</label>
-          <input id="name" name="name" placeholder="Your name" class="form-control input-md" required="" data-parsley-required-message="Please enter your name">
+        <div class="mb3">
+          <label class="form-label" for="name">Name</label>
+          <input id="name" name="name" placeholder="Your name" class="form-control input-md" required="">
         </div>
         
-        <div class="form-group">
-          <label class="control-label" for="email">Email</label>
-          <input id="email" name="email" type="email" placeholder="Email address" class="form-control input-md" required="" data-parsley-required-message="Please enter your email">
+        <div class="mb3">
+          <label class="form-label" for="email">Email</label>
+          <input id="email" name="email" type="email" placeholder="Email address" class="form-control input-md" required="">
         </div>
 
-        <div class="form-group">
-          <label class="control-label" for="password">Password</label>
-          <input id="password" name="password" type="password" placeholder="Password" class="form-control input-md" required="" data-parsley-required-message="Please enter your password">
+        <div class="mb-3">
+          <label class="form-label" for="password">Password</label>
+          <input id="password" name="password" type="password" placeholder="Password" class="form-control input-md" required="">
         </div>
 
-        <div class="form-group">
-          <label class="control-label" for="passwordrepeat">Repeat password</label>
-          <input id="passwordrepeat" name="passwordrepeat" type="password" placeholder="Repeat password" class="form-control input-md" required="" data-parsley-required-message="Please repeat your password" data-parsley-equalto="#password" data-parsley-equalto-message="Passwords do not match">
+        <div class="mb-3">
+          <label class="form-label" for="passwordrepeat">Repeat password</label>
+          <input id="passwordrepeat" name="passwordrepeat" type="password" placeholder="Repeat password" class="form-control input-md" required="">
         </div>
-
-        <div class="form-group">
-          <label class="checkbox-inline" for="terms">
-            <input type="checkbox" name="terms" id="terms" required="" data-parsley-required-message="You can't continue without accepting our Terms and Conditions">
-            I accept terms and conditions
-          </label>
+        
+        <div class="text-center">
+          <button id="signup" name="signup" class="btn btn-primary">Sign Up</button>
         </div>
-
-        <button id="signup" name="signup" class="btn btn-primary">Sign Up</button>
       </form>
     </div>
   </div>

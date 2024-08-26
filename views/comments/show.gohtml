@@ -4,7 +4,7 @@
 <div class="container" role="main">
   {{template "sidebar" .}}
   <div id="main-column">
-    <h2>{{.Post.Title}}</h2>
+    <h1>{{.Post.Title}}</h1>
     {{template "posts/post-info" .Post}}
     <div class="description">{{noescape .Post.Content}}</div>
     <div id="comments">

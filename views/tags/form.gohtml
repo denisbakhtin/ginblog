@@ -14,12 +14,12 @@
               <div class="alert alert-danger">{{.}}</div><p>
             {{end}}
             <input type="hidden" name="_csrf" value="{{.Csrf}}">
-            <div class="form-group">
-              <label class="control-label" for="title">Title</label>
+            <div class="mb-3">
+              <label class="form-label" for="title">Title</label>
               <input id="title" name="title" value="{{.Tag.Title}}" class="form-control" required="">
             </div>
 
-            <div class="form-group">
+            <div class="mb-3">
               <input type="submit" class="btn btn-primary" value="Submit">
               <a class="btn btn-secondary" href="/admin/tags">Cancel</a>
             </div>

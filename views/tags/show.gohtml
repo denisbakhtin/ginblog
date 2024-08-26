@@ -4,7 +4,7 @@
 <div class="container" role="main">
   {{template "sidebar" .}}
   <div id="main-column">
-    <h2><i class="fa fa-tags mr-1"></i>{{.Tag.Title}}</h2>
+    <h1>Posts tagged with #{{.Tag.Title}}</h1>
     {{range .Tag.Posts}}
       <h3><a href="{{.URL}}">{{.Title}}</a></h3>
       {{template "posts/post-info" .}}

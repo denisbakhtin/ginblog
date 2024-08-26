@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
+	"log/slog"
 	"net/http"
+	"os"
 
-	"github.com/Sirupsen/logrus"
 	"github.com/claudiu/gocron"
 	"github.com/denisbakhtin/ginblog/config"
 	"github.com/denisbakhtin/ginblog/controllers"
@@ -20,6 +21,7 @@ func main() {
 	config.LoadConfig()
 	models.SetDB(config.GetConnectionString())
 	models.AutoMigrate()
+	models.SeedDB() // seed database with demo data if empty
 	controllers.LoadTemplates()
 
 	//Periodic tasks
@@ -40,7 +42,7 @@ func main() {
 	router.Use(csrf.Middleware(csrf.Options{
 		Secret: config.GetConfig().SessionSecret,
 		ErrorFunc: func(c *gin.Context) {
-			logrus.Error("CSRF token mismatch")
+			slog.Error("CSRF token mismatch")
 			controllers.ShowErrorPage(c, 400, fmt.Errorf("CSRF token mismatch"))
 			c.Abort()
 		},
@@ -109,18 +111,27 @@ func main() {
 		authorized.GET("/tags", controllers.TagIndex)
 		authorized.GET("/new_tag", controllers.TagNew)
 		authorized.POST("/new_tag", controllers.TagCreate)
-		authorized.POST("/tags/:title/delete", controllers.TagDelete)
+		authorized.POST("/tags/:slug/delete", controllers.TagDelete)
 	}
 
 	// Listen and server on 0.0.0.0:8080
 	router.Run(":8080")
 }
 
-//initLogger initializes logrus logger with some defaults
+// initLogger initializes slog logger with some defaults
 func initLogger() {
-	logrus.SetFormatter(&logrus.TextFormatter{})
-	//logrus.SetOutput(os.Stderr)
-	if gin.Mode() == gin.DebugMode {
-		logrus.SetLevel(logrus.DebugLevel)
+	var handler slog.Handler
+	if gin.Mode() == gin.ReleaseMode {
+		opts := &slog.HandlerOptions{
+			Level: slog.LevelInfo,
+		}
+		handler = slog.NewJSONHandler(os.Stdout, opts)
+	} else {
+		opts := &slog.HandlerOptions{
+			Level: slog.LevelDebug,
+		}
+		handler = slog.NewTextHandler(os.Stdout, opts)
 	}
+	logger := slog.New(handler)
+	slog.SetDefault(logger)
 }

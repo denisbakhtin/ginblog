@@ -1,15 +1,16 @@
 package controllers
 
 import (
+	"fmt"
+	"log/slog"
 	"net/http"
 
-	"github.com/Sirupsen/logrus"
 	"github.com/denisbakhtin/ginblog/models"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
-//TagGet handles GET /tags/:title route
+// TagGet handles GET /tags/:title route
 func TagGet(c *gin.Context) {
 	db := models.GetDB()
 	tag := models.Tag{}
@@ -21,12 +22,12 @@ func TagGet(c *gin.Context) {
 		return
 	}
 	h := DefaultH(c)
-	h["Title"] = tag.Title
+	h["Title"] = fmt.Sprintf("Posts tagged with %s", tag.Title)
 	h["Tag"] = tag
 	c.HTML(http.StatusOK, "tags/show", h)
 }
 
-//TagIndex handles GET /admin/tags route
+// TagIndex handles GET /admin/tags route
 func TagIndex(c *gin.Context) {
 	db := models.GetDB()
 	var tags []models.Tag
@@ -37,7 +38,7 @@ func TagIndex(c *gin.Context) {
 	c.HTML(http.StatusOK, "tags/index", h)
 }
 
-//TagNew handles GET /admin/new_tag route
+// TagNew handles GET /admin/new_tag route
 func TagNew(c *gin.Context) {
 	h := DefaultH(c)
 	h["Title"] = "New tag"
@@ -48,7 +49,7 @@ func TagNew(c *gin.Context) {
 	c.HTML(http.StatusOK, "tags/form", h)
 }
 
-//TagCreate handles POST /admin/new_tag route
+// TagCreate handles POST /admin/new_tag route
 func TagCreate(c *gin.Context) {
 	tag := models.Tag{}
 	db := models.GetDB()
@@ -62,23 +63,24 @@ func TagCreate(c *gin.Context) {
 
 	if err := db.Create(&tag).Error; err != nil {
 		c.HTML(http.StatusInternalServerError, "errors/500", nil)
-		logrus.Error(err)
+		slog.Error(err.Error())
 		return
 	}
 	c.Redirect(http.StatusFound, "/admin/tags")
 }
 
-//TagDelete handles POST /admin/tags/:title/delete route
+// TagDelete handles POST /admin/tags/:title/delete route
 func TagDelete(c *gin.Context) {
 	db := models.GetDB()
 	tag := models.Tag{}
-	db.First(&tag, c.Param("title"))
+	
+	db.Where("slug = ?", c.Param("slug")).First(&tag)
 	if len(tag.Title) == 0 {
 		c.HTML(http.StatusNotFound, "errors/404", nil)
 		return
 	}
 	if err := db.Delete(&tag).Error; err != nil {
-		logrus.Error(err)
+		slog.Error(err.Error())
 		c.HTML(http.StatusInternalServerError, "errors/500", gin.H{"Error": err.Error()})
 		return
 	}

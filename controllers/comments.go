@@ -2,15 +2,15 @@ package controllers
 
 import (
 	"fmt"
+	"log/slog"
 	"net/http"
 
-	"github.com/Sirupsen/logrus"
 	"github.com/denisbakhtin/ginblog/models"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
-//CommentGet handles GET /comments/:id route
+// CommentGet handles GET /comments/:id route
 func CommentGet(c *gin.Context) {
 	db := models.GetDB()
 	comment := models.Comment{}
@@ -25,7 +25,7 @@ func CommentGet(c *gin.Context) {
 	c.HTML(http.StatusOK, "comments/show", h)
 }
 
-//CommentIndex handles GET /admin/comments route
+// CommentIndex handles GET /admin/comments route
 func CommentIndex(c *gin.Context) {
 	db := models.GetDB()
 	var comments []models.Comment
@@ -36,7 +36,7 @@ func CommentIndex(c *gin.Context) {
 	c.HTML(http.StatusOK, "comments/index", h)
 }
 
-//CommentNew handles GET /admin/new_comment route
+// CommentNew handles GET /admin/new_comment route
 func CommentNew(c *gin.Context) {
 	h := DefaultH(c)
 	h["Title"] = "New comment"
@@ -47,7 +47,7 @@ func CommentNew(c *gin.Context) {
 	c.HTML(http.StatusOK, "comments/form", h)
 }
 
-//CommentCreate handles POST /admin/new_comment route
+// CommentCreate handles POST /admin/new_comment route
 func CommentCreate(c *gin.Context) {
 	comment := models.Comment{}
 	db := models.GetDB()
@@ -67,13 +67,13 @@ func CommentCreate(c *gin.Context) {
 
 	if err := db.Create(&comment).Error; err != nil {
 		c.HTML(http.StatusInternalServerError, "errors/500", nil)
-		logrus.Error(err)
+		slog.Error(err.Error())
 		return
 	}
 	c.Redirect(http.StatusFound, "/admin/comments")
 }
 
-//CommentPublicCreate handles POST /new_comment route
+// CommentPublicCreate handles POST /new_comment route
 func CommentPublicCreate(c *gin.Context) {
 	comment := models.Comment{}
 	db := models.GetDB()
@@ -93,7 +93,7 @@ func CommentPublicCreate(c *gin.Context) {
 
 	if err := db.Create(&comment).Error; err != nil {
 		c.HTML(http.StatusInternalServerError, "errors/500", nil)
-		logrus.Error(err)
+		slog.Error(err.Error())
 		return
 	}
 	session.AddFlash("Your comment has been published!")
@@ -101,7 +101,7 @@ func CommentPublicCreate(c *gin.Context) {
 	c.Redirect(http.StatusFound, c.Request.Referer())
 }
 
-//CommentEdit handles GET /admin/comments/:id/edit route
+// CommentEdit handles GET /admin/comments/:id/edit route
 func CommentEdit(c *gin.Context) {
 	db := models.GetDB()
 	comment := models.Comment{}
@@ -119,7 +119,7 @@ func CommentEdit(c *gin.Context) {
 	c.HTML(http.StatusOK, "comments/form", h)
 }
 
-//CommentUpdate handles POST /admin/comments/:id/edit route
+// CommentUpdate handles POST /admin/comments/:id/edit route
 func CommentUpdate(c *gin.Context) {
 	db := models.GetDB()
 	comment := models.Comment{}
@@ -127,19 +127,19 @@ func CommentUpdate(c *gin.Context) {
 		session := sessions.Default(c)
 		session.AddFlash(err.Error())
 		session.Save()
-		logrus.Error(err)
+		slog.Error(err.Error())
 		c.Redirect(http.StatusSeeOther, fmt.Sprintf("/admin/comments/%s/edit", c.Param("id")))
 		return
 	}
 	if err := db.Save(&comment).Error; err != nil {
 		c.HTML(http.StatusInternalServerError, "errors/500", nil)
-		logrus.Error(err)
+		slog.Error(err.Error())
 		return
 	}
 	c.Redirect(http.StatusFound, "/admin/comments")
 }
 
-//CommentDelete handles POST /admin/comments/:id/delete route
+// CommentDelete handles POST /admin/comments/:id/delete route
 func CommentDelete(c *gin.Context) {
 	db := models.GetDB()
 	comment := models.Comment{}
@@ -149,7 +149,7 @@ func CommentDelete(c *gin.Context) {
 		return
 	}
 	if err := db.Delete(&comment).Error; err != nil {
-		logrus.Error(err)
+		slog.Error(err.Error())
 		c.HTML(http.StatusInternalServerError, "errors/500", gin.H{"Error": err.Error()})
 		return
 	}

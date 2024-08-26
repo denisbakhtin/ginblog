@@ -4,7 +4,7 @@
 <div class="container" role="main">
   {{template "sidebar" .}}
   <div id="main-column">
-    <h2>{{.Post.Title}}</h2>
+    <h1>{{.Post.Title}}</h1>
     {{template "posts/post-info" .Post}}
     <div class="content">{{noescape .Post.Content}}</div>
     <div id="comments">
@@ -13,7 +13,7 @@
       {{range .Post.Comments}}
         <div class="comment" id="comment-{{.ID}}">
           <h6>{{.UserName}}, <span class="text-muted">{{printf "%04d-%02d-%02d" .CreatedAt.Year .CreatedAt.Month .CreatedAt.Day}}</span></h6>
-          <div class="card">
+          <div class="comment-text">
             {{.Content}}
           </div>
         </div>

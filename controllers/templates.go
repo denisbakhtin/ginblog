@@ -16,7 +16,7 @@ import (
 
 var tmpl *template.Template
 
-//LoadTemplates loads templates from views directory
+// LoadTemplates loads templates from views directory
 func LoadTemplates() {
 	tmpl = template.New("").Funcs(template.FuncMap{
 		"isActiveLink":        isActiveLink,
@@ -39,7 +39,7 @@ func LoadTemplates() {
 		"oauthName":           oauthName,
 	})
 	fn := func(path string, f os.FileInfo, err error) error {
-		if f.IsDir() != true && strings.HasSuffix(f.Name(), ".gohtml") {
+		if !f.IsDir() && strings.HasSuffix(f.Name(), ".gohtml") {
 			var err error
 			tmpl, err = tmpl.ParseFiles(path)
 			if err != nil {
@@ -54,12 +54,12 @@ func LoadTemplates() {
 	}
 }
 
-//GetTemplates returns preloaded templates
+// GetTemplates returns preloaded templates
 func GetTemplates() *template.Template {
 	return tmpl
 }
 
-//isActiveLink checks uri against currently active (uri, or nil) and returns "active" if they are equal
+// isActiveLink checks uri against currently active (uri, or nil) and returns "active" if they are equal
 func isActiveLink(c *gin.Context, uri string) string {
 	if c != nil && c.Request.RequestURI == uri {
 		return "active"
@@ -67,12 +67,12 @@ func isActiveLink(c *gin.Context, uri string) string {
 	return ""
 }
 
-//formatDateTime prints timestamp in human format
+// formatDateTime prints timestamp in human format
 func formatDateTime(t time.Time) string {
 	return fmt.Sprintf("%d-%02d-%02d %02d:%02d:%02d", t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second())
 }
 
-//stringInSlice returns true if value is in list slice
+// stringInSlice returns true if value is in list slice
 func stringInSlice(value string, list []string) bool {
 	for i := range list {
 		if value == list[i] {
@@ -82,7 +82,7 @@ func stringInSlice(value string, list []string) bool {
 	return false
 }
 
-//recentPosts returns the list of recent blog posts
+// recentPosts returns the list of recent blog posts
 func recentPosts() []models.Post {
 	db := models.GetDB()
 	var list []models.Post
@@ -90,7 +90,7 @@ func recentPosts() []models.Post {
 	return list
 }
 
-//tags returns the list of blog tags
+// tags returns the list of blog tags
 func tags() []models.Tag {
 	var tags []models.Tag
 
@@ -104,28 +104,28 @@ func tags() []models.Tag {
 	return result
 }
 
-//posts returns the list of blog posts
+// posts returns the list of blog posts
 func posts() []models.Post {
 	var posts []models.Post
 	models.GetDB().Find(&posts)
 	return posts
 }
 
-//publishedPages returns the list of published pages
+// publishedPages returns the list of published pages
 func publishedPages() []models.Page {
 	var pages []models.Page
 	models.GetDB().Where("published = true").Find(&pages)
 	return pages
 }
 
-//publishedPosts returns the list of published blog posts
+// publishedPosts returns the list of published blog posts
 func publishedPosts() []models.Post {
 	var posts []models.Post
 	models.GetDB().Where("published = true").Find(&posts)
 	return posts
 }
 
-//archives returns the list of blog archives
+// archives returns the list of blog archives
 func archives() []models.Post {
 	db := models.GetDB()
 	var list []models.Post
@@ -133,12 +133,12 @@ func archives() []models.Post {
 	return list
 }
 
-//now returns current timestamp
+// now returns current timestamp
 func now() time.Time {
 	return time.Now()
 }
 
-//activeUserEmail returns currently authenticated user email
+// activeUserEmail returns currently authenticated user email
 func activeUserEmail(c *gin.Context) string {
 	if c != nil {
 		u, _ := c.Get("User")
@@ -149,7 +149,7 @@ func activeUserEmail(c *gin.Context) string {
 	return ""
 }
 
-//activeUserName returns currently authenticated user name
+// activeUserName returns currently authenticated user name
 func activeUserName(c *gin.Context) string {
 	if c != nil {
 		u, _ := c.Get("User")
@@ -160,7 +160,7 @@ func activeUserName(c *gin.Context) string {
 	return ""
 }
 
-//activeUserID returns currently authenticated user ID
+// activeUserID returns currently authenticated user ID
 func activeUserID(c *gin.Context) uint64 {
 	if c != nil {
 		u, _ := c.Get("User")
@@ -171,7 +171,7 @@ func activeUserID(c *gin.Context) uint64 {
 	return 0
 }
 
-//isUserAuthenticated returns true is user is authenticated
+// isUserAuthenticated returns true is user is authenticated
 func isUserAuthenticated(c *gin.Context) bool {
 	if c != nil {
 		u, _ := c.Get("User")
@@ -182,7 +182,7 @@ func isUserAuthenticated(c *gin.Context) bool {
 	return false
 }
 
-//signUpEnabled returns true if sign up is enabled by config
+// signUpEnabled returns true if sign up is enabled by config
 func signUpEnabled(c *gin.Context) bool {
 	if c != nil {
 		se, _ := c.Get("SignupEnabled")
@@ -193,12 +193,12 @@ func signUpEnabled(c *gin.Context) bool {
 	return false
 }
 
-//noescape unescapes html content
+// noescape unescapes html content
 func noescape(content string) template.HTML {
 	return template.HTML(content)
 }
 
-//postHasTag checks if Post has tag with tagTitle
+// postHasTag checks if Post has tag with tagTitle
 func postHasTag(post models.Post, tagTitle string) bool {
 	if post.ID == 0 || len(post.Tags) == 0 || len(tagTitle) == 0 {
 		return false

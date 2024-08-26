@@ -9,22 +9,16 @@ It consists of the following core components:
 
 - GIN - A web microframework (with best performance atm) for Golang - https://github.com/gin-gonic/gin
 - GIN middlewares [gin-csrf](https://github.com/utrack/gin-csrf), [gin/contrib/sessions](https://github.com/gin-gonic/contrib/tree/master/sessions)
-- gorm - The orm library for go - http://gorm.io/
+- gorm - The orm library for go v2 - http://gorm.io/
 - Comments with oauth2 authentication
-- logrus - advanced Go logger - https://github.com/Sirupsen/logrus
-- Twitter Bootstrap 4 - popular HTML, CSS, JS framework for developing responsive, mobile first web projects - http://getbootstrap.com
-- Webpack asset compiler
-- Parsley JS - form validation - http://parsleyjs.org
-- CKEditor 5 with image upload - https://ckeditor.com/ckeditor-5/
+- slog - advanced Go logger - log/slog
+- Twitter Bootstrap 5 - popular HTML, CSS, JS framework for developing responsive, mobile first web projects - http://getbootstrap.com
+- CKEditor 5 with image upload integration - https://ckeditor.com/ckeditor-5/
+- Tom Select - fast and compact <select> enhancement for post tags selection and creation on the fly - https://github.com/orchidjs/tom-select
 - bluemonday - html sanitizer (for excerpts, etc) - https://github.com/microcosm-cc/bluemonday
 - RSS feeds - https://github.com/gorilla/feeds
 - sitemap - XML sitemap for search engines - https://github.com/denisbakhtin/sitemap
 - gocron - periodic task launcher (for sitemap generation, etc) - https://github.com/jasonlvhit/gocron
-
-# TODO (May be)
-- Site search with Postgresql full text search (okish for most websites) - http://www.postgresql.org/docs/9.4/static/textsearch-intro.html
-- Social plugins (share, like buttons)
-- Auto posting previews to social walls
 
 # Screenshots
 ## Home page
@@ -38,6 +32,9 @@ It consists of the following core components:
 ## Custom 404, 405, 500 error pages
 ![](/public/images/screenshot_error.jpg)
 
+# Recent updates
+Removed node.js dependency, jquery, replaced select2 with a lightweight Tom Select, updated CKEditor5, Bootstrap 5 with icons, etc..
+
 # Usage
 ```
 git clone https://github.com/denisbakhtin/ginblog.git
@@ -45,13 +42,11 @@ cd ginblog
 go get .
 ```
 Copy sample config `cp config/config.json.example config/config.json`, create postgresql database, modify config/config.json accordingly.
-Install `npm`, `webpack`, run `npm install` in the project directory.
 
-Type `go run main.go` to launch web server, `npm run build` to rebuild assets.
+Type `go run main.go` to launch web server.
 
 # Deployment
 ```
-npm run build
 make build
 ```
 Upload `ginblog` binary `config`, `views` and `public` directory to your server.
@@ -131,5 +126,3 @@ And that's it.
 
 For Continuous Development a good option is to install `fresh` - https://github.com/pilu/fresh
 Then simply run `fresh` in the project directory.
-
-To rebuild assets on change install run `npm run watch`.

@@ -2,10 +2,10 @@ package controllers
 
 import (
 	"fmt"
+	"log/slog"
 	"path"
 	"time"
 
-	"github.com/Sirupsen/logrus"
 	"github.com/denisbakhtin/ginblog/config"
 	"github.com/denisbakhtin/ginblog/models"
 	"github.com/denisbakhtin/sitemap"
@@ -15,7 +15,7 @@ import (
 
 const userIDKey = "UserID"
 
-//DefaultH returns common to all pages template data
+// DefaultH returns common to all pages template data
 func DefaultH(c *gin.Context) gin.H {
 	return gin.H{
 		"Title":   "", //page title:w
@@ -24,20 +24,20 @@ func DefaultH(c *gin.Context) gin.H {
 	}
 }
 
-//CreateXMLSitemap creates xml sitemap for search engines, and saves in public/sitemap folder
+// CreateXMLSitemap creates xml sitemap for search engines, and saves in public/sitemap folder
 func CreateXMLSitemap() {
-	logrus.Info("Starting XML sitemap generation")
+	slog.Info("Starting XML sitemap generation")
 	folder := path.Join(config.GetConfig().Public, "sitemap")
 	domain := config.GetConfig().Domain
 	now := time.Now()
-	items := make([]sitemap.Item, 1)
+	items := make([]sitemap.Page, 1)
 	db := models.GetDB()
 
 	//Home page
-	items = append(items, sitemap.Item{
-		Loc:        fmt.Sprintf("%s", domain),
+	items = append(items, sitemap.Page{
+		Loc:        domain,
 		LastMod:    now,
-		Changefreq: "daily",
+		Changefreq: sitemap.Daily,
 		Priority:   1,
 	})
 
@@ -45,10 +45,10 @@ func CreateXMLSitemap() {
 	var posts []models.Post
 	db.Where("published = true").Find(&posts)
 	for i := range posts {
-		items = append(items, sitemap.Item{
+		items = append(items, sitemap.Page{
 			Loc:        fmt.Sprintf("%s%s", domain, posts[i].URL()),
 			LastMod:    posts[i].UpdatedAt,
-			Changefreq: "weekly",
+			Changefreq: sitemap.Weekly,
 			Priority:   0.9,
 		})
 	}
@@ -57,20 +57,20 @@ func CreateXMLSitemap() {
 	var pages []models.Page
 	db.Where("published = true").Find(&pages)
 	for i := range pages {
-		items = append(items, sitemap.Item{
+		items = append(items, sitemap.Page{
 			Loc:        fmt.Sprintf("%s%s", domain, pages[i].URL()),
 			LastMod:    pages[i].UpdatedAt,
-			Changefreq: "monthly",
+			Changefreq: sitemap.Monthly,
 			Priority:   0.8,
 		})
 	}
 	if err := sitemap.SiteMap(path.Join(folder, "sitemap1.xml.gz"), items); err != nil {
-		logrus.Error(err)
+		slog.Error(err.Error())
 		return
 	}
 	if err := sitemap.SiteMapIndex(folder, "sitemap_index.xml", domain+"/public/sitemap/"); err != nil {
-		logrus.Error(err)
+		slog.Error(err.Error())
 		return
 	}
-	logrus.Info("XML sitemap has been generated in " + folder)
+	slog.Info("XML sitemap has been generated in " + folder)
 }

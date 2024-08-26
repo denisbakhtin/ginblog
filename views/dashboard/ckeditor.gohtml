@@ -1,0 +1,57 @@
+{{define "dashboard/ckeditor"}}
+<script src="/public/assets/xhook.min.js"></script>
+
+<script type="importmap">
+    {
+        "imports": {
+            "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/43.0.0/ckeditor5.js",
+            "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/43.0.0/"
+        }
+    }
+</script>
+<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.0.0/ckeditor5.css" />
+
+<script type="module">
+    import {
+        ClassicEditor,
+        Essentials,	
+        Image,
+        ImageUpload,
+        CKFinder,
+        CKFinderUploadAdapter,		
+        Heading,
+        Bold,
+        Italic,
+        BlockQuote,
+        Indent,
+        Link,
+        List
+    } from 'ckeditor5';
+
+    //add csrf protection to ckeditor uploads
+    xhook.before(function (request) {
+        if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(request.method)) {
+            request.xhr.setRequestHeader("X-CSRF-TOKEN", window.csrf_token);
+        }
+    });
+
+    ClassicEditor
+        .create( document.querySelector( '#ck-content' ), {
+            plugins: [
+                Essentials, Image, ImageUpload, CKFinder, CKFinderUploadAdapter,
+                Heading, Bold, Italic, BlockQuote, Indent,
+                Link, List
+            ],
+            ckfinder: {
+                uploadUrl: "/admin/upload"					
+            },
+            toolbar: [
+                '|', 'heading', '|', 'undo', 'redo', '|', 'uploadImage', '|', 'bold', 'italic', '|',
+                'blockQuote', 'indent', 'link', '|', 'bulletedList', 'numberedList'
+            ],
+        } )
+        .catch( error => {
+            console.error( error );
+        } );
+</script>
+{{end}}

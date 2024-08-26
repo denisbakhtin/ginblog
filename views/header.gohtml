@@ -10,7 +10,16 @@
 	<link rel="alternate" type="application/rss+xml" title="Ginblog rss" href="/rss" />
 	<link href="/public/favicon.ico" rel="icon" type="image/x-icon">
 	<title>{{.Title}}</title>
-	<link rel="stylesheet" href="/public/assets/main.css">
+	<link rel="stylesheet" href="/public/assets/bootstrap/css/bootstrap.css">
+	<link rel="stylesheet" href="/public/assets/font/bootstrap-icons.css">
+	<link rel="stylesheet" href="/public/assets/application.css">	
+	<script src="/public/assets/bootstrap/js/bootstrap.bundle.js"></script>
+	<script src="/public/assets/application.js"></script>
+	{{if .CKEditor}}
+		{{template "dashboard/ckeditor" .}}
+		{{template "dashboard/tomselect" .}}
+	{{end}}
 </head>
 <body>
 {{end}}
+

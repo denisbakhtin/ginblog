@@ -1,14 +1,15 @@
 package controllers
 
 import (
+	"context"
 	"crypto/rand"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
+	"log/slog"
 	"net/http"
 
-	"github.com/Sirupsen/logrus"
 	"github.com/denisbakhtin/ginblog/config"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -16,7 +17,7 @@ import (
 	"golang.org/x/oauth2/google"
 )
 
-//user is oauth user info struct
+// user is oauth user info struct
 type user struct {
 	Sub           string `json:"sub"`
 	Name          string `json:"name"`
@@ -29,7 +30,7 @@ type user struct {
 	Gender        string `json:"gender"`
 }
 
-//OauthCallback handles authentication of a user and initiates a session.
+// OauthCallback handles authentication of a user and initiates a session.
 func OauthCallback(c *gin.Context) {
 	// Handle the exchange code to initiate a transport.
 	session := sessions.Default(c)
@@ -37,37 +38,37 @@ func OauthCallback(c *gin.Context) {
 	retrievedState := session.Get("state").(string)
 	queryState := c.Request.URL.Query().Get("state")
 	if retrievedState != queryState {
-		logrus.Errorf("Invalid session state: retrieved: %s; Param: %s", retrievedState, queryState)
+		slog.Error("Invalid session state", "Retrieved", retrievedState, "Param", queryState)
 		session.AddFlash(fmt.Sprintf("Invalid session state: retrieved: %s; Param: %s", retrievedState, queryState))
 		session.Save()
 		c.Redirect(http.StatusFound, returnURL)
 		return
 	}
 	code := c.Request.URL.Query().Get("code")
-	tok, err := googleConfig().Exchange(oauth2.NoContext, code)
+	tok, err := googleConfig().Exchange(context.TODO(), code)
 	if err != nil {
-		logrus.Error(err)
+		slog.Error(err.Error())
 		session.AddFlash("Authentication error, please try again")
 		session.Save()
 		c.Redirect(http.StatusFound, returnURL)
 		return
 	}
 
-	client := googleConfig().Client(oauth2.NoContext, tok)
+	client := googleConfig().Client(context.TODO(), tok)
 	userinfo, err := client.Get("https://www.googleapis.com/oauth2/v3/userinfo")
 	if err != nil {
-		logrus.Error(err)
+		slog.Error(err.Error())
 		session.AddFlash("Authentication error, please try again")
 		session.Save()
 		c.Redirect(http.StatusFound, returnURL)
 		return
 	}
 	defer userinfo.Body.Close()
-	data, _ := ioutil.ReadAll(userinfo.Body)
+	data, _ := io.ReadAll(userinfo.Body)
 	u := user{}
 	if err = json.Unmarshal(data, &u); err != nil {
 		c.HTML(http.StatusInternalServerError, "errors/500", gin.H{"Error": err})
-		logrus.Error(err)
+		slog.Error(err.Error())
 		return
 	}
 	session.Set("oauth-email", u.Email)
@@ -76,7 +77,7 @@ func OauthCallback(c *gin.Context) {
 	c.Redirect(http.StatusFound, returnURL)
 }
 
-//OauthGoogleLogin handles the google oauth login procedure.
+// OauthGoogleLogin handles the google oauth login procedure.
 func OauthGoogleLogin(c *gin.Context) {
 	state := randToken(32)
 	session := sessions.Default(c)
@@ -87,7 +88,7 @@ func OauthGoogleLogin(c *gin.Context) {
 	c.Redirect(http.StatusSeeOther, link)
 }
 
-//randToken generates a random @l length token.
+// randToken generates a random @l length token.
 func randToken(l int) string {
 	b := make([]byte, l)
 	rand.Read(b)

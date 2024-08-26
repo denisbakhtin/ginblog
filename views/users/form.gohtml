@@ -7,7 +7,7 @@
     <div class="col-sm-9" role="main">
       <div class="panel panel-default">
         <div class="panel-body">
-          <form method="post" data-parsley-validate>
+          <form method="post">
             <div class="row">
               <legend class="col-sm-12">{{.Title}}</legend>
               {{range .Flash}}
@@ -16,27 +16,22 @@
               <input type="hidden" name="id" value="{{.User.ID}}" >
               <input type="hidden" name="_csrf" value="{{.Csrf}}">
 
-              <div class="form-group col-sm-6">
-                <label class="control-label" for="name">Name</label>
-                <input id="name" name="name" value="{{.User.Name}}" class="form-control" required data-parsley-required-message="Please enter user name">    
+              <div class="mb-3 col-sm-6">
+                <label class="form-label" for="name">Name</label>
+                <input id="name" name="name" value="{{.User.Name}}" required class="form-control">
               </div>
 
-              <div class="form-group col-sm-6">
-                <label class="control-label" for="email">Email</label>
-                <input id="email" name="email" value="{{.User.Email}}" class="form-control" required data-parsley-required-message="Please enter user email">    
+              <div class="mb-3 col-sm-6">
+                <label class="form-label" for="email">Email</label>
+                <input id="email" name="email" value="{{.User.Email}}" required class="form-control">
               </div>
 
-              <div class="form-group col-sm-6">
-                <label class="control-label" for="password">Password</label>
-                <input id="password" name="password" type="password" class="form-control" required data-parsley-required-message="Please enter user password">
+              <div class="mb-3 col-sm-6">
+                <label class="form-label" for="password">Password</label>
+                <input id="password" name="password" type="password" class="form-control" required>
               </div>
-
-              <div class="form-group col-sm-6">
-                <label class="control-label" for="passwordrepeat">Repeat password</label>
-                <input id="passwordrepeat" name="passwordrepeat" type="password" class="form-control" required data-parsley-required-message="Please repeat user password" data-parsley-equalto="#password" data-parsley-equalto-message="Passwords do not match">
-              </div>
-
-              <div class="form-group col-sm-12">
+              
+              <div class="mb-3 col-sm-12">
                 <input type="submit" class="btn btn-primary" value="Submit">
                 <a class="btn btn-secondary" href="/admin/users">Cancel</a>
               </div>
