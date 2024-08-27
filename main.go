@@ -115,7 +115,7 @@ func main() {
 	}
 
 	// Listen and server on 0.0.0.0:8080
-	router.Run(":8080")
+	router.Run(fmt.Sprintf(":%d", config.GetConfig().Port))
 }
 
 // initLogger initializes slog logger with some defaults

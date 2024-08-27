@@ -19,6 +19,7 @@ type Configs struct {
 type Config struct {
 	Public        string `json:"public"`
 	Domain        string `json:"domain"`
+	Port          int    `json:"port"`
 	SessionSecret string `json:"session_secret"`
 	SignupEnabled bool   `json:"signup_enabled"` //always set to false in release mode (config.json)
 	Database      DatabaseConfig
